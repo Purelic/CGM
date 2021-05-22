@@ -1,0 +1,30 @@
+package net.purelic.cgm.listeners.flag;
+
+import net.purelic.cgm.core.gamemodes.ToggleSetting;
+import net.purelic.cgm.core.maps.flag.Flag;
+import net.purelic.cgm.core.maps.flag.constants.FlagState;
+import net.purelic.cgm.core.maps.flag.events.FlagCaptureEvent;
+import net.purelic.cgm.utils.SoundUtils;
+import net.purelic.cgm.utils.SpawnUtils;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+public class FlagCapture implements Listener {
+
+    @EventHandler
+    public void onFlagCapture(FlagCaptureEvent event) {
+        Flag flag = event.getFlag();
+
+        if (flag.hasCarrier()) {
+            event.broadcast();
+            SoundUtils.SFX.FLAG_CAPTURED.play(flag.getCarrier().getPlayer());
+
+            if (ToggleSetting.TELEPORT_ON_CAPTURE.isEnabled()) {
+                SpawnUtils.teleportRandom(flag.getCarrier().getPlayer(), false);
+            }
+        }
+
+        flag.setState(FlagState.RESPAWNING);
+    }
+
+}
