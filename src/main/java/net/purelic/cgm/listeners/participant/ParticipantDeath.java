@@ -101,7 +101,7 @@ public class ParticipantDeath implements Listener {
         }
 
         // Set player properties
-        PacketUtils.playDeathAnimation(player, eliminated);
+        PacketUtils.playDeathAnimation(player);
         PlayerUtils.clearEffects(player);
         // PacketUtils.setBorder(player);
         player.setPlayerListName((eliminated ? ChatColor.RED + "\u2715 " : "") + Commons.getProfile(player).getFlairs() + ColorConverter.darken(MatchTeam.getTeam(player).getColor()) + NickUtils.getRealName(player));

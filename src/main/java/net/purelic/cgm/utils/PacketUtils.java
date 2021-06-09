@@ -1,7 +1,6 @@
 package net.purelic.cgm.utils;
 
 import net.minecraft.server.v1_8_R3.*;
-import net.purelic.cgm.core.match.Participant;
 import net.purelic.commons.utils.VersionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
@@ -27,66 +26,72 @@ public class PacketUtils {
     private static Constructor<?> border_constructor;
     private static Object constant;
 
-    private static EntityPlayer getFakePlayer(Participant participant) {
-        return getFakePlayer(participant.getPlayer(), participant.isEliminated());
+    public static void sendPackets(Player player, Packet<?>... packets) {
+        PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
+        for (Packet<?> packet : packets) connection.sendPacket(packet);
     }
 
-    private static EntityPlayer getFakePlayer(Player player, boolean eliminated) {
-        MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
+    private static EntityPlayer getFakePlayer(Player player) {
+        // Create a fake copy of the player
         WorldServer nmsWorld = ((CraftWorld) player.getWorld()).getHandle();
 
-        EntityPlayer fakePlayer = new EntityPlayer(nmsServer, nmsWorld, ((CraftPlayer) player).getHandle().getProfile(), new PlayerInteractManager(nmsWorld));
-
-        DataWatcher watcher = fakePlayer.getDataWatcher();
-        watcher.watch(10, (byte) 127);
-
-        fakePlayer.setLocation(player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
-//        fakePlayer.getBukkitEntity().setPlayerListName(
-//            (eliminated ? ChatColor.RED + "\u2715 " : "") + // ✕
-//                Commons.getProfile(player).getFlairs() +
-//                ColorConverter.darken(MatchTeam.getTeam(player).getColor()) +
-//                NickUtils.getRealName(player)
-//        );
-
-        return fakePlayer;
+        return new EntityPlayer(
+            ((CraftServer) Bukkit.getServer()).getServer(),
+            nmsWorld,
+            ((CraftPlayer) player).getHandle().getProfile(),
+            new PlayerInteractManager(nmsWorld)
+        );
     }
 
-    public static void playDeathAnimation(Player player, boolean eliminated) {
-        EntityPlayer fakePlayer = getFakePlayer(player, eliminated);
+    public static void playDeathAnimation(Player player) {
+        EntityPlayer fakePlayer = getFakePlayer(player);
+
+        // Match the location of the player
+        fakePlayer.setLocation(
+            player.getLocation().getX(),
+            player.getLocation().getY(),
+            player.getLocation().getZ(),
+            player.getLocation().getYaw(),
+            player.getLocation().getPitch()
+        );
 
         DataWatcher watcher = fakePlayer.getDataWatcher();
         watcher.watch(10, (byte) 127);
+
+        Packet<?>[] packets = new Packet<?>[] {
+            // Spawn the fake player
+            new PacketPlayOutNamedEntitySpawn(fakePlayer),
+
+            // Show the second skin layer
+            new PacketPlayOutEntityMetadata(fakePlayer.getId(), watcher, true),
+
+            // Kill the fake player/play death animation
+            new PacketPlayOutEntityStatus(fakePlayer, (byte) 3),
+
+            // Copy the player's armor onto the fake entity
+            new PacketPlayOutEntityEquipment(fakePlayer.getId(), 4, CraftItemStack.asNMSCopy(player.getInventory().getHelmet())),
+            new PacketPlayOutEntityEquipment(fakePlayer.getId(), 3, CraftItemStack.asNMSCopy(player.getInventory().getChestplate())),
+            new PacketPlayOutEntityEquipment(fakePlayer.getId(), 2, CraftItemStack.asNMSCopy(player.getInventory().getLeggings())),
+            new PacketPlayOutEntityEquipment(fakePlayer.getId(), 1, CraftItemStack.asNMSCopy(player.getInventory().getBoots()))
+        };
 
         for (Player online : Bukkit.getOnlinePlayers()) {
-            VersionUtils.Protocol version = VersionUtils.getProtocol(online);
-
-            // Don't show for 1.9+
-            if (version.value() > VersionUtils.Protocol.MINECRAFT_1_8.value()) continue;
-
-            if (!online.getUniqueId().equals(player.getUniqueId())) {
-                // death animation
-                PlayerConnection connection = ((CraftPlayer) online).getHandle().playerConnection;
-                connection.sendPacket(new PacketPlayOutNamedEntitySpawn(fakePlayer));
-                connection.sendPacket(new PacketPlayOutEntityMetadata(fakePlayer.getId(), watcher, true));
-                connection.sendPacket(new PacketPlayOutEntityStatus(fakePlayer, (byte) 3));
-
-                connection.sendPacket(new PacketPlayOutEntityEquipment(fakePlayer.getId(), 4, CraftItemStack.asNMSCopy(player.getInventory().getHelmet())));
-                connection.sendPacket(new PacketPlayOutEntityEquipment(fakePlayer.getId(), 3, CraftItemStack.asNMSCopy(player.getInventory().getChestplate())));
-                connection.sendPacket(new PacketPlayOutEntityEquipment(fakePlayer.getId(), 2, CraftItemStack.asNMSCopy(player.getInventory().getLeggings())));
-                connection.sendPacket(new PacketPlayOutEntityEquipment(fakePlayer.getId(), 1, CraftItemStack.asNMSCopy(player.getInventory().getBoots())));
-//
-//                Vector vector = player.getVelocity();
-//                fakePlayer.g(vector.getX(), vector.getY(), vector.getZ());
-//                connection.sendPacket(new PacketPlayOutEntityVelocity(fakePlayer));
-//                connection.sendPacket(new PacketPlayOutEntity.PacketPlayOutRelEntityMove(
-//                    fakePlayer.getId(),
-//                    (byte) (vector.getX() * 50),
-//                    (byte) (vector.getY() * 50),
-//                    (byte) (vector.getZ() * 50),
-//                    true));
+            if (online == player) {
+                // Don't play the death animation to the player that died
+                continue;
             }
+
+            if (VersionUtils.getProtocol(online).value() > VersionUtils.Protocol.MINECRAFT_1_8.value()) {
+                // This death animation doesn't work properly for 1.9+
+                // The fake player is spawned but the death animation doesn't play so the entity doesn't disappear
+                continue;
+            }
+
+            // Send fake player/death animation packets
+            sendPackets(online, packets);
         }
     }
+
 //
 //    public static void addToTab(Player player, Participant hidden) {
 //        addToTab(player, getFakePlayer(hidden));
