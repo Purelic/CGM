@@ -12,6 +12,7 @@ import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.RoundEndEvent;
@@ -36,6 +37,8 @@ public class RoundEnd implements Listener {
     public void onRoundEnd(RoundEndEvent event) {
         MatchTeam winningTeam = event.getWinnerTeam();
         Participant winner = event.getWinner();
+
+        this.updateParticipantStates();
 
         if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO) && winner != null) {
             this.matchManager.setRoundWinner(MatchTeam.SOLO);
@@ -200,6 +203,15 @@ public class RoundEnd implements Listener {
                     }
                 }
             });
+        }
+    }
+
+    // Set all participant states back to ALIVE on round end
+    // This is mainly important for updating player visibility
+    // E.g. RESPAWNING participants when the round ends might not get shown to others
+    private void updateParticipantStates() {
+        for (Participant participant : MatchManager.getParticipants()) {
+            participant.setState(ParticipantState.ALIVE);
         }
     }
 

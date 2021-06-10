@@ -11,6 +11,7 @@ import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.KitManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.utils.ColorConverter;
@@ -44,6 +45,7 @@ public class ParticipantRespawn implements Listener {
             CommandUtils.sendAlertMessage(player, "You will join at the beginning of the next round");
             participant.setLives(-1);
             participant.setDead(true);
+            participant.setState(ParticipantState.QUEUED);
             player.setPlayerListName(ChatColor.RED + "\u2715 " + Commons.getProfile(player).getFlairs() + ColorConverter.darken(MatchTeam.getTeam(player).getColor()) + NickUtils.getRealName(player));
             // TODO run async?
             TabManager.updateTeam(team, false);
@@ -69,6 +71,7 @@ public class ParticipantRespawn implements Listener {
         }
 
         participant.setDead(false);
+        participant.setState(ParticipantState.ALIVE);
         if (MatchState.isState(MatchState.STARTED)) KitManager.getKit(player, team);
 
         SpawnUtils.teleportRandom(player, event.isRoundStart());

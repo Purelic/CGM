@@ -16,6 +16,7 @@ import net.purelic.cgm.core.managers.ShopManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.maps.shop.constants.TeamUpgrade;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RespawnCountdown;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.participant.ParticipantAssistEvent;
@@ -94,6 +95,7 @@ public class ParticipantDeath implements Listener {
         this.dropItems(player, this.getItemDrops(player, deathEvent), true, killer);
 
         participant.setDead(true);
+        participant.setState(eliminated ? ParticipantState.ELIMINATED : ParticipantState.RESPAWNING);
         participant.getStats().addDeath(killerParticipant, eliminated);
 
         if (gameTypeWithScoring) {

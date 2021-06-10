@@ -9,6 +9,7 @@ import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;
@@ -133,6 +134,8 @@ public class PlayerUtils {
             return;
         }
 
+        // TODO is dead will also hide eliminated players, need to know if someone is respawning
+
         boolean bothSpectating = isObserving(player) && isObserving(other);
         boolean bothPlaying = !isObserving(player) && !isObserving(other);
 
@@ -152,10 +155,14 @@ public class PlayerUtils {
             if (!player.canSee(other)) player.showPlayer(other);
             if (!other.canSee(player)) other.showPlayer(player);
         } else if (isObserving(player) && !isObserving(other)) {
-            if (!player.canSee(other)) player.showPlayer(other);
-            // TODO is dead will also hide eliminated players, need to know if someone is respawning
-            // if (!player.canSee(other) && !MatchManager.getParticipant(other).isDead()) player.showPlayer(other);
             if (other.canSee(player)) other.hidePlayer(player);
+
+            // Hide the other player if they're respawning, otherwise show them
+            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
+                if (player.canSee(other)) player.hidePlayer(other);
+            } else {
+                if (!player.canSee(other)) player.showPlayer(other);
+            }
         } else {
             if (!other.canSee(player)) other.showPlayer(player);
             if (player.canSee(other)) player.hidePlayer(other);
@@ -165,9 +172,7 @@ public class PlayerUtils {
     public static boolean isObserving(Player player) {
         if (!MatchState.isState(MatchState.STARTED)) return true;
         if (MatchTeam.getTeam(player) == MatchTeam.OBS) return true;
-
-        Participant participant = MatchManager.getParticipant(player);
-        return participant.isEliminated() || participant.isQueued();
+        return MatchManager.getParticipant(player).isState(ParticipantState.ELIMINATED, ParticipantState.QUEUED);
     }
 
     public static Color getColorPreference(Participant participant) {

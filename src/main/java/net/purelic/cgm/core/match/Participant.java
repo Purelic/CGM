@@ -7,6 +7,7 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.core.stats.PlayerStats;
 import net.purelic.cgm.events.participant.ParticipantScoreEvent;
@@ -23,10 +24,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 public class Participant {
 
     private final Player player;
+    private ParticipantState state;
     private int roundsWon;
     private int totalScore;
     private int score;
@@ -45,6 +48,7 @@ public class Participant {
 
     public Participant(Player player) {
         this.player = player;
+        this.state = ParticipantState.ALIVE;
 
         if (MatchStatsModule.hasStats(player)) {
             this.stats = MatchStatsModule.getStats(player);
@@ -70,6 +74,14 @@ public class Participant {
             this.reset();
             this.stats = MatchStatsModule.getStats(player);
         }
+    }
+
+    public void setState(ParticipantState state) {
+        this.state = state;
+    }
+
+    public boolean isState(ParticipantState... states) {
+        return Arrays.asList(states).contains(this.state);
     }
 
     public PlayerStats getStats() {
@@ -268,6 +280,7 @@ public class Participant {
     }
 
     public void reset() {
+        this.state = ParticipantState.ALIVE;
         this.score = 0;
         resetLives();
         this.totalScore = 0;
