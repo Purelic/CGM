@@ -44,6 +44,9 @@ public class PacketUtils {
         watcher.watch(10, (byte) 127);
 
         Packet<?>[] packets = new Packet<?>[]{
+            // When the player is hidden it can sometimes break the skin, this packet will fix that
+            new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, fakePlayer),
+
             // Spawn the fake player
             new PacketPlayOutNamedEntitySpawn(fakePlayer),
 

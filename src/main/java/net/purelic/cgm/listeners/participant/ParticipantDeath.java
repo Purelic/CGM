@@ -100,10 +100,17 @@ public class ParticipantDeath implements Listener {
             participant.addScore(NumberSetting.DEATHMATCH_DEATH_POINTS.value());
         }
 
-        // Set player properties
+        // Update player visibility
+        if (eliminated) PlayerUtils.updateVisibility(player);
+        else PlayerUtils.hideFromAll(player);
+
+        // Updating player visibility needs to come before the death animation
+        // and clearing the player's inventory needs to come after
         PacketUtils.playDeathAnimation(player);
+
+        // Set player properties
+        PlayerUtils.clearInventory(player);
         PlayerUtils.clearEffects(player);
-        // PacketUtils.setBorder(player);
         player.setPlayerListName((eliminated ? ChatColor.RED + "\u2715 " : "") + Commons.getProfile(player).getFlairs() + ColorConverter.darken(MatchTeam.getTeam(player).getColor()) + NickUtils.getRealName(player));
         player.getWorld().playSound(player.getLocation(), Sound.IRONGOLEM_HIT, 1F, 1.0F);
         player.spigot().setCollidesWithEntities(false);
@@ -113,7 +120,6 @@ public class ParticipantDeath implements Listener {
         player.setExp(0);
         player.setSaturation(20);
         player.setFoodLevel(20);
-        PlayerUtils.clearInventory(player);
 
         if (ToggleSetting.BLACKOUT_RESPAWN.isEnabled()) {
             PlayerUtils.addPermanentEffect(player, PotionEffectType.BLINDNESS);
@@ -121,14 +127,10 @@ public class ParticipantDeath implements Listener {
 
         // Start respawn or eliminate player
         if (!eliminated) {
-            PlayerUtils.hideFromAll(player);
             TabManager.updatePlayer(player);
             if (!combatLog) this.startRespawnCountdown(participant, killer, suicide);
-            // PlayerUtils.hideFromAll(player);
         } else {
             TabManager.updateTeam(player);
-            // PlayerUtils.hideFromPlaying(player);
-            PlayerUtils.updateVisibility(player);
             Commons.callEvent(new ParticipantEliminateEvent(participant, combatLog));
         }
 
