@@ -52,71 +52,44 @@ public class PlayerUtils {
         PlayerUtils.clearEffects(player);
     }
 
+    /* Showing and hiding players can actually cause small amounts of lag,
+       so bulk showing/hiding players can cause lag spikes.
+
+       By only performing the show and hide methods when necessary we can
+       reduce the possible amount of lag when updating player visibility. */
+
+    public static void showPlayer(Player player, Player other) {
+        // Only show the other player if they're hidden
+        if (!player.canSee(other)) player.showPlayer(other);
+    }
+
+    public static void hidePlayer(Player player, Player other) {
+        // Only hide the other player if they're shown
+        if (player.canSee(other)) player.hidePlayer(other);
+    }
+
     public static void showEveryone() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             for (Player online : Bukkit.getOnlinePlayers()) {
                 if (online == player) continue;
-                if (!player.canSee(online)) player.showPlayer(online);
-                if (!online.canSee(player)) online.showPlayer(player);
+                showPlayer(player, online);
+                showPlayer(online, player);
             }
-        }
-    }
-
-    public static void hideSpectators(Player player) {
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (online == player) continue;
-            if (isObserving(online) && player.canSee(online)) player.hidePlayer(online);
-        }
-    }
-
-    public static void showSpectators(Player player) {
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (online == player) continue;
-            if (isObserving(online) && !player.canSee(online)) player.showPlayer(online);
-        }
-    }
-
-    public static void showToPlaying(Player player) {
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (online == player) continue;
-            if (!online.canSee(player)) online.showPlayer(player);
-            if (!MatchManager.isPlaying(online) && player.canSee(online)) player.hidePlayer(online);
         }
     }
 
     public static void hideFromAll(Player player) {
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online == player) continue;
-            if (online.canSee(player)) online.hidePlayer(player);
+            hidePlayer(online, player);
         }
     }
 
     public static void hideObs() {
         for (Participant participant : MatchManager.getParticipants()) {
             for (Player obs : MatchTeam.OBS.getPlayers()) {
-                participant.getPlayer().hidePlayer(obs);
+                hidePlayer(participant.getPlayer(), obs);
             }
-        }
-    }
-
-    public static void hideFromPlaying(Player player) {
-        for (Player online : Bukkit.getOnlinePlayers()) {
-            if (online == player) continue;
-
-            if (MatchManager.isPlaying(online)) {
-                if (isObserving(online) && !player.canSee(online)) player.showPlayer(online);
-                else if (online.canSee(player)) online.hidePlayer(player);
-                if (!player.canSee(online)) player.showPlayer(online);
-            } else {
-                if (!player.canSee(online)) player.showPlayer(online);
-                if (!online.canSee(player)) online.showPlayer(player);
-            }
-        }
-    }
-
-    public static void updateVisibility() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            updateVisibility(player);
         }
     }
 
@@ -129,43 +102,41 @@ public class PlayerUtils {
 
     private static void updateVisibility(Player player, Player other) {
         if (!MatchState.isActive()) {
-            if (!player.canSee(other)) player.showPlayer(other);
-            if (!other.canSee(player)) other.showPlayer(player);
+            showPlayer(player, other);
+            showPlayer(other, player);
             return;
         }
-
-        // TODO is dead will also hide eliminated players, need to know if someone is respawning
 
         boolean bothSpectating = isObserving(player) && isObserving(other);
         boolean bothPlaying = !isObserving(player) && !isObserving(other);
 
         if (bothSpectating) {
             if (ToggleSpectatorsCommand.hideSpectators(player)) {
-                if (player.canSee(other)) player.hidePlayer(other);
+                hidePlayer(player, other);
             } else {
-                if (!player.canSee(other)) player.showPlayer(other);
+                showPlayer(player, other);
             }
 
             if (ToggleSpectatorsCommand.hideSpectators(other)) {
-                if (other.canSee(player)) other.hidePlayer(player);
+                hidePlayer(other, player);
             } else {
-                if (!other.canSee(player)) other.showPlayer(player);
+                showPlayer(other, player);
             }
         } else if (bothPlaying) {
-            if (!player.canSee(other)) player.showPlayer(other);
-            if (!other.canSee(player)) other.showPlayer(player);
+            showPlayer(player, other);
+            showPlayer(other, player);
         } else if (isObserving(player) && !isObserving(other)) {
-            if (other.canSee(player)) other.hidePlayer(player);
+            hidePlayer(other, player);
 
             // Hide the other player if they're respawning, otherwise show them
             if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
-                if (player.canSee(other)) player.hidePlayer(other);
+                hidePlayer(player, other);
             } else {
-                if (!player.canSee(other)) player.showPlayer(other);
+                showPlayer(player, other);
             }
-        } else {
-            if (!other.canSee(player)) other.showPlayer(player);
-            if (player.canSee(other)) player.hidePlayer(other);
+        } else { // player is playing and other is observing
+            showPlayer(other, player);
+            hidePlayer(player, other);
         }
     }
 
