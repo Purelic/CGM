@@ -1,6 +1,7 @@
 package net.purelic.cgm.listeners.match;
 
 import net.purelic.cgm.CGM;
+import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.damage.DamageTick;
 import net.purelic.cgm.core.damage.KillAssist;
@@ -55,7 +56,7 @@ public class MatchQuit implements Listener {
 
         ScoreboardManager.updateSoloBoard();
 
-        if (CGM.getPlugin().getMatchManager().allEliminated()) {
+        if (MatchState.isState(MatchState.STARTED) && CGM.getPlugin().getMatchManager().allEliminated()) {
             Commons.callEvent(new RoundEndEvent());
         }
     }
