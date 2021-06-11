@@ -18,6 +18,7 @@ import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
 import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.TaskUtils;
@@ -59,13 +60,12 @@ public class ParticipantRespawn implements Listener {
             int lives = participant.getLives();
             String text = ChatColor.AQUA + "" + lives + ChatColor.RESET + " " + (lives == 1 ? "Life" : "Lives") + " Remaining";
 
-            player.sendTitle(new Title(
-                    new TextComponent(""),
-                    new TextComponent(text),
-                    5,
-                    20,
-                    5
-            ));
+            ChatUtils.sendTitle(
+                player,
+                "",
+                text,
+                20
+            );
 
             CommandUtils.sendAlertMessage(player, text);
         }
