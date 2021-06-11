@@ -2,6 +2,7 @@ package net.purelic.cgm.listeners.participant;
 
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.CGM;
+import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.damage.DamageTick;
 import net.purelic.cgm.core.damage.KillAssist;
@@ -145,6 +146,7 @@ public class ParticipantDeath implements Listener {
 
     @EventHandler (priority = EventPriority.LOW)
     public void onMatchQuit(MatchQuitEvent event) {
+        if (!MatchState.isState(MatchState.STARTED)) return;
         Player player = event.getPlayer();
         this.dropItems(player, this.getItemDrops(player), false, null);
     }
