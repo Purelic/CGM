@@ -39,6 +39,7 @@ public class MapYaml {
     private final boolean blockProtection;
     private final boolean blockPlacement;
     private final boolean nightVision;
+    private final int tickSpeed;
 
     public MapYaml(Map<String, Object> yaml) {
         this.yaml = yaml;
@@ -68,6 +69,7 @@ public class MapYaml {
         this.blockProtection = (boolean) generalSettings.getOrDefault("block_protection", true);
         this.blockPlacement = (boolean) generalSettings.getOrDefault("block_placement", false);
         this.nightVision = (boolean) generalSettings.getOrDefault("night_vision", false);
+        this.tickSpeed = (int) generalSettings.getOrDefault("tick_speed", 0);
     }
 
     public List<UUID> getAuthors() {
@@ -164,6 +166,10 @@ public class MapYaml {
 
     public boolean hasNightVision() {
         return this.nightVision;
+    }
+
+    public int getTickSpeed() {
+        return this.tickSpeed;
     }
 
     private List<UUID> loadAuthors() {
