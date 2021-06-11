@@ -124,6 +124,10 @@ public class MatchManager {
             ScoreboardManager.setDisplayName(ChatColor.AQUA + "play.purelic.net");
             ScoreboardManager.resetScores(0);
 
+            // Set the most recently played map in the vote manager
+            // so we can skip it in the voting options and avoid replaying the same map.
+            VoteManager.setRecentMap(nextMap);
+
             nextGameMode.loadSettings();
             round = 0;
             currentMap = nextMap;
