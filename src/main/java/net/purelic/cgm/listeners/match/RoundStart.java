@@ -19,6 +19,7 @@ import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.listeners.participant.ParticipantKill;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -71,23 +72,19 @@ public class RoundStart implements Listener {
 
             Bukkit.getOnlinePlayers().forEach(player -> {
                 if (MatchTeam.getTeam(player) == MatchTeam.OBS) {
-                    player.sendTitle(new Title(
-                        new TextComponent("Round " + MatchManager.getRound()),
-                        new TextComponent(MatchManager.getRoundsString()),
-                        5,
-                        40,
-                        5
-                    ));
+                    ChatUtils.sendTitle(
+                        player,
+                        "Round " + MatchManager.getRound(),
+                        MatchManager.getRoundsString()
+                    );
                 } else {
                     Participant participant = MatchManager.getParticipant(player);
 
-                    participant.getPlayer().sendTitle(new Title(
-                        new TextComponent("Round " + MatchManager.getRound()),
-                        new TextComponent(MatchManager.getRound() == 1 ? MatchUtils.getObjectiveString() : MatchManager.getRoundsString()),
-                        5,
-                        40,
-                        5
-                    ));
+                    ChatUtils.sendTitle(
+                        participant.getPlayer(),
+                        "Round " + MatchManager.getRound(),
+                        MatchManager.getRound() == 1 ? MatchUtils.getObjectiveString() : MatchManager.getRoundsString()
+                    );
 
                     if (NumberSetting.LIVES_PER_ROUND.value() > 0) {
                         new BukkitRunnable() {
@@ -96,13 +93,12 @@ public class RoundStart implements Listener {
                                 int lives = participant.getLives();
 
                                 if (lives != -1) {
-                                    participant.getPlayer().sendTitle(new Title(
-                                        new TextComponent(""),
-                                        new TextComponent(ChatColor.AQUA + "" + lives + ChatColor.RESET + " " + (lives == 1 ? "Life" : "Lives") + " Remaining"),
-                                        5,
-                                        40,
-                                        5
-                                    ));
+                                    ChatUtils.sendTitle(
+                                        participant.getPlayer(),
+                                        "",
+                                        ChatColor.AQUA + "" + lives + ChatColor.RESET + " " +
+                                            (lives == 1 ? "Life" : "Lives") + " Remaining"
+                                    );
                                 }
                             }
                         }.runTaskLater(CGM.getPlugin(), 50);
@@ -120,13 +116,11 @@ public class RoundStart implements Listener {
                 int lives = participant.getLives();
 
                 if (lives != -1) {
-                    participant.getPlayer().sendTitle(new Title(
-                        new TextComponent(MatchUtils.hasRounds() ? "Round " + MatchManager.getRound() : ""),
-                        new TextComponent(ChatColor.AQUA + "" + lives + ChatColor.RESET + " " + (lives == 1 ? "Life" : "Lives") + " Remaining"),
-                        5,
-                        40,
-                        5
-                    ));
+                    ChatUtils.sendTitle(
+                        participant.getPlayer(),
+                        MatchUtils.hasRounds() ? "Round " + MatchManager.getRound() : "",
+                        ChatColor.AQUA + "" + lives + ChatColor.RESET + " " + (lives == 1 ? "Life" : "Lives") + " Remaining"
+                    );
                 }
             });
         }

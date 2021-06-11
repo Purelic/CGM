@@ -11,6 +11,7 @@ import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.managers.VoteManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.ItemCrafter;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
@@ -63,13 +64,12 @@ public class PlayerJoin implements Listener {
 
         // TODO replace with "isMatchJoinable" that also takes into consideration if teams are full too
         if (MatchTeam.getTeam(player) == MatchTeam.OBS && MatchState.isState(MatchState.STARTED) && !ServerUtils.isRanked()) {
-            player.sendTitle(new Title(
-                new TextComponent(ChatColor.GOLD + MatchManager.getCurrentGameMode().getName()),
-                new TextComponent(ChatColor.AQUA + "/join" + ChatColor.WHITE + " to play!"),
-                5,
-                60,
-                5
-            ));
+            ChatUtils.sendTitle(
+                player,
+                ChatColor.GOLD + MatchManager.getCurrentGameMode().getName(),
+                ChatColor.AQUA + "/join" + ChatColor.WHITE + " to play!",
+                60
+            );
         }
 
         for (Participant participant : MatchManager.getParticipants()) {

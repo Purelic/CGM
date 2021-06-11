@@ -12,6 +12,7 @@ import net.purelic.cgm.events.participant.ParticipantEliminateEvent;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,13 +49,7 @@ public class ParticipantEliminate implements Listener {
             Commons.callEvent(new RoundEndEvent());
         } else {
             if (!event.isCombatLog()) {
-                player.sendTitle(new Title(
-                        new TextComponent(ChatColor.RED + "Eliminated"),
-                        new TextComponent(MatchUtils.hasRounds() ? "You will respawn next round" : ""),
-                        5,
-                        40,
-                        5
-                ));
+                ChatUtils.sendTitle(player, ChatColor.RED + "Eliminated", MatchUtils.hasRounds() ? "You will respawn next round" : "");
             }
         }
     }

@@ -67,13 +67,11 @@ public class RoundEnd implements Listener {
 
                 if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
                     if (winner == null) {
-                        player.sendTitle(new Title(
-                                new TextComponent("Round Over"),
-                                new TextComponent(ChatColor.YELLOW + "Draw!"),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            "Round Over",
+                            ChatColor.YELLOW + "Draw!"
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -83,13 +81,11 @@ public class RoundEnd implements Listener {
                                 .append("\n").reset()
                         );
                     } else if (team == MatchTeam.OBS) {
-                        player.sendTitle(new Title(
-                                new TextComponent("Round Over"),
-                                new TextComponent(NickUtils.getDisplayName(winner.getPlayer()) + ChatColor.RESET + " won the round!"),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            "Round Over",
+                            NickUtils.getDisplayName(winner.getPlayer()) + ChatColor.RESET + " won the round!"
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -99,13 +95,11 @@ public class RoundEnd implements Listener {
                                 .append("\n").reset()
                         );
                     } else if (winner.getPlayer() == player) {
-                        player.sendTitle(new Title(
-                                new TextComponent(ChatColor.GREEN + "Round Won"),
-                                new TextComponent(""),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            ChatColor.GREEN + "Round Won",
+                            ""
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -117,13 +111,11 @@ public class RoundEnd implements Listener {
 
                         SoundUtils.SFX.MATCH_WON.play(player);
                     } else {
-                        player.sendTitle(new Title(
-                                new TextComponent(ChatColor.RED + "Round Lost"),
-                                new TextComponent(NickUtils.getDisplayName(winner.getPlayer()) + ChatColor.RESET + " won the round!"),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            ChatColor.RED + "Round Lost",
+                            NickUtils.getDisplayName(winner.getPlayer()) + ChatColor.RESET + " won the round!"
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -135,13 +127,11 @@ public class RoundEnd implements Listener {
                     }
                 } else {
                     if (winningTeam == null) {
-                        player.sendTitle(new Title(
-                                new TextComponent("Round Over"),
-                                new TextComponent(ChatColor.YELLOW + "Draw!"),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            "Round Over",
+                            ChatColor.YELLOW + "Draw!"
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -151,13 +141,11 @@ public class RoundEnd implements Listener {
                                 .append("\n").reset()
                         );
                     } else if (team == MatchTeam.OBS) {
-                        player.sendTitle(new Title(
-                                new TextComponent("Round Over"),
-                                new TextComponent(winningTeam.getColoredName() + ChatColor.RESET + " won the round!"),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            "Round Over",
+                            winningTeam.getColoredName() + ChatColor.RESET + " won the round!"
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -167,13 +155,11 @@ public class RoundEnd implements Listener {
                                 .append("\n").reset()
                         );
                     } else if (team == winningTeam) {
-                        player.sendTitle(new Title(
-                                new TextComponent(ChatColor.GREEN + "Round Won"),
-                                new TextComponent(""),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            ChatColor.GREEN + "Round Won",
+                            ""
+                        );
 
                         ChatUtils.sendMessage(
                             player,
@@ -185,13 +171,11 @@ public class RoundEnd implements Listener {
 
                         SoundUtils.SFX.MATCH_WON.play(player);
                     } else {
-                        player.sendTitle(new Title(
-                                new TextComponent(ChatColor.RED + "Round Lost"),
-                                new TextComponent(winningTeam.getColoredName() + ChatColor.RESET + " won the round!"),
-                                5,
-                                40,
-                                5
-                        ));
+                        ChatUtils.sendTitle(
+                            player,
+                            ChatColor.RED + "Round Lost",
+                            winningTeam.getColoredName() + ChatColor.RESET + " won the round!"
+                        );
 
                         ChatUtils.sendMessage(
                             player,

@@ -19,6 +19,7 @@ import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.cgm.utils.BedUtils;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.VersionUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -82,13 +83,7 @@ public class BedBreak implements Listener {
             if (VersionUtils.isLegacy(player)) {
                 player.sendMessage(ChatColor.RED + "Your bed was destroyed! " + subtitle);
             } else {
-                player.sendTitle(new Title(
-                        new TextComponent(title),
-                        new TextComponent(subtitle),
-                        5,
-                        20,
-                        5
-                ));
+                ChatUtils.sendTitle(player, title, subtitle, 20);
             }
         }
     }

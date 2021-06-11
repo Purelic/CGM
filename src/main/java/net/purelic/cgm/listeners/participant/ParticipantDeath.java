@@ -319,12 +319,12 @@ public class ParticipantDeath implements Listener {
         if (VersionUtils.isLegacy(player)) {
             CommandUtils.sendAlertMessage(player, "You will respawn in " + ChatColor.AQUA + new DecimalFormat("#.#").format(seconds) + ChatColor.RESET + " second" + (seconds == 1 ? "" : "s"));
         } else {
-            player.sendTitle(new Title(
+            ChatUtils.sendTitle(
+                player,
                 ChatColor.RED + "You died!",
                 DeathMessageUtils.getShortDeathMessage(player, killer),
-                5,
-                (int) (seconds * 20),
-                5));
+                (int) (seconds * 20)
+            );
         }
 
         new RespawnCountdown(seconds, participant).runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 1L);

@@ -15,6 +15,7 @@ import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.rewards.Medal;
 import net.purelic.cgm.core.rewards.RewardBuilder;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
 import net.purelic.commons.utils.VersionUtils;
 import org.bukkit.Location;
@@ -200,12 +201,12 @@ public class FlagUtils {
         if (VersionUtils.isLegacy(player)) {
             CommandUtils.sendAlertMessage(player, "You will respawn when the flag is dropped!");
         } else {
-            player.sendTitle(new Title(
+            ChatUtils.sendTitle(
+                player,
                 ChatColor.RED + "You died!",
                 "You'll respawn when the flag is dropped!",
-                5,
-                3 * 20,
-                5));
+                60
+            );
         }
     }
 

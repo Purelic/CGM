@@ -37,12 +37,12 @@ public class CycleCountdown extends BukkitRunnable {
 
         if (restarting) {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                player.sendTitle(new Title(
+                ChatUtils.sendTitle(
+                    player,
                     "",
                     ChatColor.AQUA + "Server Restarting...",
-                    5,
-                    (5 * 20),
-                    5));
+                    100
+                );
             }
         }
     }
