@@ -26,6 +26,7 @@ public class VoteManager {
     private static final Map<String, Map<CustomMap, CustomGameMode>> options = new HashMap<>();
     private final Set<String> modes = new HashSet<>();
     private VotingCountdown votingCountdown;
+    private static CustomMap recentMap;
 
     public VoteManager(CGM plugin) {
         this.voted = new HashMap<>();
@@ -42,7 +43,13 @@ public class VoteManager {
         List<CustomMap> maps = new ArrayList<>(playlist.keySet());
         Collections.shuffle(maps);
 
-        for (int i = 0; i < Math.min(MapManager.getPlaylist().size(), NUM_OPTIONS); i++) {
+        // If there are more maps than there are voting options,
+        // remove the most recently played map.
+        if (maps.size() > NUM_OPTIONS && recentMap != null) {
+            maps.remove(recentMap);
+        }
+
+        for (int i = 0; i < Math.min(maps.size(), NUM_OPTIONS); i++) {
             CustomMap map = maps.get(i);
             CustomGameMode gameMode = this.getRandomGameMode(new ArrayList<>(playlist.get(map)));
 
@@ -169,6 +176,10 @@ public class VoteManager {
         }
 
         this.updateScoreboard();
+    }
+
+    public static void setRecentMap(CustomMap map) {
+        VoteManager.recentMap = map;
     }
 
 }
