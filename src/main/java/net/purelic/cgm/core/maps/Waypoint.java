@@ -10,18 +10,14 @@ import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.ParticleUtils;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.commons.utils.TaskUtils;
+import net.purelic.commons.utils.lunar.LunarWaypoint;
 import org.bukkit.Color;
-import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Waypoint {
 
@@ -29,20 +25,26 @@ public class Waypoint {
     private BukkitRunnable runnable;
     private Location particleBase;
     private Color particleColor;
+    private LunarWaypoint lunarWaypoint;
 
-    public Waypoint(Participant participant) {
+    public Waypoint(Flag flag, Participant participant) {
+        final Player target = participant.getPlayer();
+        final Color color = PlayerUtils.getColorPreference(participant);
+
+        this.lunarWaypoint = new LunarWaypoint(flag.getTitle(), target.getLocation().clone(), color);
+        this.lunarWaypoint.show();
+        this.lunarWaypoint.remove(target); // don't show it the carrier
+
         this.runnable = new BukkitRunnable() {
-
-            private final Player target = participant.getPlayer();
-            private final Color color = PlayerUtils.getColorPreference(participant);
 
             @Override
             public void run() {
-                Location location = this.target.getLocation().clone();
+                Location location = target.getLocation().clone();
+                lunarWaypoint.setLocation(location);
 
                 for (int i = 3; i <= 28; i++) {
                     Location particleLoc = location.clone().add(0, i, 0);
-                    ParticleUtils.spawnColoredParticle(this.color, particleLoc);
+                    ParticleUtils.spawnColoredParticle(color, particleLoc);
                 }
             }
 
@@ -99,6 +101,9 @@ public class Waypoint {
         };
 
         this.runnable.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+
+        this.lunarWaypoint = new LunarWaypoint(label, location, color);
+        this.lunarWaypoint.show();
     }
 
     private ArmorStand getStand(Location location) {
@@ -120,13 +125,16 @@ public class Waypoint {
         this.setName(name);
     }
 
-    public void setColor(ChatColor color) {
-        this.particleColor = ColorConverter.getDyeColor(color).getColor();
+    public void setColor(ChatColor chatColor) {
+        Color color = ColorConverter.getDyeColor(chatColor).getColor();
+        this.particleColor = color;
+        if (this.lunarWaypoint != null) this.lunarWaypoint.setColor(color);
     }
 
     public void setName(String name) {
         this.stand.setCustomName(name.trim());
         if (!this.stand.isCustomNameVisible()) this.stand.setCustomNameVisible(true);
+        if (this.lunarWaypoint != null) this.lunarWaypoint.setName(name.trim());
     }
 
     public void setLocation(String title, Location location) {
@@ -137,6 +145,8 @@ public class Waypoint {
         if (this.stand != null) this.stand.teleport(newLoc.clone().add(0, 2, 0));
 
         this.particleBase = newLoc;
+
+        if (this.lunarWaypoint != null) this.lunarWaypoint.setLocation(location);
     }
 
     public void hide() {
@@ -146,12 +156,19 @@ public class Waypoint {
         }
 
         TaskUtils.cancelIfRunning(this.runnable);
+
+        if (this.lunarWaypoint != null) this.lunarWaypoint.hide();
     }
 
     public void destroy() {
         if (this.stand != null) this.stand.remove();
         this.stand = null;
         TaskUtils.cancelIfRunning(this.runnable);
+        if (this.lunarWaypoint != null) this.lunarWaypoint.destroy();
+    }
+
+    public void showLunarWaypoint(Player player) {
+        if (this.lunarWaypoint != null) this.lunarWaypoint.show(player);
     }
 
 }

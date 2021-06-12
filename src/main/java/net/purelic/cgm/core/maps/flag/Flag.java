@@ -180,7 +180,7 @@ public class Flag implements Listener {
         this.carrier = participant;
         this.flagWaypoint.hide(); // destroy the flag waypoint
         // this.flagWaypoint = null;
-        this.carrierWaypoint = new Waypoint(participant); // create waypoint above carrier
+        this.carrierWaypoint = new Waypoint(this, participant); // create waypoint above carrier
 
         Player player = participant.getPlayer();
         this.helmet = player.getInventory().getHelmet();
@@ -547,6 +547,11 @@ public class Flag implements Listener {
                 this.setState(FlagState.DROPPED);
             }
         }
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        if (this.flagWaypoint != null) this.flagWaypoint.showLunarWaypoint(event.getPlayer());
     }
 
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
