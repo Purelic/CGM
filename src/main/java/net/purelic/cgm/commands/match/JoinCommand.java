@@ -74,7 +74,7 @@ public class JoinCommand implements CustomCommand {
                     String teamStr = teamArg.get();
 
                     if (!ServerUtils.isPrivate()
-                        && !Permission.notPremium(c, "Only premium players can pick their teams!")) {
+                        && Permission.notPremium(c, "Only premium players can pick their teams!")) {
                         return;
                     }
 
