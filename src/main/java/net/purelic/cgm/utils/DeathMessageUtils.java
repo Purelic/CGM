@@ -49,8 +49,8 @@ public class DeathMessageUtils {
                     if (proj instanceof Fireball) return NickUtils.getDisplayName(player) + chatColor + " was fireballed (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + NickUtils.getDisplayName(killer);
                     else return NickUtils.getDisplayName(player) + chatColor + " was shot (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + NickUtils.getDisplayName(killer);
                 }
-                int dist = (int) (player.getLocation().distance(killer.getLocation()) + 0.5D);
                 Entity mob = (Entity) proj.getShooter();
+                int dist = (int) (player.getLocation().distance(mob.getLocation()) + 0.5D);
                 return NickUtils.getDisplayName(player) + chatColor + " was shot (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + getMonster(mob);
             case STARVATION:
                 return NickUtils.getDisplayName(player) + chatColor + " starved to death" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
