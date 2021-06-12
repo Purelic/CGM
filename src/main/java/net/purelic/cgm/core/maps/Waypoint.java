@@ -25,7 +25,6 @@ import java.util.List;
 
 public class Waypoint {
 
-    private final List<ArmorStand> stands = new ArrayList<>();
     private ArmorStand stand;
     private BukkitRunnable runnable;
     private Location particleBase;
@@ -41,7 +40,7 @@ public class Waypoint {
             public void run() {
                 Location location = this.target.getLocation().clone();
 
-                for (int i = 3; i <= 28; i++) { // was 53
+                for (int i = 3; i <= 28; i++) {
                     Location particleLoc = location.clone().add(0, i, 0);
                     ParticleUtils.spawnColoredParticle(this.color, particleLoc);
                 }
@@ -56,7 +55,6 @@ public class Waypoint {
         this(
             hill.getCenter(),
             hill.getTitle(),
-            hill.getMaterial(),
             hill.getColor(),
             3,
             hill.getType() == HillType.CTF_GOAL
@@ -67,20 +65,18 @@ public class Waypoint {
         this(
             location,
             flag.getTitle(),
-            Material.WOOL,
             flag.isNeutral() ? ChatColor.WHITE : flag.getOwner().getColor(),
             2,
             false
         );
     }
 
-    private Waypoint(Location location, String label, Material material, ChatColor color, int offset, boolean hideBeam) {
-        this(location, label, material, ColorConverter.getDyeColor(color), offset, hideBeam);
+    private Waypoint(Location location, String label, ChatColor color, int offset, boolean hideBeam) {
+        this(location, label, ColorConverter.convert(color), offset, hideBeam);
     }
 
-    // TODO clean up unused code if this is what we want to go with
-    private Waypoint(Location location, String label, Material material, DyeColor color, int offset, boolean hideBeam) {
-        this.stand = this.getStand(location.clone().add(0, offset, 0), material, color);
+    private Waypoint(Location location, String label, Color color, int offset, boolean hideBeam) {
+        this.stand = this.getStand(location.clone().add(0, offset, 0));
 
         this.setName(label);
 
@@ -89,7 +85,7 @@ public class Waypoint {
         }
 
         this.particleBase = location;
-        this.particleColor = color.getColor();
+        this.particleColor = color;
 
         this.runnable = new BukkitRunnable() {
             @Override
@@ -105,26 +101,7 @@ public class Waypoint {
         this.runnable.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
     }
 
-//    private Waypoint(Location location, String label, Material material, DyeColor color, int offset, boolean hideBeam) {
-//        for (int i = offset; i < 50; i += 2) {
-//            ArmorStand stand = this.getStand(location.clone().add(0, i, 0), material, color);
-//            this.stands.add(stand);
-//
-//            if (i == offset) {
-//                stand.setCustomName(label.trim());
-//                stand.setCustomNameVisible(true);
-//
-//                if (hideBeam) { // only show name of waypoint
-//                    stand.setHelmet(null);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        this.hideFromLegacyPlayers();
-//    }
-
-    private ArmorStand getStand(Location location, Material material, DyeColor color) {
+    private ArmorStand getStand(Location location) {
         ArmorStand stand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         stand.setSmall(true);
         stand.setCanPickupItems(false);
@@ -135,7 +112,6 @@ public class Waypoint {
         stand.setBasePlate(false);
         stand.setLeftLegPose(new EulerAngle(Math.PI, 0.0D, 0.0D));
         stand.setRightLegPose(new EulerAngle(Math.PI, 0.0D, 0.0D));
-        // stand.setHelmet(new ItemStack(material, 1, color.getData()));
         return stand;
     }
 
@@ -146,22 +122,11 @@ public class Waypoint {
 
     public void setColor(ChatColor color) {
         this.particleColor = ColorConverter.getDyeColor(color).getColor();
-//        for (ArmorStand stand : this.stands) {
-//            ItemStack item = stand.getHelmet();
-//            Material material = item.getType();
-//            DyeColor dyeColor = ColorConverter.getDyeColor(color);
-//            stand.setHelmet(new ItemStack(material, 1, dyeColor.getData()));
-//        }
     }
 
     public void setName(String name) {
         this.stand.setCustomName(name.trim());
         if (!this.stand.isCustomNameVisible()) this.stand.setCustomNameVisible(true);
-
-//        this.stands.stream()
-//                .filter(Entity::isCustomNameVisible)
-//                .findFirst()
-//                .ifPresent(stand -> stand.setCustomName(name.trim()));
     }
 
     public void setLocation(String title, Location location) {
@@ -172,13 +137,6 @@ public class Waypoint {
         if (this.stand != null) this.stand.teleport(newLoc.clone().add(0, 2, 0));
 
         this.particleBase = newLoc;
-
-//        int c = 0;
-//        for (int i = 2; i < 30; i += 2) {
-//            if (this.stands.size() == 0) break; // avoids NPE if the waypoint is destroyed before everything teleports
-//            this.stands.get(c).teleport(newLoc.clone().add(0.5, i, 0.5));
-//            c++;
-//        }
     }
 
     public void hide() {
@@ -186,30 +144,14 @@ public class Waypoint {
             this.stand.setCustomNameVisible(false);
             this.stand.setCustomName(null);
         }
+
         TaskUtils.cancelIfRunning(this.runnable);
     }
 
     public void destroy() {
-//        this.stands.forEach(Entity::remove);
-//        this.stands.clear();
         if (this.stand != null) this.stand.remove();
         this.stand = null;
         TaskUtils.cancelIfRunning(this.runnable);
-    }
-
-    public void hideFromLegacyPlayers() {
-        // Bukkit.getOnlinePlayers().forEach(this::hideIfLegacyPlayer);
-    }
-
-    public void hideIfLegacyPlayer(Player player) {
-//        if (VersionUtils.isLegacy(player)) stands.stream().filter(stand -> !stand.isCustomNameVisible()).forEach(stand -> EntityUtils.hideEntity(player, stand));
-
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                if (VersionUtils.isLegacy(player)) stands.stream().filter(stand -> !stand.isCustomNameVisible()).forEach(stand -> EntityUtils.hideEntity(player, stand));
-//            }
-//        }.runTaskLaterAsynchronously(CGM.getPlugin(), 20L);
     }
 
 }

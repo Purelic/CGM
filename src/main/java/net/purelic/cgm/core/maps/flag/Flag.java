@@ -549,11 +549,6 @@ public class Flag implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.flagWaypoint != null) this.flagWaypoint.hideIfLegacyPlayer(event.getPlayer());
-    }
-
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (!this.active

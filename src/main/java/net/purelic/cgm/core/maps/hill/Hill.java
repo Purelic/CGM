@@ -660,9 +660,4 @@ public class Hill implements Listener {
         this.removeParticipant(event.getParticipant());
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.waypoint != null) this.waypoint.hideIfLegacyPlayer(event.getPlayer());
-    }
-
 }
