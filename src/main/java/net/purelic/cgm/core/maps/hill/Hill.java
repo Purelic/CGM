@@ -662,7 +662,7 @@ public class Hill implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (this.waypoint != null) this.waypoint.hideIfLegacyPlayer(event.getPlayer());
+        if (this.waypoint != null) this.waypoint.showLunarWaypoint(event.getPlayer());
     }
 
 }
