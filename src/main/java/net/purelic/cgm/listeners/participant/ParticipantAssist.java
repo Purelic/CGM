@@ -26,7 +26,18 @@ public class ParticipantAssist implements Listener {
         Participant participant = MatchManager.getParticipant(player);
 
         if (ToggleSetting.DYNAMIC_REGEN.isEnabled()) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, percent / 2, 3));
+            int duration = percent / 2;
+
+            // Check if the player already has regen and combine the effect durations
+            for (PotionEffect effect : player.getActivePotionEffects()) {
+                if (effect.getType() == PotionEffectType.REGENERATION) {
+                    // For now, we only combine the durations if it's of the same amplifier
+                    if (effect.getAmplifier() == 3) duration += effect.getDuration();
+                    break;
+                }
+            }
+
+            player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, duration, 3));
         }
 
         if (assist.isKiller() || participant == null) return;
