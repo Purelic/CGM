@@ -16,7 +16,7 @@ import org.github.paperspigot.Title;
 
 public class CycleCountdown extends BukkitRunnable {
 
-    private static final int RESTART_THRESHOLD = 50;
+    private static final int RESTART_THRESHOLD = 25;
 
     private static BukkitRunnable countdown;
     private static int seconds;
