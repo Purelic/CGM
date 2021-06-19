@@ -96,40 +96,6 @@ public class CGM extends JavaPlugin {
         }.runTaskAsynchronously(CGM.getPlugin());
     }
 
-//    public static boolean isPrivate() {
-//        return CGM.isPrivate;
-//    }
-
-//    public static UUID getOwner() {
-//        return CGM.owner;
-//    }
-
-//    public static boolean hasOwner() {
-//        return CGM.owner != null;
-//    }
-
-//    public static void setOwner(Player player) {
-//        CGM.owner = player.getUniqueId();
-//        CGM.serverName = player.getName();
-//        CommandUtils.setOp(player, true);
-//        DatabaseUtils.unlockServer();
-//
-//        if (CGM.isPrivate) {
-//            player.setWhitelisted(true);
-//            Bukkit.setWhitelist(true);
-//        }
-//
-//        // new PersonalContentDownloader(player).runTaskAsynchronously(CGM.getPlugin());
-//    }
-
-//    public static boolean isOwner(Player player) {
-//        return player.getUniqueId().equals(CGM.owner);
-//    }
-
-//    public static String getServerName() {
-//        return CGM.serverName;
-//    }
-
     public GameModeManager getGameModeManager() {
         return this.gameModeManager;
     }
