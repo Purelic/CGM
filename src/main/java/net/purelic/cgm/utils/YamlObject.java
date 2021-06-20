@@ -19,7 +19,12 @@ public abstract class YamlObject<E extends Enum<E>> {
         String key = enumKey.name().toLowerCase();
         String defaultName = defaultValue.name();
         String value = (String) this.yaml.getOrDefault(key, defaultName);
-        return T.valueOf(defaultValue.getDeclaringClass(), value.toUpperCase());
+
+        try {
+            return T.valueOf(defaultValue.getDeclaringClass(), value.toUpperCase());
+        } catch (Exception e) {
+            return defaultValue;
+        }
     }
 
     public <T> T get(E enumKey, T defaultValue) {
