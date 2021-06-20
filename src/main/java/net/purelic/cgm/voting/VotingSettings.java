@@ -1,10 +1,11 @@
 package net.purelic.cgm.voting;
 
+import net.purelic.cgm.utils.YamlObject;
 import org.bukkit.Material;
 
 import java.util.Map;
 
-public class VotingSettings {
+public class VotingSettings extends YamlObject<VotingModifiers> {
 
     private final int minPlayers;
     private final Material voteItem;
@@ -22,20 +23,21 @@ public class VotingSettings {
     private final boolean offlineVotes;
 
     public VotingSettings(Map<String, Object> yaml) {
-        this.minPlayers = (int) yaml.getOrDefault(VotingModifiers.MIN_PLAYERS.name().toLowerCase(), 2);
-        this.voteItem = Material.valueOf(((String) yaml.getOrDefault(VotingModifiers.VOTE_ITEM.name().toLowerCase(), Material.SLIME_BALL.name())).toUpperCase());
-        this.votedItem = Material.valueOf(((String) yaml.getOrDefault(VotingModifiers.VOTED_ITEM.name().toLowerCase(), Material.MAGMA_CREAM.name())).toUpperCase());
-        this.votingOptions = (int) yaml.getOrDefault(VotingModifiers.VOTING_OPTIONS.name().toLowerCase(), 5);
-        this.repeatMaps = (boolean) yaml.getOrDefault(VotingModifiers.REPEAT_MAPS.name().toLowerCase(), false);
-        this.repeatGameModes = (boolean) yaml.getOrDefault(VotingModifiers.REPEAT_GAME_MODES.name().toLowerCase(), true);
-        this.duplicateMaps = (boolean) yaml.getOrDefault(VotingModifiers.DUPLICATE_MAPS.name().toLowerCase(), false);
-        this.duplicateGameModes = (boolean) yaml.getOrDefault(VotingModifiers.DUPLICATE_GAME_MODES.name().toLowerCase(), true);
-        this.votingDuration = (int) yaml.getOrDefault(VotingModifiers.VOTING_DURATION.name().toLowerCase(), 20);
-        this.cycleDuration = (int) yaml.getOrDefault(VotingModifiers.CYCLE_DURATION.name().toLowerCase(), 10);
-        this.multiSelect = (boolean) yaml.getOrDefault(VotingModifiers.MULTI_SELECT.name().toLowerCase(), true);
-        this.randomOption = (boolean) yaml.getOrDefault(VotingModifiers.RANDOM_OPTION.name().toLowerCase(), true);
-        this.dynamic = (boolean) yaml.getOrDefault(VotingModifiers.DYNAMIC.name().toLowerCase(), true);
-        this.offlineVotes = (boolean) yaml.getOrDefault(VotingModifiers.OFFLINE_VOTES.name().toLowerCase(), false);
+        super(yaml);
+        this.minPlayers = this.get(VotingModifiers.MIN_PLAYERS, 2);
+        this.voteItem = this.get(VotingModifiers.VOTE_ITEM, Material.SLIME_BALL);
+        this.votedItem = this.get(VotingModifiers.VOTED_ITEM, Material.MAGMA_CREAM);
+        this.votingOptions = this.get(VotingModifiers.VOTING_OPTIONS, 5);
+        this.repeatMaps = this.get(VotingModifiers.REPEAT_MAPS, false);
+        this.repeatGameModes = this.get(VotingModifiers.REPEAT_GAME_MODES, true);
+        this.duplicateMaps = this.get(VotingModifiers.DUPLICATE_MAPS, false);
+        this.duplicateGameModes = this.get(VotingModifiers.DUPLICATE_GAME_MODES, true);
+        this.votingDuration = this.get(VotingModifiers.VOTING_DURATION, 20);
+        this.cycleDuration = this.get(VotingModifiers.CYCLE_DURATION, 10);
+        this.multiSelect = this.get(VotingModifiers.MULTI_SELECT, true);
+        this.randomOption = this.get(VotingModifiers.RANDOM_OPTION, true);
+        this.dynamic = this.get(VotingModifiers.DYNAMIC, true);
+        this.offlineVotes = this.get(VotingModifiers.OFFLINE_VOTES, false);
     }
 
     public int getMinPlayers() {
