@@ -7,8 +7,6 @@ import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.info.GameModesCommand;
 import net.purelic.cgm.commands.info.MapsCommand;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
-import net.purelic.cgm.core.managers.GameModeManager;
-import net.purelic.cgm.core.managers.MapManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.commons.commands.parsers.CustomCommand;
@@ -22,13 +20,9 @@ import java.util.Optional;
 
 public class SetNextCommand implements CustomCommand {
 
-    private final MapManager mapManager;
-    private final GameModeManager gameModeManager;
     private final MatchManager matchManager;
 
     public SetNextCommand() {
-        this.mapManager = CGM.getPlugin().getMapManager();
-        this.gameModeManager = CGM.getPlugin().getGameModeManager();
         this.matchManager = CGM.getPlugin().getMatchManager();
     }
 
@@ -47,17 +41,17 @@ public class SetNextCommand implements CustomCommand {
                 if (!mapArg.isPresent()) {
                     MapsCommand.openMapsBook(player, "/setnext \"%MAP%\"");
                 } else if (!gameModeArg.isPresent()) {
-                    CustomMap map = MapManager.getMapByName(mapArg.get());
+                    CustomMap map = CGM.getPlaylist().getMap(mapArg.get());
 
                     if (map == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapArg.get() + "\"!");
                         return;
                     }
 
-                    GameModesCommand.openGameModesBook(player, "/setnext \"" + map.getName() + "\" \"%GM%\"", new ArrayList<>(MapManager.getRepo().get(map)));
+                    GameModesCommand.openGameModesBook(player, "/setnext \"" + map.getName() + "\" \"%GM%\"", new ArrayList<>(CGM.getPlaylist().getRepo().get(map)));
                 } else {
-                    CustomMap map = MapManager.getMapByName(mapArg.get());
-                    CustomGameMode gameMode = GameModeManager.getGameModeByNameOrAlias(gameModeArg.get());
+                    CustomMap map = CGM.getPlaylist().getMap(mapArg.get());
+                    CustomGameMode gameMode = CGM.getPlaylist().getGameMode(gameModeArg.get());
 
                     if (map == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapArg.get() + "\"!");
@@ -69,7 +63,7 @@ public class SetNextCommand implements CustomCommand {
                         return;
                     }
 
-                    if (MapManager.getRepo().get(map).contains(gameMode)) {
+                    if (CGM.getPlaylist().getRepo().get(map).contains(gameMode)) {
                         if (MatchManager.getNextMap() != null && MatchManager.getNextMap().getWorld() == null) {
                             CommandUtils.sendErrorMessage(player, "Please wait and try again in a moment!");
                             return;

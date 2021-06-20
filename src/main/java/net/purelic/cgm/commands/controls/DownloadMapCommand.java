@@ -3,8 +3,8 @@ package net.purelic.cgm.commands.controls;
 import cloud.commandframework.Command;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.analytics.MapDownloadedEvent;
-import net.purelic.cgm.core.managers.MapManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
 import net.purelic.commons.commands.parsers.CustomCommand;
@@ -32,7 +32,7 @@ public class DownloadMapCommand implements CustomCommand {
                 String playerArg = c.get("player");
                 String mapName = c.get("map");
 
-                if (MapManager.getMapByExactName(mapName) != null) {
+                if (CGM.getPlaylist().getMapByName(mapName) != null) {
                     CommandUtils.sendErrorMessage(player, "There's already a map downloaded with that name!");
                     return;
                 }
@@ -55,7 +55,7 @@ public class DownloadMapCommand implements CustomCommand {
 
                 MapYaml yaml = new MapYaml(MapUtils.getMapYaml(downloaded));
                 CustomMap map = new CustomMap(downloaded, yaml);
-                MapManager.addMap(map);
+                CGM.getPlaylist().loadMap(map);
 
                 CommandUtils.sendSuccessMessage(player, "Successfully downloaded \"" + downloaded + "\" by " + Fetcher.getNameOf(uuid) + "!");
                 new MapDownloadedEvent(player, map).track();

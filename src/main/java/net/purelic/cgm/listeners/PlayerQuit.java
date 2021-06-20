@@ -24,10 +24,6 @@ public class PlayerQuit implements Listener {
             player.getVehicle().eject();
         }
 
-        if (MatchState.isState(MatchState.VOTING)) {
-            CGM.getPlugin().getVoteManager().removeVote(player);
-        }
-
         if (MatchManager.getParticipant(player) != null || MatchTeam.getTeam(player) != MatchTeam.OBS) {
             Commons.callEvent(new MatchQuitEvent(player, true));
         } else {

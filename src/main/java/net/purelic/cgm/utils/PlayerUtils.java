@@ -123,8 +123,18 @@ public class PlayerUtils {
                 showPlayer(other, player);
             }
         } else if (bothPlaying) {
-            showPlayer(player, other);
-            showPlayer(other, player);
+            // Hide the other player if they're respawning, otherwise show them
+            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
+                hidePlayer(player, other);
+            } else {
+                showPlayer(player, other);
+            }
+
+            if (MatchManager.getParticipant(player).isState(ParticipantState.RESPAWNING))  {
+                hidePlayer(other, player);
+            } else {
+                showPlayer(other, player);
+            }
         } else if (isObserving(player) && !isObserving(other)) {
             hidePlayer(other, player);
 

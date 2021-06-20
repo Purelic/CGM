@@ -2,6 +2,8 @@ package net.purelic.cgm.commands.toggles;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
+import net.purelic.cgm.CGM;
+import net.purelic.cgm.voting.VotingManager;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -10,7 +12,11 @@ import org.bukkit.entity.Player;
 
 public class ToggleVotingCommand implements CustomCommand {
 
-    public static boolean voting = true;
+    private final VotingManager votingManager;
+
+    public ToggleVotingCommand() {
+        this.votingManager = CGM.getVotingManager();
+    }
 
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
@@ -19,8 +25,8 @@ public class ToggleVotingCommand implements CustomCommand {
             .senderType(Player.class)
             .permission(Permission.isMapDev(true))
             .handler(c -> {
-                voting = !voting;
-                CommandUtils.broadcastAlertMessage("Voting is now " + TogglesCommand.getStatus(voting));
+                this.votingManager.toggleEnabled();
+                CommandUtils.broadcastAlertMessage("Voting is now " + TogglesCommand.getStatus(this.votingManager.isEnabled()));
             });
     }
 

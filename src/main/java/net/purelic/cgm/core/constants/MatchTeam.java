@@ -10,7 +10,6 @@ import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.managers.TabManager;
-import net.purelic.cgm.core.managers.VoteManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.RoundEndEvent;
@@ -161,14 +160,15 @@ public enum MatchTeam {
                 }
             } else {
                 PlayerUtils.reset(player, GameMode.ADVENTURE);
-                if (CommandUtils.isOp(player)) PlayerJoin.getItemKit(player);
+                if (CommandUtils.isOp(player) || Commons.getProfile(player).isMapDev()) PlayerJoin.getItemKit(player);
             }
 
             CGM.getPlugin().getMatchManager().removeParticipant(player);
             SpawnUtils.teleportObsSpawn(player);
 
+            // TODO make this not necessary
             if (MatchState.isState(MatchState.VOTING)) {
-                VoteManager.getVotingItems(player);
+                CGM.getVotingManager().getVotingItems(player);
             }
         }
 //        else {

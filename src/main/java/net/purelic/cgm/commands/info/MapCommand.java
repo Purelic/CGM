@@ -9,7 +9,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.core.managers.MapManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
@@ -59,9 +58,8 @@ public class MapCommand implements CustomCommand {
                         }
                     }
 
-                    MapManager mapManager = CGM.getPlugin().getMapManager();
                     // TODO move /sn map logic into this method
-                    CustomMap map = mapManager.getMapByName(mapName);
+                    CustomMap map = CGM.getPlaylist().getMap(mapName);
 
                     if (map == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapName + "\"!");

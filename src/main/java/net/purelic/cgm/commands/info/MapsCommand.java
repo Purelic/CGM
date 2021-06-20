@@ -10,7 +10,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
-import net.purelic.cgm.core.managers.MapManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.utils.BookGUI;
 import net.purelic.commons.Commons;
@@ -70,7 +69,7 @@ public class MapsCommand implements CustomCommand {
                         Set<String> maps = MapUtils.listPublishedMaps(uuid); // these might be alphabetical already
 
                         for (String map : maps) {
-                            boolean canDownload = MapManager.getMapByExactName(map) == null;
+                            boolean canDownload = CGM.getPlaylist().getMapByName(map) == null;
 
                             entries.add(new ComponentBuilder(map.length() >= 20 ? map.substring(0, 15) + ".." : map)
                                 .color(canDownload ? ChatColor.BLACK : ChatColor.GRAY)
@@ -93,13 +92,12 @@ public class MapsCommand implements CustomCommand {
 
     public static void openMapsBook(Player player, String command) {
         List<BaseComponent[]> entries = new ArrayList<>();
-        Map<String, CustomMap> maps = MapManager.getMaps();
+        Map<String, CustomMap> maps = CGM.getPlaylist().getMaps();
 
-        for (Map.Entry<String, CustomMap> entry : maps.entrySet()) {
-            CustomMap map = entry.getValue();
+        for (CustomMap map : maps.values()) {
             String name = map.getName();
             String author = Fetcher.getNameOf(map.getYaml().getAuthors().get(0));
-            Set<CustomGameMode> gameModes = MapManager.getGameModes(map);
+            List<CustomGameMode> gameModes = CGM.getPlaylist().getGameModes(map);
             String cmd = command.replaceAll("%MAP%", name);
 
             entries.add(new ComponentBuilder(name.length() >= 20 ? name.substring(0, 15) + "..." : name)

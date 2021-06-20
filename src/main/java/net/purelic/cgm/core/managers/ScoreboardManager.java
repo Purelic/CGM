@@ -1,6 +1,7 @@
 package net.purelic.cgm.core.managers;
 
 import net.md_5.bungee.api.ChatColor;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
@@ -101,7 +102,7 @@ public class ScoreboardManager {
             setScore(
                 0,
                 (quit ? online - 1 : online) + "" + ChatColor.DARK_GRAY + "/" +
-                    ChatColor.GRAY + VoteManager.getMinPlayers() + " " + MatchTeam.OBS.getColor() + "Players");
+                    ChatColor.GRAY + CGM.getVotingManager().getSettings().getMinPlayers() + " " + MatchTeam.OBS.getColor() + "Players");
         }
     }
 

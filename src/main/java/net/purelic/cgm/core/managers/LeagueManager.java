@@ -135,7 +135,7 @@ public class LeagueManager {
     }
 
     public static void cycleRandom() {
-        Map<CustomMap, Set<CustomGameMode>> playlist = MapManager.getPlaylist();
+        Map<CustomMap, List<CustomGameMode>> playlist = CGM.getPlaylist().getPool();
         List<CustomMap> maps = new ArrayList<>(playlist.keySet());
         Collections.shuffle(maps);
 

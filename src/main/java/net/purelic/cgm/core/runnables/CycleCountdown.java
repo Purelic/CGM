@@ -6,6 +6,7 @@ import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.utils.PlayerUtils;
+import net.purelic.cgm.voting.VotingOption;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.VersionUtils;
@@ -18,7 +19,7 @@ public class CycleCountdown extends BukkitRunnable {
 
     private static final int RESTART_THRESHOLD = 25;
 
-    private static BukkitRunnable countdown;
+    private static CycleCountdown countdown;
     private static int seconds;
     private static CustomMap map;
     private static CustomGameMode gameMode;
@@ -26,6 +27,10 @@ public class CycleCountdown extends BukkitRunnable {
 
     public CycleCountdown() {
         this(10, MatchManager.getNextMap(), CGM.getPlugin().getMatchManager().getNextGameMode());
+    }
+
+    public CycleCountdown(int seconds, VotingOption option) {
+        this(seconds, option.getMap(), option.getGameMode());
     }
 
     public CycleCountdown(int seconds, CustomMap map, CustomGameMode gameMode) {
@@ -89,7 +94,13 @@ public class CycleCountdown extends BukkitRunnable {
         seconds--;
     }
 
-    public static BukkitRunnable getCountdown() {
+    public void cancel() {
+        PlayerUtils.setLevelAll(0);
+        ChatUtils.clearActionBarAll();
+        super.cancel();
+    }
+
+    public static CycleCountdown getCountdown() {
         return countdown;
     }
 

@@ -251,6 +251,10 @@ public class SoundUtils {
 
         JUMP_PAD_LAUNCH(new SoundBuilder(Sound.WITHER_SHOOT, 0.5F, 0.5F)),
 
+        VOTE(Sound.FIRE_IGNITE),
+
+        UNVOTE(new SoundBuilder(Sound.FIZZ, 2F)),
+
         // capturing hill
         // hill captured
         // hill lost
@@ -266,6 +270,10 @@ public class SoundUtils {
         ;
 
         private final List<SoundBuilder> sfx;
+
+        SFX(Sound sound) {
+            this(new SoundBuilder(sound));
+        }
 
         SFX(SoundBuilder... soundBuilders) {
             this.sfx = Arrays.asList(soundBuilders);

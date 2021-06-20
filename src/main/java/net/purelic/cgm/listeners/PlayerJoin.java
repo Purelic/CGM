@@ -1,21 +1,16 @@
 package net.purelic.cgm.listeners;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.commands.toggles.ToggleVotingCommand;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
-import net.purelic.cgm.core.managers.VoteManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.ItemCrafter;
 import net.purelic.commons.utils.ServerUtils;
-import net.purelic.commons.utils.TaskUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,7 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.github.paperspigot.Title;
 
 public class PlayerJoin implements Listener {
 
@@ -38,20 +32,6 @@ public class PlayerJoin implements Listener {
 
         CGM.getPlugin().getScoreboardManager().setScoreboard(player);
         MatchTeam.OBS.addPlayer(player, true);
-
-        if (MatchState.isState(MatchState.VOTING)) {
-            VoteManager voteManager = CGM.getPlugin().getVoteManager();
-
-            if (TaskUtils.isRunning(voteManager.getVotingCountdown())) {
-                VoteManager.getVotingItems(player);
-            }
-        } else if (MatchState.isState(MatchState.WAITING)
-                && Bukkit.getOnlinePlayers().size() == VoteManager.getMinPlayers()
-                && !VoteManager.isCanceled()
-                && !ServerUtils.isRanked()
-                && ToggleVotingCommand.voting) {
-            MatchState.setState(MatchState.VOTING);
-        }
 
         if (ServerUtils.isRanked()) {
             MatchTeam team = LeagueManager.getTeam(player);
