@@ -52,7 +52,7 @@ public class TeamUpgradePurchase implements Listener {
             public void run() {
                 TeamUpgrade.applyUpgrades(event.getPlayer());
             }
-        }.runTask(CGM.getPlugin());
+        }.runTask(CGM.get());
     }
 
     @EventHandler (priority = EventPriority.LOW)

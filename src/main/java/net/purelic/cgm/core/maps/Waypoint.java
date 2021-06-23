@@ -50,7 +50,7 @@ public class Waypoint {
 
         };
 
-        this.runnable.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.runnable.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
     }
 
     public Waypoint(Hill hill) {
@@ -100,7 +100,7 @@ public class Waypoint {
 
         };
 
-        this.runnable.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.runnable.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
 
         this.lunarWaypoint = new LunarWaypoint(label, location, color);
         this.lunarWaypoint.show();

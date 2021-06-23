@@ -51,7 +51,7 @@ public class CompassTrackingModule implements Listener {
 
         if (this.tracker == null) return;
 
-        this.tracker.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.tracker.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
     }
 
     @EventHandler

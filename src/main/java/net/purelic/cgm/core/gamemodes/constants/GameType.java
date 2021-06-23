@@ -14,7 +14,7 @@ public enum GameType {
     CAPTURE_THE_FLAG("Capture the Flag", "Capture flags and bring them back to your base!", HillType.CTF_GOAL),
     SURVIVAL_GAMES("Survival Games", "Find gear and eliminate the other players!", null),
     INFECTION("Infection", "Infect the survivors!", null),
-    // UHC("Ultra Hardcore", "Survive till the end!"),
+    UHC("Ultra Hardcore", "Survive till the end!", null),
     // SPEED_RUN("Speed Run", "Beat the game as fast as possible!"),
     ;
 

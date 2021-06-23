@@ -90,7 +90,7 @@ public class LootChestRefillModule implements Listener {
             ScoreboardManager.setScore(this.teams, "");
         }
 
-        this.refillTask.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 20L);
+        this.refillTask.runTaskTimerAsynchronously(CGM.get(), 0L, 20L);
     }
 
 }

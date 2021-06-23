@@ -22,7 +22,7 @@ public class TNTWaypointModule implements Listener {
         if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) return;
         if (TaskUtils.isRunning(this.runnable)) this.runnable.cancel();
         this.runnable = this.getRunnable();
-        this.runnable.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.runnable.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
     }
 
     @EventHandler

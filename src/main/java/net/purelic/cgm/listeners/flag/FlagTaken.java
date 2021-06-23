@@ -48,7 +48,7 @@ public class FlagTaken implements Listener {
                 if (inGoal) ChatUtils.sendActionBar(player, ChatColor.BOLD + "REMOVE HELMET TO DROP FLAG");
                 else ChatUtils.sendActionBar(player, "Carrying " + flag.getTitle().trim());
             }
-        }.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 20L);
+        }.runTaskTimerAsynchronously(CGM.get(), 0L, 20L);
     }
 
 }

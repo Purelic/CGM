@@ -3,8 +3,8 @@ package net.purelic.cgm.commands.controls;
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
-import net.purelic.cgm.core.managers.VoteManager;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.commons.commands.parsers.CustomCommand;
@@ -23,25 +23,31 @@ public class CancelCommand implements CustomCommand {
         return mgr.commandBuilder("cancel")
             .senderType(Player.class)
             .permission(Permission.isMapDev(true))
-            // .flag(CommandFlag.newBuilder("forced").withAliases("f"))
             .handler(c -> {
                 Player player = (Player) c.getSender();
-                // boolean forced = c.flags().isPresent("forced");
-                if (CycleCountdown.getCountdown() != null
-                    && Bukkit.getScheduler().isQueued(CycleCountdown.getCountdown().getTaskId())) {
+
+                if (MatchState.isState(MatchState.VOTING)) {
+                    if (this.isCycleCountdownRunning()) {
+                        CycleCountdown.getCountdown().cancel();
+                        CommandUtils.broadcastAlertMessage(
+                            Fetcher.getFancyName(player),
+                            new TextComponent(" canceled the match cycle")
+                        );
+                    } else {
+                        CommandUtils.broadcastAlertMessage(
+                            Fetcher.getFancyName(player),
+                            new TextComponent(" canceled the voting countdown")
+                        );
+                    }
+
+                    CGM.getVotingManager().setCanceled(true);
+                    MatchState.setState(MatchState.WAITING);
+                } else if (this.isCycleCountdownRunning()) {
                     CycleCountdown.getCountdown().cancel();
                     CommandUtils.broadcastAlertMessage(
                         Fetcher.getFancyName(player),
                         new TextComponent(" canceled the match cycle")
                     );
-                    PlayerUtils.setLevelAll(0);
-                } else if (MatchState.isState(MatchState.VOTING)) {
-                    MatchState.setState(MatchState.WAITING);
-                    CommandUtils.broadcastAlertMessage(
-                        Fetcher.getFancyName(player),
-                        new TextComponent(" canceled the voting countdown")
-                    );
-                    VoteManager.setCanceled(true);
                     PlayerUtils.setLevelAll(0);
                 } else if (MatchState.isState(MatchState.STARTING)) {
                     MatchState.setState(MatchState.PRE_GAME);
@@ -57,6 +63,11 @@ public class CancelCommand implements CustomCommand {
 
                 ChatUtils.broadcastActionBar("");
             });
+    }
+
+    private boolean isCycleCountdownRunning() {
+        return CycleCountdown.getCountdown() != null
+            && Bukkit.getScheduler().isQueued(CycleCountdown.getCountdown().getTaskId());
     }
 
 }

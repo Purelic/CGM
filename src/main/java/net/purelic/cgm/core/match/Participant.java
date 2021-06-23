@@ -202,7 +202,7 @@ public class Participant {
             }
         };
 
-        this.multiKillTimer.runTaskLater(CGM.getPlugin(), 200);
+        this.multiKillTimer.runTaskLater(CGM.get(), 200);
     }
 
     public int getMultiKill() {

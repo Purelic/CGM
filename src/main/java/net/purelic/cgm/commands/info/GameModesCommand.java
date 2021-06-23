@@ -12,7 +12,6 @@ import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.managers.GameModeManager;
 import net.purelic.cgm.utils.BookGUI;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.commands.parsers.CustomCommand;
@@ -76,8 +75,8 @@ public class GameModesCommand implements CustomCommand {
                             if (!gameMode.isPublic()) continue;
 
                             String name = gameMode.getName();
-                            CustomGameMode gameModeByName = GameModeManager.getGameModeByExactName(name);
-                            CustomGameMode gameModeByAlias = GameModeManager.getGameModeByAlias(gameMode.getAlias());
+                            CustomGameMode gameModeByName = CGM.getPlaylist().getGameModeByName(name);
+                            CustomGameMode gameModeByAlias = CGM.getPlaylist().getGameModeByAlias(gameMode.getAlias());
 
                             boolean canDownload = gameModeByName == null && gameModeByAlias == null;
 
@@ -96,12 +95,12 @@ public class GameModesCommand implements CustomCommand {
 
                         BookGUI.openPaginatedBook(player, "Game modes by " + playerName + ":", entries);
                     }
-                }.runTaskAsynchronously(CGM.getPlugin());
+                }.runTaskAsynchronously(CGM.get());
             });
     }
 
     public static void openGameModesBook(Player player, String command) {
-        Collection<CustomGameMode> gameModes = GameModeManager.getGameModes();
+        Collection<CustomGameMode> gameModes = CGM.getPlaylist().getGameModes();
         GameModesCommand.openGameModesBook(player, command, new ArrayList<>(gameModes));
     }
 

@@ -6,8 +6,6 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.analytics.GameModeDownloadedEvent;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
-import net.purelic.cgm.core.managers.GameModeManager;
-import net.purelic.cgm.core.managers.MapManager;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -65,8 +63,8 @@ public class DownloadGameModeCommand implements CustomCommand {
                             return;
                         }
 
-                        CustomGameMode gameModeByName = GameModeManager.getGameModeByExactName(gameMode.getName());
-                        CustomGameMode gameModeByAlias = GameModeManager.getGameModeByAlias(gameMode.getAlias());
+                        CustomGameMode gameModeByName = CGM.getPlaylist().getGameModeByName(gameMode.getName());
+                        CustomGameMode gameModeByAlias = CGM.getPlaylist().getGameModeByAlias(gameMode.getAlias());
 
                         if (gameModeByName != null) {
                             CommandUtils.sendErrorMessage(player, "There's already a game mode downloaded with that name!");
@@ -78,13 +76,12 @@ public class DownloadGameModeCommand implements CustomCommand {
                             return;
                         }
 
-                        GameModeManager.loadGameMode(gameMode);
-                        MapManager.addGameMode(gameMode);
+                        CGM.getPlaylist().loadGameMode(gameMode);
                         incrementGameModeDownloads(data.getId());
                         CommandUtils.sendSuccessMessage(player, "Successfully downloaded \"" + gameMode.getName() + "\" by " + Fetcher.getNameOf(uuid) + "!");
                         new GameModeDownloadedEvent(player, gameMode).track();
                     }
-                }.runTaskAsynchronously(CGM.getPlugin());
+                }.runTaskAsynchronously(CGM.get());
             });
     }
 

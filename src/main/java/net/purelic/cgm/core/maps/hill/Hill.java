@@ -85,7 +85,7 @@ public class Hill implements Listener {
         this.material = Material.valueOf((String) map.getOrDefault("material", "WOOL"));
         this.type = HillType.valueOf((String) map.getOrDefault("type", "KOTH_HILL"));
         this.reset();
-        CGM.getPlugin().registerListener(this);
+        CGM.get().registerListener(this);
     }
 
     public int[] getCoords() {
@@ -195,7 +195,7 @@ public class Hill implements Listener {
                     public void run() {
                         waypoint = new Waypoint(hill);
                     }
-                }.runTask(CGM.getPlugin());
+                }.runTask(CGM.get());
                //  this.waypoint = new Waypoint(this);
             } else {
                 this.waypoint.update(chatColor, this.getTitle());
@@ -225,7 +225,7 @@ public class Hill implements Listener {
             public void run() {
                 block.setData(color.getWoolData());
             }
-        }.runTask(CGM.getPlugin());
+        }.runTask(CGM.get());
     }
 
     public boolean isInside(Block block, float percent) {
@@ -308,7 +308,7 @@ public class Hill implements Listener {
             }
         };
 
-        this.checker.runTaskTimerAsynchronously(CGM.getPlugin(), 0, 2);
+        this.checker.runTaskTimerAsynchronously(CGM.get(), 0, 2);
     }
 
     private void addParticipant(Participant participant) {
@@ -534,7 +534,7 @@ public class Hill implements Listener {
 
         };
 
-        this.capturing.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.capturing.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
     }
 
     private String getProgressBar() {

@@ -437,7 +437,7 @@ public class BlockProtectionModule implements Listener {
                     }
                 }
             }
-        }.runTask(CGM.getPlugin());
+        }.runTask(CGM.get());
     }
 
     @EventHandler

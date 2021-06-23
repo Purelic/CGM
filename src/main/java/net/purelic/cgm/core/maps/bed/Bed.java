@@ -46,7 +46,7 @@ public class Bed implements Listener, Objective {
         this.location = null;
 
         // register bed listeners
-        CGM.getPlugin().registerListener(this);
+        CGM.get().registerListener(this);
     }
 
     @Override

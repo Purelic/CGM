@@ -4,7 +4,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.commands.toggles.ToggleVotingCommand;
 import net.purelic.cgm.core.constants.JoinState;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -20,6 +19,7 @@ import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.listeners.match.MatchStart;
 import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
 import net.purelic.cgm.utils.MatchUtils;
+import net.purelic.cgm.voting.VotingOption;
 import net.purelic.commons.Commons;
 import net.purelic.commons.runnables.MapLoader;
 import net.purelic.commons.utils.*;
@@ -64,6 +64,10 @@ public class MatchManager {
         return nextGameMode;
     }
 
+    public static void setNext(VotingOption option) {
+        setNext(option.getMap(), option.getGameMode());
+    }
+
     public static void setNext(CustomMap map, CustomGameMode gameMode) {
         CommandUtils.broadcastAlertMessage(
             new TextComponent("The next match has been set to "),
@@ -87,7 +91,7 @@ public class MatchManager {
 
     private static void setNextMap(CustomMap map) {
         nextMap = map;
-        new MapLoader(map.getName(), UUID.randomUUID().toString()).runTaskAsynchronously(CGM.getPlugin());
+        new MapLoader(map.getName(), UUID.randomUUID().toString()).runTaskAsynchronously(CGM.get());
     }
 
     private static void setNextGameMode(CustomGameMode gameMode) {
@@ -109,12 +113,11 @@ public class MatchManager {
         if (ServerUtils.isPrivate() || ServerUtils.isRanked()) JoinState.setState(JoinState.EVERYONE);
         else JoinState.setState(JoinState.LOCKED);
 
-        VoteManager.setCanceled(false);
+        CGM.getVotingManager().setCanceled(false);
 
         if (nextMap == null) {
-            if (Bukkit.getOnlinePlayers().size() >= VoteManager.getMinPlayers() && !ServerUtils.isRanked() && ToggleVotingCommand.voting)
-                MatchState.setState(MatchState.VOTING);
-            else MatchState.setState(MatchState.WAITING);
+            MatchState.setState(MatchState.WAITING);
+            if (CGM.getVotingManager().shouldStartVoting()) MatchState.setState(MatchState.VOTING);
             currentMap = nextMap;
             if (ServerUtils.isRanked()) LeagueManager.reset();
             else DatabaseUtils.updateStatus(ServerStatus.STARTING, null, null);
@@ -124,9 +127,7 @@ public class MatchManager {
             ScoreboardManager.setDisplayName(ChatColor.AQUA + "play.purelic.net");
             ScoreboardManager.resetScores(0);
 
-            // Set the most recently played map in the vote manager
-            // so we can skip it in the voting options and avoid replaying the same map.
-            VoteManager.setRecentMap(nextMap);
+            CGM.getVotingManager().setLastPlayed(nextMap, nextGameMode);
 
             nextGameMode.loadSettings();
             round = 0;
@@ -147,7 +148,7 @@ public class MatchManager {
                     DatabaseUtils.updateStatus(ServerStatus.STARTED, mapName, gmName);
                     MatchStart.updateParties();
                 }
-            }.runTaskAsynchronously(CGM.getPlugin());
+            }.runTaskAsynchronously(CGM.get());
         }
 
         currentGameMode = nextGameMode;
@@ -231,7 +232,7 @@ public class MatchManager {
     }
 
     public boolean allEliminated() {
-        return EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ?
+        return MatchUtils.isElimination() && EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ?
             (this.getParticipantAlive() == 0 || this.getLastParticipantAlive() != null) :
             (this.getTeamsAlive() == 0 || this.getLastTeamAlive() != null);
     }

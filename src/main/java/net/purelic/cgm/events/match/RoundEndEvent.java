@@ -24,7 +24,7 @@ public class RoundEndEvent extends Event {
     }
 
     public RoundEndEvent() {
-        MatchManager matchManager = CGM.getPlugin().getMatchManager();
+        MatchManager matchManager = CGM.get().getMatchManager();
         if (matchManager.allEliminated()) {
             if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
                 Participant participant = matchManager.getLastParticipantAlive();

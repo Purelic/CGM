@@ -70,7 +70,7 @@ public class RespawnCountdown extends BukkitRunnable {
                 public void run() {
                     player.setAllowFlight(true);
                 }
-            }.runTask(CGM.getPlugin());
+            }.runTask(CGM.get());
 
             if (respawnOnDrop) FlagUtils.sendRespawnOnDropMessage(this.player);
 

@@ -36,7 +36,7 @@ public class ServerListPing implements Listener {
         String motd = this.header + ChatColor.GRAY + " » " + MatchState.getState().toString() + ChatColor.GRAY + " « ";
 
         if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
-            MatchManager matchManager = CGM.getPlugin().getMatchManager();
+            MatchManager matchManager = CGM.get().getMatchManager();
             motd += matchManager.getCurrentGameMode().getColoredName() + ChatColor.WHITE + " on " + matchManager.getCurrentMap().getColoredName();
         }
 

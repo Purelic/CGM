@@ -36,7 +36,7 @@ public class GameModeCommand implements CustomCommand {
                     Player player = (Player) c.getSender();
                     String gmArg = c.get("game mode");
 
-                    CustomGameMode gameMode = CGM.getPlugin().getGameModeManager().getGameModeByNameOrAlias(gmArg);
+                    CustomGameMode gameMode = CGM.getPlaylist().getGameMode(gmArg);
 
                     if (gameMode == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find game mode \"" + gmArg + "\"!");
@@ -50,7 +50,7 @@ public class GameModeCommand implements CustomCommand {
                             .bold(true)
                             .create()).newLine().newLine()
                         .add("Name: ")
-                        .add(gameMode.getName()).newLine().newLine()
+                        .add(gameMode.getName()).newLine()
                         .add("Alias: ")
                         .add(gameMode.getAlias()).newLine().newLine();
 

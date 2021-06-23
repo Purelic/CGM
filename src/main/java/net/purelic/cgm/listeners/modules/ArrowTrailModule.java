@@ -30,7 +30,7 @@ public class ArrowTrailModule implements Listener {
         if (proj instanceof Arrow) ((Arrow) proj).setCritical(false);
 
         Player shooter = (Player) projSource;
-        new ProjectileTrail(shooter, proj).runTaskTimerAsynchronously(CGM.getPlugin(), 0, 1);
+        new ProjectileTrail(shooter, proj).runTaskTimerAsynchronously(CGM.get(), 0, 1);
     }
 
     private static class ProjectileTrail extends BukkitRunnable {

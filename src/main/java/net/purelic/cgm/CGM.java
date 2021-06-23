@@ -16,8 +16,10 @@ import net.purelic.cgm.commands.preferences.ColorCommand;
 import net.purelic.cgm.commands.preferences.HotbarCommand;
 import net.purelic.cgm.commands.preferences.SoundCommand;
 import net.purelic.cgm.commands.toggles.*;
-import net.purelic.cgm.core.managers.*;
-import net.purelic.cgm.core.runnables.PlaylistDownloader;
+import net.purelic.cgm.core.managers.LeagueManager;
+import net.purelic.cgm.core.managers.LootManager;
+import net.purelic.cgm.core.managers.MatchManager;
+import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.listeners.*;
 import net.purelic.cgm.listeners.bed.BedBreak;
 import net.purelic.cgm.listeners.flag.*;
@@ -29,32 +31,33 @@ import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
 import net.purelic.cgm.listeners.participant.*;
 import net.purelic.cgm.listeners.shop.ShopItemPurchase;
 import net.purelic.cgm.listeners.shop.TeamUpgradePurchase;
+import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.voting.VotingManager;
+import net.purelic.cgm.voting.VotingModule;
+import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
+import net.purelic.commons.runnables.MapLoader;
 import net.purelic.commons.utils.DatabaseUtils;
 import net.purelic.commons.utils.Fetcher;
 import net.purelic.commons.utils.ServerUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 public class CGM extends JavaPlugin {
 
     private static CGM plugin;
     private static boolean ready;
-    private static boolean isPrivate;
-    private static UUID owner;
-    private static String serverName;
 
-    private GameModeManager gameModeManager;
-    private MapManager mapManager;
+    private Playlist playlist;
+
     private MatchManager matchManager;
     private ScoreboardManager scoreboardManager;
-    private VoteManager voteManager;
+    private VotingManager votingManager;
 
     private PaperCommandManager<CommandSender> commandManager;
 
@@ -62,16 +65,26 @@ public class CGM extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         ready = false;
+
+        // download lobby map
+        TaskUtils.runAsync(new MapLoader("Lobby"));
+
+        // download playlist
+        this.playlist = new Playlist();
+
+        // register managers, listeners, and commands
         this.registerManagers();
+        this.registerModules();
         this.registerListeners();
         this.registerCommands();
+
+        // load server/database info
         DatabaseUtils.loadServerDoc();
-        serverName = ServerUtils.getName();
-        if (serverName.contains("Unknown")) serverName = "PuRelic Network";
-        new PlaylistDownloader(ServerUtils.getPlaylist()).runTaskAsynchronously(this);
+
+        this.setReady();
     }
 
-    public static CGM getPlugin() {
+    public static CGM get() {
         return plugin;
     }
 
@@ -79,29 +92,23 @@ public class CGM extends JavaPlugin {
         return ready;
     }
 
-    public static void setReady() {
+    private void setReady() {
         ready = true;
         DatabaseUtils.setServerOnline();
-        isPrivate = ServerUtils.isPrivate();
         if (ServerUtils.isRanked()) {
             LeagueManager.loadListenerRegistration();
         }
         System.out.println("The server is now ready!");
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                MapManager.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf));
-            }
-        }.runTaskAsynchronously(CGM.getPlugin());
+        TaskUtils.runAsync(() -> playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
     }
 
-    public GameModeManager getGameModeManager() {
-        return this.gameModeManager;
+    public static Playlist getPlaylist() {
+        return plugin.playlist;
     }
 
-    public MapManager getMapManager() {
-        return this.mapManager;
+    public static VotingManager getVotingManager() {
+        return plugin.votingManager;
     }
 
     public MatchManager getMatchManager() {
@@ -112,17 +119,15 @@ public class CGM extends JavaPlugin {
         return this.scoreboardManager;
     }
 
-    public VoteManager getVoteManager() {
-        return this.voteManager;
-    }
-
     private void registerManagers() {
-        this.gameModeManager = new GameModeManager();
-        this.mapManager = new MapManager();
         this.matchManager = new MatchManager();
         this.scoreboardManager = new ScoreboardManager();
-        this.voteManager = new VoteManager(this);
+        this.votingManager = new VotingManager(this.playlist);
         LootManager.setLootItems();
+    }
+
+    private void registerModules() {
+        Commons.registerListener(new VotingModule(this.votingManager));
     }
 
     private void registerListeners() {
@@ -148,7 +153,6 @@ public class CGM extends JavaPlugin {
         this.registerListener(new MatchQuit());
         this.registerListener(new MatchStart());
         this.registerListener(new MatchStateChange());
-        this.registerListener(new MatchVote());
         this.registerListener(new RoundEnd());
         this.registerListener(new RoundStart());
 
@@ -301,7 +305,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new ToggleGameModeCommand());
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());
-        this.registerCommand(new ToggleVotingCommand());
+        this.registerCommand(new ToggleVotingCommand(this.votingManager));
     }
 
     public void registerCommand(CustomCommand customCommand) {

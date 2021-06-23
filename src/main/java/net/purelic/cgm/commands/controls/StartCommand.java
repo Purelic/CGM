@@ -6,11 +6,11 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.match.SpectateCommand;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.StartCountdown;
-import net.purelic.cgm.core.runnables.VotingCountdown;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -33,7 +33,7 @@ public class StartCommand implements CustomCommand {
             .handler(c -> {
                 Player player = (Player) c.getSender();
                 Optional<Integer> secondsArg = c.getOptional("seconds");
-                int seconds = secondsArg.map(integer -> Math.max(0, integer)).orElse(15);
+                int seconds = secondsArg.map(integer -> Math.max(0, integer)).orElse(20);
 
                 if (TaskUtils.isRunning(CycleCountdown.getCountdown())) {
                     CommandUtils.sendErrorMessage(player, "You can't start a countdown while a map is cycling!");
@@ -58,8 +58,8 @@ public class StartCommand implements CustomCommand {
                         new ComponentBuilder("(" + seconds + " second" + (seconds == 1 ? "" : "s") + ")")
                             .color(ChatColor.GRAY).create()[0]
                     );
-                } else if (MatchState.isState(MatchState.VOTING) && TaskUtils.isRunning(VotingCountdown.getCountdown())) {
-                    VotingCountdown.setCountdown(seconds);
+                } else if (MatchState.isState(MatchState.VOTING) && TaskUtils.isRunning(CGM.getVotingManager().getCountdown())) {
+                    CGM.getVotingManager().getCountdown().setSeconds(seconds);
                     CommandUtils.broadcastAlertMessage(
                         Fetcher.getFancyName(player),
                         new TextComponent(" updated the voting countdown "),

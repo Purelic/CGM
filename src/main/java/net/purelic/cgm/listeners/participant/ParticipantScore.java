@@ -19,7 +19,7 @@ public class ParticipantScore implements Listener {
     private final ScoreboardManager scoreboardManager;
 
     public ParticipantScore() {
-        this.scoreboardManager = CGM.getPlugin().getScoreboardManager();
+        this.scoreboardManager = CGM.get().getScoreboardManager();
     }
 
     @EventHandler
