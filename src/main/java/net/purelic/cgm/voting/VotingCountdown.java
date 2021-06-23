@@ -20,9 +20,9 @@ public class VotingCountdown extends BukkitRunnable {
     private int seconds;
     private final boolean forced;
 
-    public VotingCountdown(VotingSettings settings, int seconds, boolean forced) {
-        this.votingManager = CGM.getVotingManager();
-        this.settings = settings;
+    public VotingCountdown(VotingManager votingManager, int seconds, boolean forced) {
+        this.votingManager = votingManager;
+        this.settings = votingManager.getSettings();
         this.seconds = seconds;
         this.forced = forced;
     }

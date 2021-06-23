@@ -148,7 +148,7 @@ public class VotingManager {
 
         // start the voting countdown
         seconds = forced ? seconds : this.settings.getVotingDuration();
-        this.countdown = new VotingCountdown(this.settings, seconds, forced);
+        this.countdown = new VotingCountdown(this, seconds, forced);
         TaskUtils.runTimerAsync(this.countdown);
 
         // update the scoreboard sidebar
