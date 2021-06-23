@@ -14,8 +14,8 @@ public class ToggleVotingCommand implements CustomCommand {
 
     private final VotingManager votingManager;
 
-    public ToggleVotingCommand() {
-        this.votingManager = CGM.getVotingManager();
+    public ToggleVotingCommand(VotingManager votingManager) {
+        this.votingManager = votingManager;
     }
 
     @Override

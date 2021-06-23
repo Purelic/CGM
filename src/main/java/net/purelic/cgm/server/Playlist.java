@@ -9,6 +9,7 @@ import net.purelic.commons.Commons;
 import net.purelic.commons.utils.*;
 import shaded.com.google.cloud.firestore.QueryDocumentSnapshot;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("unchecked")
@@ -75,6 +76,7 @@ public class Playlist {
         return gameModeName == null ? null : getGameModeByName(gameModeName);
     }
 
+    @Nullable
     public CustomGameMode getGameMode(String search) {
         CustomGameMode exact = null;
         CustomGameMode guess = null;
@@ -98,6 +100,7 @@ public class Playlist {
         return this.maps.get(exactName.toLowerCase());
     }
 
+    @Nullable
     public CustomMap getMap(String search) {
         CustomMap map = null;
 

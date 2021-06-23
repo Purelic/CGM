@@ -305,7 +305,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new ToggleGameModeCommand());
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());
-        this.registerCommand(new ToggleVotingCommand());
+        this.registerCommand(new ToggleVotingCommand(this.votingManager));
     }
 
     public void registerCommand(CustomCommand customCommand) {
