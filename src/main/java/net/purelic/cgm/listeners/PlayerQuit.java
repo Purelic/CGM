@@ -1,7 +1,6 @@
 package net.purelic.cgm.listeners;
 
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
@@ -18,7 +17,7 @@ public class PlayerQuit implements Listener {
     @EventHandler (priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        CGM.getPlugin().getScoreboardManager().removePlayer(player);
+        CGM.get().getScoreboardManager().removePlayer(player);
 
         if (player.getVehicle() != null) {
             player.getVehicle().eject();

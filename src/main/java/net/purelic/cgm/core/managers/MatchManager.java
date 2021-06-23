@@ -4,7 +4,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.commands.toggles.ToggleVotingCommand;
 import net.purelic.cgm.core.constants.JoinState;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -92,7 +91,7 @@ public class MatchManager {
 
     private static void setNextMap(CustomMap map) {
         nextMap = map;
-        new MapLoader(map.getName(), UUID.randomUUID().toString()).runTaskAsynchronously(CGM.getPlugin());
+        new MapLoader(map.getName(), UUID.randomUUID().toString()).runTaskAsynchronously(CGM.get());
     }
 
     private static void setNextGameMode(CustomGameMode gameMode) {
@@ -149,7 +148,7 @@ public class MatchManager {
                     DatabaseUtils.updateStatus(ServerStatus.STARTED, mapName, gmName);
                     MatchStart.updateParties();
                 }
-            }.runTaskAsynchronously(CGM.getPlugin());
+            }.runTaskAsynchronously(CGM.get());
         }
 
         currentGameMode = nextGameMode;

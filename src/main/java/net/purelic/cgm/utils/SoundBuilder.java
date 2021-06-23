@@ -97,7 +97,7 @@ public class SoundBuilder {
                 sound.playSound(player);
                 play(player, index + 1);
             }
-        }.runTaskLater(CGM.getPlugin(), sound.getDelay());
+        }.runTaskLater(CGM.get(), sound.getDelay());
     }
 
     private void playAll(int index, Location location) {
@@ -112,7 +112,7 @@ public class SoundBuilder {
                 else sound.playSoundAll(location);
                 playAll(index + 1, location);
             }
-        }.runTaskLater(CGM.getPlugin(), sound.getDelay());
+        }.runTaskLater(CGM.get(), sound.getDelay());
     }
 
     public enum Key {

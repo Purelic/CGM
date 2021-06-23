@@ -1,7 +1,6 @@
 package net.purelic.cgm.listeners.participant;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -28,7 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.github.paperspigot.Title;
 
 public class ParticipantRespawn implements Listener {
 
@@ -99,7 +97,7 @@ public class ParticipantRespawn implements Listener {
                 player.setSneaking(false);
                 player.setSprinting(false);
             }
-        }.runTask(CGM.getPlugin());
+        }.runTask(CGM.get());
     }
 
 }

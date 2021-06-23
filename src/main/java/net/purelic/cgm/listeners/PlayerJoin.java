@@ -30,7 +30,7 @@ public class PlayerJoin implements Listener {
 //            CGM.setOwner(player);
 //        }
 
-        CGM.getPlugin().getScoreboardManager().setScoreboard(player);
+        CGM.get().getScoreboardManager().setScoreboard(player);
         MatchTeam.OBS.addPlayer(player, true);
 
         if (ServerUtils.isRanked()) {
@@ -74,7 +74,7 @@ public class PlayerJoin implements Listener {
                 player.setGameMode(GameMode.ADVENTURE);
                 player.setAllowFlight(!MatchState.isState(MatchState.WAITING, MatchState.VOTING));
             }
-        }.runTaskLater(CGM.getPlugin(), 1L);
+        }.runTaskLater(CGM.get(), 1L);
     }
 
     public static void getItemKit(Player player) {

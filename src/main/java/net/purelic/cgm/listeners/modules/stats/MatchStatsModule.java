@@ -42,7 +42,7 @@ public class MatchStatsModule implements Listener {
                 if (!ServerUtils.isPrivate()) current.save();
                 current = null;
             }
-        }.runTaskAsynchronously(CGM.getPlugin());
+        }.runTaskAsynchronously(CGM.get());
     }
 
     public static void setCurrent(MatchStats matchStats) {

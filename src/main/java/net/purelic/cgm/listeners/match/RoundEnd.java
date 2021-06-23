@@ -2,7 +2,6 @@ package net.purelic.cgm.listeners.match;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -23,14 +22,13 @@ import net.purelic.commons.utils.NickUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.github.paperspigot.Title;
 
 public class RoundEnd implements Listener {
 
     private final MatchManager matchManager;
 
     public RoundEnd() {
-        this.matchManager = CGM.getPlugin().getMatchManager();
+        this.matchManager = CGM.get().getMatchManager();
     }
 
     @EventHandler
@@ -58,7 +56,7 @@ public class RoundEnd implements Listener {
             || (NumberSetting.ROUNDS.value() <= MatchManager.getRound())) {
             MatchState.setState(MatchState.ENDED);
         } else {
-            new RoundCountdown().runTaskTimer(CGM.getPlugin(), 0, 20);
+            new RoundCountdown().runTaskTimer(CGM.get(), 0, 20);
 
             Bukkit.getOnlinePlayers().forEach(player -> {
                 MatchTeam team = MatchTeam.getTeam(player);

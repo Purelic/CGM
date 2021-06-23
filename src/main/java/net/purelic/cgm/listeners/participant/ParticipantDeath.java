@@ -41,7 +41,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.github.paperspigot.Title;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -327,7 +326,7 @@ public class ParticipantDeath implements Listener {
             );
         }
 
-        new RespawnCountdown(seconds, participant).runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 1L);
+        new RespawnCountdown(seconds, participant).runTaskTimerAsynchronously(CGM.get(), 0L, 1L);
     }
 
 }

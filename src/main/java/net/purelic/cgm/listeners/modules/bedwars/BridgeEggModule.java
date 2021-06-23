@@ -122,7 +122,7 @@ public class BridgeEggModule implements Listener {
                 BlockProtectionModule.addBreakableBlock(block);
             }
 
-        }.runTaskTimer(CGM.getPlugin(), 0L, 1L);
+        }.runTaskTimer(CGM.get(), 0L, 1L);
     }
 
 }

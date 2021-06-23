@@ -13,7 +13,7 @@ import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
-class VotingCountdown extends BukkitRunnable {
+public class VotingCountdown extends BukkitRunnable {
 
     private final VotingManager votingManager;
     private final VotingSettings settings;

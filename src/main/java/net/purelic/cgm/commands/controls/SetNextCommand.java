@@ -23,7 +23,7 @@ public class SetNextCommand implements CustomCommand {
     private final MatchManager matchManager;
 
     public SetNextCommand() {
-        this.matchManager = CGM.getPlugin().getMatchManager();
+        this.matchManager = CGM.get().getMatchManager();
     }
 
     @Override

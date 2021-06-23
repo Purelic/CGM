@@ -81,7 +81,7 @@ public class DownloadGameModeCommand implements CustomCommand {
                         CommandUtils.sendSuccessMessage(player, "Successfully downloaded \"" + gameMode.getName() + "\" by " + Fetcher.getNameOf(uuid) + "!");
                         new GameModeDownloadedEvent(player, gameMode).track();
                     }
-                }.runTaskAsynchronously(CGM.getPlugin());
+                }.runTaskAsynchronously(CGM.get());
             });
     }
 

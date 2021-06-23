@@ -45,7 +45,7 @@ public class MatchQuit implements Listener {
             Commons.callEvent(new MatchTeamEliminateEvent(team));
         }
 
-        CGM.getPlugin().getMatchManager().removeParticipant(player);
+        CGM.get().getMatchManager().removeParticipant(player);
 
         if (!event.isDisconnected()) {
             CommandUtils.sendSuccessMessage(player, "You joined the " + MatchTeam.OBS.getColoredName() + ChatColor.GREEN + "!");
@@ -56,7 +56,7 @@ public class MatchQuit implements Listener {
 
         ScoreboardManager.updateSoloBoard();
 
-        if (MatchState.isState(MatchState.STARTED) && CGM.getPlugin().getMatchManager().allEliminated()) {
+        if (MatchState.isState(MatchState.STARTED) && CGM.get().getMatchManager().allEliminated()) {
             Commons.callEvent(new RoundEndEvent());
         }
     }

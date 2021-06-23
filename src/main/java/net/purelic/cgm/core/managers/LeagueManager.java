@@ -159,7 +159,7 @@ public class LeagueManager {
                 MatchStatsModule.setCurrent(new MatchStats());
                 updateTeams();
             }
-        }.runTaskLater(CGM.getPlugin(), 20L);
+        }.runTaskLater(CGM.get(), 20L);
     }
 
     public static double getEloWeight(MatchTeam team, boolean win) {

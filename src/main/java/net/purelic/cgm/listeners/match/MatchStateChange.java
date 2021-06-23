@@ -20,8 +20,8 @@ public class MatchStateChange implements Listener {
     private final MatchManager matchManager;
 
     public MatchStateChange() {
-        this.scoreboardManager = CGM.getPlugin().getScoreboardManager();
-        this.matchManager = CGM.getPlugin().getMatchManager();
+        this.scoreboardManager = CGM.get().getScoreboardManager();
+        this.matchManager = CGM.get().getMatchManager();
     }
 
     @EventHandler
@@ -41,7 +41,7 @@ public class MatchStateChange implements Listener {
             CGM.getVotingManager().startVoting(seconds, forced);
         } else if (newState == MatchState.STARTING) {
             if (ToggleAutoStartCommand.autostart || forced) {
-                new StartCountdown(ServerUtils.isRanked() ? 60 : seconds, forced).runTaskTimer(CGM.getPlugin(), 0, 20);
+                new StartCountdown(ServerUtils.isRanked() ? 60 : seconds, forced).runTaskTimer(CGM.get(), 0, 20);
             } else {
                 MatchState.setState(MatchState.PRE_GAME);
             }

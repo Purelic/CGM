@@ -45,20 +45,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 public class CGM extends JavaPlugin {
 
-    // TODO if you cancel the match cycle after voting you should be able to restart voting
-
     private static CGM plugin;
     private static boolean ready;
-    private static boolean isPrivate;
-    private static UUID owner;
-    private static String serverName;
 
     private Playlist playlist;
 
@@ -87,13 +80,11 @@ public class CGM extends JavaPlugin {
 
         // load server/database info
         DatabaseUtils.loadServerDoc();
-        serverName = ServerUtils.getName();
-        if (serverName.contains("Unknown")) serverName = "PuRelic Network";
 
         this.setReady();
     }
 
-    public static CGM getPlugin() {
+    public static CGM get() {
         return plugin;
     }
 
@@ -104,7 +95,6 @@ public class CGM extends JavaPlugin {
     private void setReady() {
         ready = true;
         DatabaseUtils.setServerOnline();
-        isPrivate = ServerUtils.isPrivate();
         if (ServerUtils.isRanked()) {
             LeagueManager.loadListenerRegistration();
         }

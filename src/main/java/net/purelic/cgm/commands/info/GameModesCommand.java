@@ -95,7 +95,7 @@ public class GameModesCommand implements CustomCommand {
 
                         BookGUI.openPaginatedBook(player, "Game modes by " + playerName + ":", entries);
                     }
-                }.runTaskAsynchronously(CGM.getPlugin());
+                }.runTaskAsynchronously(CGM.get());
             });
     }
 

@@ -1,7 +1,6 @@
 package net.purelic.cgm.listeners.participant;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.toggles.ToggleSpectatorsCommand;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -17,7 +16,6 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.github.paperspigot.Title;
 
 public class ParticipantEliminate implements Listener {
 
@@ -45,7 +43,7 @@ public class ParticipantEliminate implements Listener {
             Commons.callEvent(new MatchTeamEliminateEvent(team));
         }
 
-        if (CGM.getPlugin().getMatchManager().allEliminated()) {
+        if (CGM.get().getMatchManager().allEliminated()) {
             Commons.callEvent(new RoundEndEvent());
         } else {
             if (!event.isCombatLog()) {

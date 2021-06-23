@@ -67,7 +67,7 @@ public class Spawner implements Listener {
         this.destructive = (boolean) map.getOrDefault("destructive", true);
         this.color = this.getColor();
         this.totalSpawned = 0;
-        CGM.getPlugin().registerListener(this);
+        CGM.get().registerListener(this);
     }
 
     private int[] getCoords(String[] args) {
@@ -161,7 +161,7 @@ public class Spawner implements Listener {
         };
 
         this.countdown = this.delay;
-        this.runnable.runTaskTimer(CGM.getPlugin(), 0, 20);
+        this.runnable.runTaskTimer(CGM.get(), 0, 20);
     }
 
     private void spawnItem() {

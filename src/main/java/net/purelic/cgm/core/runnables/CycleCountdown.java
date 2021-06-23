@@ -13,7 +13,6 @@ import net.purelic.commons.utils.VersionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.github.paperspigot.Title;
 
 public class CycleCountdown extends BukkitRunnable {
 
@@ -26,7 +25,7 @@ public class CycleCountdown extends BukkitRunnable {
     private static boolean restarting;
 
     public CycleCountdown() {
-        this(10, MatchManager.getNextMap(), CGM.getPlugin().getMatchManager().getNextGameMode());
+        this(10, MatchManager.getNextMap(), CGM.get().getMatchManager().getNextGameMode());
     }
 
     public CycleCountdown(int seconds, VotingOption option) {

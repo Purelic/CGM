@@ -1,7 +1,6 @@
 package net.purelic.cgm.listeners.match;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -26,14 +25,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.github.paperspigot.Title;
 
 public class RoundStart implements Listener {
 
     private final MatchManager matchManager;
 
     public RoundStart() {
-        this.matchManager = CGM.getPlugin().getMatchManager();
+        this.matchManager = CGM.get().getMatchManager();
     }
 
     @EventHandler
@@ -44,7 +42,7 @@ public class RoundStart implements Listener {
             MatchState.setState(MatchState.ENDED);
         } else {
             this.matchManager.addRound();
-            new MatchCountdown(event.isForced()).runTaskTimer(CGM.getPlugin(), 0, 20);
+            new MatchCountdown(event.isForced()).runTaskTimer(CGM.get(), 0, 20);
 
             MatchManager.getParticipants().forEach(Participant::resetScore);
             ScoreboardManager.updateSoloBoard();
@@ -101,7 +99,7 @@ public class RoundStart implements Listener {
                                     );
                                 }
                             }
-                        }.runTaskLater(CGM.getPlugin(), 50);
+                        }.runTaskLater(CGM.get(), 50);
                     }
                 }
             });

@@ -24,7 +24,7 @@ public class Playlist {
 
     public Playlist() {
         this(ServerUtils.getPlaylist() == null ?
-            CGM.getPlugin().getConfig().getString("fallback_playlist") : ServerUtils.getPlaylist());
+            CGM.get().getConfig().getString("fallback_playlist") : ServerUtils.getPlaylist());
     }
 
     private Playlist(String name) {

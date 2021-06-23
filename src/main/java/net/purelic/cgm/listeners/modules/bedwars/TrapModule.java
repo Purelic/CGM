@@ -48,7 +48,7 @@ public class TrapModule implements Listener {
         if (bed == null) return;
 
         BukkitRunnable checker = this.getChecker(bed);
-        checker.runTaskTimer(CGM.getPlugin(), 0L, 2L);
+        checker.runTaskTimer(CGM.get(), 0L, 2L);
         this.checkers.put(team, checker);
     }
 

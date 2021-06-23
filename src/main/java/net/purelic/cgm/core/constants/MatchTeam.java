@@ -163,7 +163,7 @@ public enum MatchTeam {
                 if (CommandUtils.isOp(player) || Commons.getProfile(player).isMapDev()) PlayerJoin.getItemKit(player);
             }
 
-            CGM.getPlugin().getMatchManager().removeParticipant(player);
+            CGM.get().getMatchManager().removeParticipant(player);
             SpawnUtils.teleportObsSpawn(player);
 
             // TODO make this not necessary

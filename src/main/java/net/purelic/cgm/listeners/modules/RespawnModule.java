@@ -127,7 +127,7 @@ public class RespawnModule implements Listener {
 //                // stand.teleport(stand.getLocation().add(0, Integer.MAX_VALUE, 0));
 //                stands.put(stand, null);
 //            }
-//        }.runTask(CGM.getPlugin());
+//        }.runTask(CGM.get());
     }
 
 }

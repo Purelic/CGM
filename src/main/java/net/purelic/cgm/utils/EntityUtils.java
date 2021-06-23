@@ -14,7 +14,7 @@ public class EntityUtils {
     private static EntityHider entityHider;
 
 //    private static void registerEntityHider() {
-//        EntityUtils.entityHider = new EntityHider(CGM.getPlugin(), EntityHider.Policy.BLACKLIST);
+//        EntityUtils.entityHider = new EntityHider(CGM.get(), EntityHider.Policy.BLACKLIST);
 //    }
 
     public static void hideEntity(Player player, Entity entity) {

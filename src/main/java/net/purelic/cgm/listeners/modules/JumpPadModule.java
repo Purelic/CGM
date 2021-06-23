@@ -75,7 +75,7 @@ public class JumpPadModule implements Listener {
             }
         };
 
-        this.jumpPadChecker.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.jumpPadChecker.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
     }
 
     private void startParticleEffects(List<JumpPad> jumpPads) {
@@ -91,7 +91,7 @@ public class JumpPadModule implements Listener {
             }
         };
 
-        this.particleEffects.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 5L);
+        this.particleEffects.runTaskTimerAsynchronously(CGM.get(), 0L, 5L);
     }
 
     @EventHandler

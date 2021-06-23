@@ -49,7 +49,7 @@ public class MatchStats {
         this.matchId = UUID.randomUUID().toString();
         this.started = Timestamp.now();
         this.ended = this.started;
-        this.playlist = ServerUtils.getPlaylist() == null ? CGM.getPlugin().getConfig().getString("fallback_playlist") : ServerUtils.getPlaylist();
+        this.playlist = ServerUtils.getPlaylist() == null ? CGM.get().getConfig().getString("fallback_playlist") : ServerUtils.getPlaylist();
         this.map = map;
         this.gameMode = gameMode;
         this.gameType = gameMode.getGameType();

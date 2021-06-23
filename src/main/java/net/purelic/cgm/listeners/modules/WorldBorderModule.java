@@ -85,7 +85,7 @@ public class WorldBorderModule implements Listener {
             }
         };
 
-        this.borderRunnable.runTaskLaterAsynchronously(CGM.getPlugin(), delay * 60L * 20L);
+        this.borderRunnable.runTaskLaterAsynchronously(CGM.get(), delay * 60L * 20L);
     }
 
 }

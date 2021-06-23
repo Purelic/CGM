@@ -86,7 +86,7 @@ public class Flag implements Listener {
         this.owner = MatchTeam.valueOf((String) map.getOrDefault("owner", "SOLO"));
         this.direction = FlagDirection.valueOf((String) map.getOrDefault("direction", "NORTH"));
         this.cooldowns = new HashMap<>();
-        CGM.getPlugin().registerListener(this);
+        CGM.get().registerListener(this);
     }
 
     public int[] getCoords() {
@@ -189,7 +189,7 @@ public class Flag implements Listener {
 
         this.setLastLocation(this.location);
         this.flagTracker = new FlagTracker(this);
-        this.flagTracker.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 1L);
+        this.flagTracker.runTaskTimerAsynchronously(CGM.get(), 0L, 1L);
 
         new BukkitRunnable() {
             @Override
@@ -199,7 +199,7 @@ public class Flag implements Listener {
                 PlayerUtils.addPermanentEffect(player, PotionEffectType.JUMP, NumberSetting.FLAG_CARRIER_JUMP_BOOST.value() - 1);
                 PlayerUtils.addPermanentEffect(player, PotionEffectType.DAMAGE_RESISTANCE, NumberSetting.FLAG_CARRIER_RESISTANCE.value() - 1);
             }
-        }.runTask(CGM.getPlugin()); // run sync
+        }.runTask(CGM.get()); // run sync
 
         this.setState(FlagState.TAKEN);
     }
@@ -233,7 +233,7 @@ public class Flag implements Listener {
                     }
                 });
             }
-        }.runTask(CGM.getPlugin()); // run sync
+        }.runTask(CGM.get()); // run sync
 
         if (TaskUtils.isRunning(this.flagTracker)) this.flagTracker.cancel();
         this.flagTracker = null;
@@ -262,12 +262,12 @@ public class Flag implements Listener {
                     flag.baseState = null;
                 }
             }
-        }.runTask(CGM.getPlugin()); //run sync
+        }.runTask(CGM.get()); //run sync
     }
 
     public void startChecker() {
         this.checker = new FlagChecker(this);
-        this.checker.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 1L);
+        this.checker.runTaskTimerAsynchronously(CGM.get(), 0L, 1L);
     }
 
     public boolean isTouching(Participant participant) {
@@ -301,7 +301,7 @@ public class Flag implements Listener {
         int delay = this.respawnAtHome || this.lastLocation == null ? NumberSetting.FLAG_RESPAWN_DELAY.value() : NumberSetting.FLAG_VOIDED_DELAY.value();
 
         this.respawnCountdown = new FlagRespawnCountdown(this, delay);
-        this.respawnCountdown.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 20L);
+        this.respawnCountdown.runTaskTimerAsynchronously(CGM.get(), 0L, 20L);
 
         new BukkitRunnable() {
             @Override
@@ -310,24 +310,24 @@ public class Flag implements Listener {
                 // this can cause a NPE since it's wrapped in a runnable
                 if (location != null) setFlagWaypointLocation(location);
             }
-        }.runTask(CGM.getPlugin()); // run sync
+        }.runTask(CGM.get()); // run sync
     }
 
     public void startReturn() {
         if (TaskUtils.isRunning(this.returnChecker)) return;
 
         this.returnChecker = new FlagReturnChecker(this);
-        this.returnChecker.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+        this.returnChecker.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
 
         if (!this.isNeutral() && !TaskUtils.isRunning(this.returnRing)) {
             this.returnRing = ParticleUtils.getParticleCircle(this);
-            this.returnRing.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 2L);
+            this.returnRing.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
         }
 
         if (TaskUtils.isRunning(this.resetCountdown) || NumberSetting.FLAG_COLLECTION_INTERVAL.value() > 0) return;
 
         this.resetCountdown = new FlagResetCountdown(this);
-        this.resetCountdown.runTaskTimerAsynchronously(CGM.getPlugin(), 0L, 20L);
+        this.resetCountdown.runTaskTimerAsynchronously(CGM.get(), 0L, 20L);
     }
 
     public void returnFlag() {
@@ -403,7 +403,7 @@ public class Flag implements Listener {
                 // start the flag and return checker
                 flag.startCheckers(false);
             }
-        }.runTask(CGM.getPlugin()); // run sync
+        }.runTask(CGM.get()); // run sync
     }
 
     private void startCheckers(boolean instantRespawn) {

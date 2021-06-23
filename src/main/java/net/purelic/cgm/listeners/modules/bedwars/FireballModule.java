@@ -70,7 +70,7 @@ public class FireballModule implements Listener {
         // fireball.setCustomName(ChatColor.BOLD + "༼ つ ◕_◕ ༽つ");
         fireball.setCustomName(ChatColor.BOLD + "¯\\_(ツ)_/¯");
         fireball.setCustomNameVisible(true);
-        fireball.setMetadata("fireball", new FixedMetadataValue(CGM.getPlugin(), "fireball"));
+        fireball.setMetadata("fireball", new FixedMetadataValue(CGM.get(), "fireball"));
     }
 
     static {

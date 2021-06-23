@@ -21,7 +21,7 @@ public class NoBottleModule implements Listener {
                 public void run() {
                     player.setItemInHand(new ItemStack(Material.AIR));
                 }
-            }.runTaskLaterAsynchronously(CGM.getPlugin(), 1L);
+            }.runTaskLaterAsynchronously(CGM.get(), 1L);
         }
     }
 

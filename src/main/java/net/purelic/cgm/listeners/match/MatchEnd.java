@@ -2,7 +2,6 @@ package net.purelic.cgm.listeners.match;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
@@ -29,7 +28,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.github.paperspigot.Title;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,14 +54,14 @@ public class MatchEnd implements Listener {
 
                 PlayerUtils.showEveryone();
             }
-        }.runTask(CGM.getPlugin());
+        }.runTask(CGM.get());
 
         this.sendGameOverTitles(event.isForced());
         MatchManager.addMatch();
 
         ScoreboardManager.setNameVisibility(true);
 
-        new CycleCountdown().runTaskTimer(CGM.getPlugin(), 0, 20);
+        new CycleCountdown().runTaskTimer(CGM.get(), 0, 20);
     }
 
     private void sendGameOverTitles(boolean forced) {

@@ -86,7 +86,7 @@ public class MapsCommand implements CustomCommand {
 
                         BookGUI.openPaginatedBook(player, "Maps by " + playerName + ":", entries);
                     }
-                }.runTaskAsynchronously(CGM.getPlugin());
+                }.runTaskAsynchronously(CGM.get());
             });
     }
 
