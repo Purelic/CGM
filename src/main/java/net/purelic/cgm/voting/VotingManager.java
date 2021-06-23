@@ -213,7 +213,7 @@ public class VotingManager {
         }
     }
 
-    public void toggleVote(Player player, String optionId) {
+    public void vote(Player player, String optionId) {
         VotingOption option = this.options.get(optionId);
 
         // if multi select is disabled, reset all their votes

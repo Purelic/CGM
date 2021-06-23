@@ -1,6 +1,6 @@
 package net.purelic.cgm.voting;
 
-public enum VotingModifiers {
+enum VotingModifiers {
 
     MIN_PLAYERS, // min players to auto-start the voting countdown
     VOTE_ITEM, // material for the voting item

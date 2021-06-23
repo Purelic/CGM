@@ -40,6 +40,7 @@ import net.purelic.commons.runnables.MapLoader;
 import net.purelic.commons.utils.DatabaseUtils;
 import net.purelic.commons.utils.Fetcher;
 import net.purelic.commons.utils.ServerUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
@@ -73,11 +74,10 @@ public class CGM extends JavaPlugin {
         ready = false;
 
         // download lobby map
-        new MapLoader("Lobby").runTaskAsynchronously(CGM.getPlugin());
+        TaskUtils.runAsync(new MapLoader("Lobby"));
 
         // download playlist
         this.playlist = new Playlist();
-        this.playlist.download();
 
         // register managers, listeners, and commands
         this.registerManagers();
@@ -110,20 +110,15 @@ public class CGM extends JavaPlugin {
         }
         System.out.println("The server is now ready!");
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf));
-            }
-        }.runTaskAsynchronously(CGM.getPlugin());
+        TaskUtils.runAsync(() -> playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
     }
 
     public static Playlist getPlaylist() {
-        return CGM.getPlugin().playlist;
+        return plugin.playlist;
     }
 
     public static VotingManager getVotingManager() {
-        return CGM.getPlugin().votingManager;
+        return plugin.votingManager;
     }
 
     public MatchManager getMatchManager() {

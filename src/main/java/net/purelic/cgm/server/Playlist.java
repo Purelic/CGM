@@ -39,6 +39,7 @@ public class Playlist {
         this.gameModesByAlias = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         this.repo = new HashMap<>();
         this.pool = new HashMap<>();
+        this.download();
     }
 
     public VotingSettings getVotingSettings() {
