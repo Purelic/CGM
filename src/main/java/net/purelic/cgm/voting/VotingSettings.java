@@ -19,7 +19,7 @@ public class VotingSettings extends YamlObject<VotingModifiers> {
     private final int cycleDuration;
     private final boolean multiSelect;
     private final boolean randomOption;
-    private final boolean dynamic;
+    private final boolean dynamic; // TODO implement
     private final boolean offlineVotes;
 
     public VotingSettings(Map<String, Object> yaml) {
