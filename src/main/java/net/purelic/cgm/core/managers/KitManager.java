@@ -114,20 +114,22 @@ public class KitManager {
         ArmorType bootsType = EnumSetting.PLAYER_BOOTS_TYPE.get();
 
         return new ItemStack[]{
-                KitManager.getArmorPiece(bootsType.getBoots(), rgb, NumberSetting.PLAYER_BOOTS_PROT.value(), NumberSetting.PLAYER_BOOTS_FF.value(), ToggleSetting.PLAYER_BOOTS_LOCKED.isEnabled()),
-                KitManager.getArmorPiece(leggingsType.getLeggings(), rgb, NumberSetting.PLAYER_LEGGINGS_PROT.value(), 0, ToggleSetting.PLAYER_LEGGINGS_LOCKED.isEnabled()),
-                KitManager.getArmorPiece(chestplateType.getChestplate(), rgb, NumberSetting.PLAYER_CHESTPLATE_PROT.value(), 0, ToggleSetting.PLAYER_CHESTPLATE_LOCKED.isEnabled()),
-                KitManager.getArmorPiece(helmetType.getHelmet(), rgb, NumberSetting.PLAYER_HELMET_PROT.value(), 0, ToggleSetting.PLAYER_HELMET_LOCKED.isEnabled())
+                KitManager.getArmorPiece(bootsType.getBoots(), rgb, NumberSetting.PLAYER_BOOTS_PROT.value(), 1, NumberSetting.PLAYER_BOOTS_FF.value(), 1, ToggleSetting.PLAYER_BOOTS_LOCKED.isEnabled()),
+                KitManager.getArmorPiece(leggingsType.getLeggings(), rgb, NumberSetting.PLAYER_LEGGINGS_PROT.value(), 2, 0, 0, ToggleSetting.PLAYER_LEGGINGS_LOCKED.isEnabled()),
+                KitManager.getArmorPiece(chestplateType.getChestplate(), rgb, NumberSetting.PLAYER_CHESTPLATE_PROT.value(), 2, 0 , 0, ToggleSetting.PLAYER_CHESTPLATE_LOCKED.isEnabled()),
+                KitManager.getArmorPiece(helmetType.getHelmet(), rgb, NumberSetting.PLAYER_HELMET_PROT.value(), 0, 0, 0, ToggleSetting.PLAYER_HELMET_LOCKED.isEnabled())
         };
     }
 
-    public static ItemStack getArmorPiece(Material material, int rgb, int protection, int featherFalling, boolean locked) {
+    public static ItemStack getArmorPiece(Material material, int rgb, int protection, int projProt, int featherFalling, int depthStrider, boolean locked) {
         if (material == null) return null;
 
         ItemCrafter item = new ItemCrafter(material).setUnbreakable();
 
         if (material.name().contains("LEATHER")) item.color(rgb);
         if (protection > 0) item.enchant(Enchantment.PROTECTION_ENVIRONMENTAL, protection);
+        if (projProt > 0) item.enchant(Enchantment.PROTECTION_PROJECTILE, protection);
+        if (depthStrider > 0) item.enchant(Enchantment.DEPTH_STRIDER, depthStrider);
         if (material.name().contains("BOOTS") && featherFalling > 0) item.enchant(Enchantment.PROTECTION_FALL, featherFalling);
         if (locked) item.setTag("locked", "true");
         item.setTag("kit", "true");
