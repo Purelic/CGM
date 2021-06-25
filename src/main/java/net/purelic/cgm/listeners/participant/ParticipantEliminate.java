@@ -12,10 +12,17 @@ import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ChatUtils;
+import net.purelic.commons.utils.TaskUtils;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 public class ParticipantEliminate implements Listener {
 
@@ -27,7 +34,8 @@ public class ParticipantEliminate implements Listener {
         ScoreboardManager.updateTeamBoard();
         ScoreboardManager.updateSoloBoard();
 
-        player.getWorld().strikeLightningEffect(player.getLocation());
+        this.confetti(player);
+        // player.getWorld().strikeLightningEffect(player.getLocation());
         player.setGameMode(GameMode.ADVENTURE);
         player.setAllowFlight(true);
         player.setFlying(true);
@@ -50,6 +58,24 @@ public class ParticipantEliminate implements Listener {
                 ChatUtils.sendTitle(player, ChatColor.RED + "Eliminated", MatchUtils.hasRounds() ? "You will respawn next round" : "");
             }
         }
+    }
+
+    private void confetti(Player player) {
+        Location location = player.getLocation();
+        Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
+        FireworkMeta meta = firework.getFireworkMeta();
+
+        FireworkEffect effect = FireworkEffect.builder()
+            .flicker(false)
+            .trail(false)
+            .with(FireworkEffect.Type.BURST)
+            .withColor(Color.fromRGB(11743532), Color.fromRGB(15435844), Color.fromRGB(14602026),
+                Color.fromRGB(4312372), Color.fromRGB(6719955), Color.fromRGB(8073150), Color.fromRGB(14188952))
+            .build();
+
+        meta.addEffect(effect);
+        firework.setFireworkMeta(meta);
+        TaskUtils.runLater(firework::detonate, 2L);
     }
 
 }
