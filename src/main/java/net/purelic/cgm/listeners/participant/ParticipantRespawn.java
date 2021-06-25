@@ -7,12 +7,13 @@ import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.managers.KitManager;
+import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
+import net.purelic.cgm.kit.KitType;
 import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SpawnUtils;
@@ -70,7 +71,10 @@ public class ParticipantRespawn implements Listener {
 
         participant.setDead(false);
         participant.setState(ParticipantState.ALIVE);
-        if (MatchState.isState(MatchState.STARTED)) KitManager.getKit(player, team);
+
+        if (MatchState.isState(MatchState.STARTED)) {
+            MatchManager.getCurrentGameMode().getKit(KitType.DEFAULT).apply(player);
+        }
 
         SpawnUtils.teleportRandom(player, event.isRoundStart());
         player.setHealth(20);

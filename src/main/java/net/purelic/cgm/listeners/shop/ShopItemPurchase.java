@@ -1,17 +1,16 @@
 package net.purelic.cgm.listeners.shop;
 
 import net.purelic.cgm.core.gamemodes.constants.ArmorType;
-import net.purelic.cgm.core.managers.KitManager;
 import net.purelic.cgm.core.managers.ShopManager;
 import net.purelic.cgm.core.maps.shop.ShopItem;
 import net.purelic.cgm.core.maps.shop.events.ShopItemPurchaseEvent;
 import net.purelic.cgm.core.maps.shop.events.TeamUpgradePurchaseEvent;
 import net.purelic.cgm.utils.ColorConverter;
+import net.purelic.cgm.utils.PreferenceUtils;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;
-import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -94,7 +93,7 @@ public class ShopItemPurchase implements Listener {
     }
 
     private void replaceOrAddItem(Inventory inventory, Object slot, ItemStack item) {
-        int index = KitManager.convertSlotToIndex(slot);
+        int index = PreferenceUtils.slotToIndex(slot);
         ItemStack itemAt = inventory.getItem(index);
         inventory.setItem(index, item);
         if (itemAt != null) inventory.addItem(itemAt);
