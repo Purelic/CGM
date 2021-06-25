@@ -1,4 +1,4 @@
-package net.purelic.cgm.utils.tab;
+package net.purelic.cgm.tab;
 
 import net.purelic.cgm.core.constants.MatchTeam;
 import org.bukkit.ChatColor;

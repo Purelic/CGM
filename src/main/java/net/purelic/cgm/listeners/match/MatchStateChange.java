@@ -16,14 +16,6 @@ import org.bukkit.event.Listener;
 
 public class MatchStateChange implements Listener {
 
-    private final ScoreboardManager scoreboardManager;
-    private final MatchManager matchManager;
-
-    public MatchStateChange() {
-        this.scoreboardManager = CGM.get().getScoreboardManager();
-        this.matchManager = CGM.get().getMatchManager();
-    }
-
     @EventHandler
     public void onMatchStateChange(MatchStateChangeEvent event) {
         MatchState newState = event.getNewState();
@@ -36,7 +28,7 @@ public class MatchStateChange implements Listener {
 
         if (newState == MatchState.WAITING) {
             ScoreboardManager.resetScores(0);
-            this.scoreboardManager.updateWaitingSidebar(false);
+            ScoreboardManager.updateWaitingSidebar(false);
         } else if (newState == MatchState.VOTING) {
             CGM.getVotingManager().startVoting(seconds, forced);
         } else if (newState == MatchState.STARTING) {

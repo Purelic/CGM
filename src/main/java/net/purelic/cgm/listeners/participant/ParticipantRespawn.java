@@ -8,9 +8,10 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.KitManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.match.MatchParticipant;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.utils.ColorConverter;
@@ -40,18 +41,17 @@ public class ParticipantRespawn implements Listener {
 
         player.setPlayerListName(Commons.getProfile(player).getFlairs() + team.getColor() + NickUtils.getRealName(player));
 
-        if ((NumberSetting.LIVES_PER_ROUND.value() > 0 && participant.isQueued()) || TaskUtils.isRunning(RoundCountdown.getCountdown())) {
+        if ((NumberSetting.LIVES_PER_ROUND.value() > 0 && participant.isState(ParticipantState.QUEUED)) || TaskUtils.isRunning(RoundCountdown.getCountdown())) {
             CommandUtils.sendAlertMessage(player, "You will join at the beginning of the next round");
             participant.setLives(-1);
-            participant.setDead(true);
             participant.setState(ParticipantState.QUEUED);
             player.setPlayerListName(ChatColor.RED + "\u2715 " + Commons.getProfile(player).getFlairs() + ColorConverter.darken(MatchTeam.getTeam(player).getColor()) + NickUtils.getRealName(player));
             // TODO run async?
-            TabManager.updateTeam(team, false);
+            CGM.getTabManager().updateTeam(team, false);
             return;
         } else {
             // TODO run async?
-            TabManager.updatePlayer(player);
+            CGM.getTabManager().updatePlayer(player);
         }
 
         if (!NumberSetting.LIVES_PER_ROUND.isDefault() && !event.isRoundStart() && !EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
@@ -68,7 +68,6 @@ public class ParticipantRespawn implements Listener {
             CommandUtils.sendAlertMessage(player, text);
         }
 
-        participant.setDead(false);
         participant.setState(ParticipantState.ALIVE);
         if (MatchState.isState(MatchState.STARTED)) KitManager.getKit(player, team);
 
@@ -88,7 +87,6 @@ public class ParticipantRespawn implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                // PlayerUtils.showToPlaying(player);
                 PlayerUtils.updateVisibility(player);
                 PlayerUtils.clearEffects(player);
                 PlayerUtils.applyDefaultEffects(player);

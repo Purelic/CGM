@@ -9,7 +9,7 @@ import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.RoundEndEvent;
@@ -137,7 +137,7 @@ public enum MatchTeam {
         player.setDisplayName(this.color + NickUtils.getRealName(player) + ChatColor.RESET);
         player.setPlayerListName(Commons.getProfile(player).getFlairs() + player.getDisplayName());
         ScoreboardManager.updateTeam(player, this);
-        TabManager.updateTeam(this, true);
+        CGM.getTabManager().updateTeam(this, true);
 
         if (this == MatchTeam.OBS) {
             if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
@@ -181,7 +181,7 @@ public enum MatchTeam {
     public static void removePlayer(Player player) {
         MatchTeam team = MatchTeam.getTeam(player);
         if (team.getPlayers().remove(player))
-            TabManager.updateTeam(team, true);
+            CGM.getTabManager().updateTeam(team, true);
     }
 
     public boolean hasPlayer(Player player) {

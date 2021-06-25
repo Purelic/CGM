@@ -1,5 +1,6 @@
 package net.purelic.cgm.listeners.match;
 
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.match.SpectateCommand;
 import net.purelic.cgm.commands.toggles.ToggleAutoJoinCommand;
 import net.purelic.cgm.core.constants.JoinState;
@@ -10,7 +11,7 @@ import net.purelic.cgm.core.gamemodes.constants.TeamSize;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.events.match.MatchStartEvent;
 import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.cgm.utils.MatchUtils;
@@ -19,7 +20,6 @@ import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
-import net.purelic.commons.Commons;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -107,7 +107,7 @@ public class MatchStart implements Listener {
             for (Player player : team.getPlayers()) {
                 MatchManager.addParticipant(player, true, false);
             }
-            TabManager.updateTeam(team);
+            CGM.getTabManager().updateTeam(team);
         }
 
         PlayerUtils.hideObs();
@@ -115,9 +115,7 @@ public class MatchStart implements Listener {
         ChatUtils.broadcastActionBar("The match has begun!");
         Commons.callEvent(new RoundStartEvent(event.isForced()));
 
-        TabManager.allowUpdates();
-
-        // DatabaseUtils.updateStatus(ServerStatus.STARTED, MatchManager.getCurrentMap().getName(), MatchManager.getCurrentGameMode().getName());
+        CGM.getTabManager().allowUpdates();
     }
 
     public static void updateParties() {

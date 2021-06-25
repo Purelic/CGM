@@ -9,7 +9,9 @@ import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.match.Match;
+import net.purelic.cgm.match.MatchParticipant;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.events.match.RoundStartEvent;
@@ -61,9 +63,8 @@ public class RoundStart implements Listener {
 
         if (NumberSetting.ROUNDS.value() > 1) {
             if (MatchManager.getRound() > 1) {
-                for (Participant participant : MatchManager.getParticipants()) {
+                for (MatchParticipant participant : CGM.getMatchManager2().getParticipants()) {
                     participant.resetLives();
-                    participant.setQueued(false);
                     Commons.callEvent(new ParticipantRespawnEvent(participant, true));
                 }
             }
@@ -104,19 +105,21 @@ public class RoundStart implements Listener {
                 }
             });
 
-            TabManager.updateTeams();
+            CGM.getTabManager().updateTeams();
             return;
         }
 
         // TODO: make a method in matchutils that sends the object + optional lives remaining title to participant
         if (NumberSetting.LIVES_PER_ROUND.value() > 0) {
+            Match match = CGM.getMatchManager2().getCurrentMatch();
+
             MatchManager.getParticipants().forEach(participant -> {
                 int lives = participant.getLives();
 
                 if (lives != -1) {
                     ChatUtils.sendTitle(
                         participant.getPlayer(),
-                        MatchUtils.hasRounds() ? "Round " + MatchManager.getRound() : "",
+                        match.isRoundBased() ? "Round " + match.getCurrentRound() : "",
                         ChatColor.AQUA + "" + lives + ChatColor.RESET + " " + (lives == 1 ? "Life" : "Lives") + " Remaining"
                     );
                 }
@@ -130,7 +133,7 @@ public class RoundStart implements Listener {
                 .forEach(team -> Commons.callEvent(new MatchTeamEliminateEvent(team)));
         }
 
-        TabManager.updateTeams();
+        CGM.getTabManager().updateTeams();
     }
 
 }

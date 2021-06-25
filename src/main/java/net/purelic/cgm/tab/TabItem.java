@@ -1,4 +1,4 @@
-package net.purelic.cgm.utils.tab;
+package net.purelic.cgm.tab;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.v1_8_R3.*;

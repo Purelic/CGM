@@ -16,10 +16,7 @@ import net.purelic.cgm.commands.preferences.ColorCommand;
 import net.purelic.cgm.commands.preferences.HotbarCommand;
 import net.purelic.cgm.commands.preferences.SoundCommand;
 import net.purelic.cgm.commands.toggles.*;
-import net.purelic.cgm.core.managers.LeagueManager;
-import net.purelic.cgm.core.managers.LootManager;
-import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.ScoreboardManager;
+import net.purelic.cgm.core.managers.*;
 import net.purelic.cgm.listeners.*;
 import net.purelic.cgm.listeners.bed.BedBreak;
 import net.purelic.cgm.listeners.flag.*;
@@ -31,7 +28,9 @@ import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
 import net.purelic.cgm.listeners.participant.*;
 import net.purelic.cgm.listeners.shop.ShopItemPurchase;
 import net.purelic.cgm.listeners.shop.TeamUpgradePurchase;
+import net.purelic.cgm.match.MatchManager2;
 import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.voting.VotingManager;
 import net.purelic.cgm.voting.VotingModule;
 import net.purelic.commons.Commons;
@@ -57,7 +56,10 @@ public class CGM extends JavaPlugin {
 
     private MatchManager matchManager;
     private ScoreboardManager scoreboardManager;
+
+    private MatchManager2 matchManager2;
     private VotingManager votingManager;
+    private TabManager tabManager;
 
     private PaperCommandManager<CommandSender> commandManager;
 
@@ -100,15 +102,23 @@ public class CGM extends JavaPlugin {
         }
         System.out.println("The server is now ready!");
 
-        TaskUtils.runAsync(() -> playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
+        TaskUtils.runAsync(() -> this.playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
     }
 
     public static Playlist getPlaylist() {
         return plugin.playlist;
     }
 
+    public static MatchManager2 getMatchManager2() {
+        return plugin.matchManager2;
+    }
+
     public static VotingManager getVotingManager() {
         return plugin.votingManager;
+    }
+
+    public static TabManager getTabManager() {
+        return plugin.tabManager;
     }
 
     public MatchManager getMatchManager() {
@@ -122,7 +132,11 @@ public class CGM extends JavaPlugin {
     private void registerManagers() {
         this.matchManager = new MatchManager();
         this.scoreboardManager = new ScoreboardManager();
+
+        this.matchManager2 = new MatchManager2();
         this.votingManager = new VotingManager(this.playlist);
+        this.tabManager = new TabManager(this.matchManager2);
+
         LootManager.setLootItems();
     }
 

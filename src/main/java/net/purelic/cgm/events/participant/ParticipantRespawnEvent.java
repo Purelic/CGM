@@ -1,9 +1,11 @@
 package net.purelic.cgm.events.participant;
 
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.match.MatchParticipant;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import retrofit.http.Part;
 
 public class ParticipantRespawnEvent extends Event {
 

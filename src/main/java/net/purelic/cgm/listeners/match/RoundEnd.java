@@ -9,9 +9,9 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.RoundEndEvent;
@@ -47,7 +47,7 @@ public class RoundEnd implements Listener {
 
         MatchCountdown.getCountdown().cancel();
         // MatchUtils.updateTabAll();
-        TabManager.updateRounds();
+        CGM.getTabManager().updateRounds();
 
         PlayerUtils.clearEffectsAll();
         // PlayerUtils.showEveryone();
@@ -107,7 +107,7 @@ public class RoundEnd implements Listener {
                                 .append("\n").reset()
                         );
 
-                        SoundUtils.SFX.MATCH_WON.play(player);
+                        SoundUtils.SFX.CRAB_RAVE.play(player);
                     } else {
                         ChatUtils.sendTitle(
                             player,
@@ -167,7 +167,7 @@ public class RoundEnd implements Listener {
                                 .append("\n").reset()
                         );
 
-                        SoundUtils.SFX.MATCH_WON.play(player);
+                        SoundUtils.SFX.CRAB_RAVE.play(player);
                     } else {
                         ChatUtils.sendTitle(
                             player,

@@ -3,11 +3,11 @@ package net.purelic.cgm.listeners.participant;
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.toggles.ToggleSpectatorsCommand;
-import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
 import net.purelic.cgm.events.participant.ParticipantEliminateEvent;
+import net.purelic.cgm.match.MatchTeam;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
@@ -39,7 +39,7 @@ public class ParticipantEliminate implements Listener {
             SpawnUtils.teleportObsSpawn(player);
         }
 
-        if (MatchUtils.isTeamEliminated(team)) {
+        if (team.isEliminated()) {
             Commons.callEvent(new MatchTeamEliminateEvent(team));
         }
 
@@ -47,7 +47,7 @@ public class ParticipantEliminate implements Listener {
             Commons.callEvent(new RoundEndEvent());
         } else {
             if (!event.isCombatLog()) {
-                ChatUtils.sendTitle(player, ChatColor.RED + "Eliminated", MatchUtils.hasRounds() ? "You will respawn next round" : "");
+                ChatUtils.sendTitle(player, ChatColor.RED + "Eliminated", CGM.getMatchManager2().getCurrentMatch().isRoundBased() ? "You will respawn next round" : "");
             }
         }
     }

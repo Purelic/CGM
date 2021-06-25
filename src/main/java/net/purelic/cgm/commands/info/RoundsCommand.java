@@ -5,7 +5,7 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.utils.CommandUtils;
 import org.bukkit.command.CommandSender;

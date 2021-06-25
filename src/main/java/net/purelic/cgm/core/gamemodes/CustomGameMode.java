@@ -2,6 +2,8 @@ package net.purelic.cgm.core.gamemodes;
 
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
+import net.purelic.cgm.core.gamemodes.constants.TeamSize;
+import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import shaded.com.google.cloud.Timestamp;
 import shaded.com.google.cloud.firestore.QueryDocumentSnapshot;
 
@@ -121,6 +123,18 @@ public class CustomGameMode {
 
     private void reset(GameSetting[] settings) {
         for (GameSetting setting : settings) setting.reset();
+    }
+
+    public int getMaxPlayers() {
+        int maxPerTeam = this.getMaxTeamPlayers();
+        TeamType teamType = TeamType.valueOf(this.getEnumSetting(EnumSetting.TEAM_TYPE));
+        return maxPerTeam * teamType.getTeams().size();
+    }
+
+    public int getMaxTeamPlayers() {
+        return TeamSize.maxPlayers(
+            TeamSize.valueOf(this.getEnumSetting(EnumSetting.TEAM_SIZE)),
+            TeamType.valueOf(this.getEnumSetting(EnumSetting.TEAM_TYPE)));
     }
 
 }

@@ -1,6 +1,7 @@
 package net.purelic.cgm.core.runnables;
 
 import net.md_5.bungee.api.ChatColor;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
@@ -9,7 +10,7 @@ import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.maps.bed.events.BedBreakEvent;
 import net.purelic.cgm.core.maps.hill.Hill;
 import net.purelic.cgm.core.match.Participant;
@@ -126,10 +127,10 @@ public class MatchCountdown extends BukkitRunnable {
         }
 
         // MatchUtils.updateTabAll(seconds);
-        TabManager.updateTime(NumberSetting.TIME_LIMIT.value() == 0 ? elapsed : seconds);
+        CGM.getTabManager().updateTime(NumberSetting.TIME_LIMIT.value() == 0 ? elapsed : seconds);
 
         if (seconds >= 0 && (seconds % 60 == 0 || seconds <= 15)) {
-            if (seconds >= 15) Bukkit.broadcastMessage(TabManager.getTime(false));
+            if (seconds >= 15) Bukkit.broadcastMessage(CGM.getTabManager().getTime(false));
             SoundUtils.playCountdownNote(seconds);
         }
 

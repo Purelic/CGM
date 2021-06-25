@@ -18,6 +18,7 @@ import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.listeners.match.MatchStart;
 import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.voting.VotingOption;
 import net.purelic.commons.Commons;
@@ -156,9 +157,9 @@ public class MatchManager {
         nextGameMode = null;
 
         Bukkit.getOnlinePlayers().forEach(MatchTeam.OBS::addPlayer);
-        TabManager.updateTime(NumberSetting.TIME_LIMIT.value() * 60);
+        CGM.getTabManager().updateTime(NumberSetting.TIME_LIMIT.value() * 60);
         // MatchUtils.updateTabAll(NumberSetting.TIME_LIMIT.value() * 60);
-        TabManager.reset();
+        CGM.getTabManager().reset();
         ScoreboardManager.updateTeamBoard();
 
         if (currentWorld != null) {
@@ -215,7 +216,7 @@ public class MatchManager {
             participant.setQueued(true);
         }
 
-        if (MatchStatsModule.hasStats(player)) TabManager.updateStats(participant);
+        if (MatchStatsModule.hasStats(player)) CGM.getTabManager().updateStats(player);
 
         Commons.callEvent(new ParticipantRespawnEvent(participant, roundStart));
     }
@@ -224,7 +225,7 @@ public class MatchManager {
         if (!isPlaying(player)) return;
         PARTICIPANTS.get(player).reset();
         PARTICIPANTS.remove(player);
-        TabManager.removeStats(player);
+        TabManager.updateStats(player);
     }
 
     public static boolean isPlaying(Player player) {

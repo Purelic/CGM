@@ -4,6 +4,7 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.CustomMap;
+import net.purelic.cgm.match.Match;
 import net.purelic.cgm.server.Playlist;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.utils.ItemCrafter;
@@ -76,6 +77,10 @@ public class VotingManager {
 
     public VotingCountdown getCountdown() {
         return this.countdown;
+    }
+
+    public void setLastPlayed(Match match) {
+        this.setLastPlayed(match.getMap(), match.getGameMode());
     }
 
     public void setLastPlayed(CustomMap map, CustomGameMode gameMode) {

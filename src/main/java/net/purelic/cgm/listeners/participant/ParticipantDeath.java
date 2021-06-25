@@ -14,10 +14,10 @@ import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.DamageManger;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ShopManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.maps.shop.constants.TeamUpgrade;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RespawnCountdown;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.participant.ParticipantAssistEvent;
@@ -129,10 +129,10 @@ public class ParticipantDeath implements Listener {
 
         // Start respawn or eliminate player
         if (!eliminated) {
-            TabManager.updatePlayer(player);
+            CGM.getTabManager().updatePlayer(player);
             if (!combatLog) this.startRespawnCountdown(participant, killer, suicide);
         } else {
-            TabManager.updateTeam(player);
+            CGM.getTabManager().updateTeam(player);
             Commons.callEvent(new ParticipantEliminateEvent(participant, combatLog));
         }
 

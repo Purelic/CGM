@@ -1,7 +1,7 @@
 //package net.purelic.cgm.listeners;
 //
 //import net.purelic.cgm.CGM;
-//import net.purelic.cgm.core.managers.TabManager;
+//import net.purelic.cgm.tab.TabManager;
 //import net.purelic.commons.events.OpStatusChangeEvent;
 //import net.purelic.commons.utils.CommandUtils;
 //import org.bukkit.entity.Player;

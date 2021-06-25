@@ -10,7 +10,7 @@ import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.commands.parsers.CustomCommand;

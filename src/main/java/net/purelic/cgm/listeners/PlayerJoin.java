@@ -6,7 +6,7 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.ItemCrafter;
@@ -59,7 +59,7 @@ public class PlayerJoin implements Listener {
             }
         }
 
-        TabManager.enable(player);
+        CGM.getTabManager().enable(player);
 
         new BukkitRunnable() {
             @Override

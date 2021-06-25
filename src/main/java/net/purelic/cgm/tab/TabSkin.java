@@ -1,4 +1,4 @@
-package net.purelic.cgm.utils.tab;
+package net.purelic.cgm.tab;
 
 import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatColor;

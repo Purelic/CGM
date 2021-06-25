@@ -6,12 +6,13 @@ import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -62,7 +63,7 @@ public class RenameCommand implements CustomCommand {
 
                 team.setName(name);
                 ScoreboardManager.updateTeamBoard();
-                TabManager.updateTeam(team, true);
+                CGM.getTabManager().updateTeam(team, true);
 
                 CommandUtils.broadcastAlertMessage(
                     Fetcher.getFancyName(player),

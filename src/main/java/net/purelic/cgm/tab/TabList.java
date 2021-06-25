@@ -1,11 +1,10 @@
-package net.purelic.cgm.utils.tab;
+package net.purelic.cgm.tab;
 
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketListenerPlayOut;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.TabManager;
-import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.match.Match;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.utils.VersionUtils;
 import org.bukkit.entity.Player;
@@ -42,12 +41,16 @@ public class TabList {
         return this.player;
     }
 
+    public boolean isLegacy() {
+        return this.legacy;
+    }
+
     public void reset() {
         // Clear the tab
         this.clearAll();
 
         // Add teams to tab
-        if (MatchUtils.isMatchActive()) {
+        if (CGM.getMatchManager2().hasActiveMatch()) {
             this.teamBoxes = TabUtils.getTeamBoxes(this.legacy);
         } else {
             this.teamBoxes.put(MatchTeam.OBS, new TabBox(MatchTeam.OBS, 0, 1, TabUtils.COLUMNS - 1, TabUtils.ROWS - 1));
@@ -108,21 +111,26 @@ public class TabList {
     }
 
     public void updateTime() {
-        if (this.legacy) this.setSlot(59, TabManager.getTime(true));
+        if (this.legacy) this.setSlot(59, CGM.getTabManager().getTime(true));
         else this.updateHeaderFooter();
     }
 
     public void updateRounds() {
-        if (!MatchUtils.hasRounds()) return;
-        if (this.legacy) this.setSlot(79, TabManager.getRounds(true));
+        Match match = CGM.getMatchManager2().getCurrentMatch();
+
+        if (match == null || !match.isRoundBased()) return;
+
+        if (this.legacy) this.setSlot(79, match.getRoundsString(true));
         else this.updateHeaderFooter();
     }
 
-    private void updateHeaderFooter() {
+    public void updateHeaderFooter() {
         if (this.legacy) {
-            if (MatchUtils.isMatchActive()) {
-                this.setSlot(19, MatchManager.getCurrentGameMode().getColoredName());
-                this.setSlot(39, MatchManager.getCurrentMap().getColoredName());
+            Match match = CGM.getMatchManager2().getCurrentMatch();
+
+            if (match != null) {
+                this.setSlot(19, match.getGameMode().getColoredName());
+                this.setSlot(39, match.getMap().getColoredName());
                 this.updateTime();
                 this.updateRounds();
             } else {
@@ -132,98 +140,8 @@ public class TabList {
                 this.clear(79);
             }
         } else {
-            this.player.setPlayerListHeaderFooter(TabManager.getHeader(), TabManager.getFooter(this.player));
+            this.player.setPlayerListHeaderFooter(CGM.getTabManager().getHeader(), CGM.getTabManager().getFooter(this.player));
         }
-    }
-
-    public void updateStats(Participant participant) {
-        if (!this.legacy) {
-            this.updateHeaderFooter();
-        } else {
-            if (!this.teamBoxes.containsKey(MatchTeam.OBS)) return;
-
-//            this.setSlot(72, "" + participant.getTeam().getColor() + ChatColor.BOLD + "Your Stats", TabSkin.getDot(participant.getTeam()));
-//            this.updateScore(participant);
-//            this.updateKills(participant);
-//            this.updateDeaths(participant);
-//            this.updateKDR(participant);
-//            this.updateKillStreak(participant);
-        }
-    }
-
-    public void removeStats() {
-        if (!this.legacy) this.updateHeaderFooter();
-        else if (!this.teamBoxes.containsKey(MatchTeam.OBS)) return;
-
-//        this.clear(72); // stats header
-//        this.clear(73); // score
-//        this.clear(74); // kills / assists
-//        this.clear(75); // deaths
-//        this.clear(76); // kd / kda
-//        this.clear(77); // kill streak
-    }
-
-    public void updateScore(Participant participant) {
-        if (!this.legacy) {
-            this.updateStats(participant);
-            return;
-        } else if (!this.teamBoxes.containsKey(MatchTeam.OBS)) {
-            return;
-        }
-
-        // this.setSlot(73, "Score: " + ChatColor.YELLOW + participant.getTotalScore());
-    }
-
-    public void updateKills(Participant participant) {
-        if (!this.legacy) {
-            this.updateStats(participant);
-            return;
-        } else if (!this.teamBoxes.containsKey(MatchTeam.OBS)) {
-            return;
-        }
-
-//        int assists = participant.getStats().getAssists();
-//        String suffix = assists == 0 ? "" : ChatColor.GRAY + " (" + assists + " Assist" + (assists == 1 ? "" : "s") + ")";
-//        this.setSlot(74, "Kills: " + ChatColor.GREEN + participant.getKills() + suffix);
-    }
-
-    public void updateDeaths(Participant participant) {
-        if (!this.legacy) {
-            this.updateStats(participant);
-            return;
-        } else if (!this.teamBoxes.containsKey(MatchTeam.OBS)) {
-            return;
-        }
-
-        // this.setSlot(75, "Deaths: " + ChatColor.RED + participant.getDeaths());
-    }
-
-    public void updateKDR(Participant participant) {
-        if (!this.legacy) {
-            this.updateStats(participant);
-            return;
-        } else if (!this.teamBoxes.containsKey(MatchTeam.OBS)) {
-            return;
-        }
-
-//        String kd = new DecimalFormat("0.0").format(participant.getStats().getKillDeathRatio());
-//        String kda = new DecimalFormat("0.0").format(participant.getStats().getKillDeathAssistRatio());
-//        String suffix = participant.getStats().getAssists() > 0 ? ChatColor.GRAY + " (" + kda + " KDA)" : "";
-//        this.setSlot(76, "KD: " + ChatColor.AQUA + kd + suffix);
-    }
-
-    public void updateKillStreak(Participant participant) {
-        if (!this.legacy) {
-            this.updateStats(participant);
-            return;
-        } else if (!this.teamBoxes.containsKey(MatchTeam.OBS)) {
-            return;
-        }
-
-//        int killStreak = participant.getKillstreak();
-//        int bestKillStreak = participant.getBestKillstreak();
-//        String suffix = bestKillStreak > 0 && bestKillStreak > killStreak ? ChatColor.GRAY + " (Best " + bestKillStreak + ")" :"";
-//        this.setSlot(77, "Streak: " + ChatColor.AQUA + killStreak + suffix);
     }
 
     public void clear(int index) {

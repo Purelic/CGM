@@ -3,7 +3,7 @@ package net.purelic.cgm.commands.info;
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.purelic.cgm.core.constants.MatchState;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.utils.CommandUtils;
 import org.bukkit.command.CommandSender;

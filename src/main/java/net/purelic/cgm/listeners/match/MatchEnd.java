@@ -10,7 +10,6 @@ import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.stats.MatchPlacement;
 import net.purelic.cgm.core.stats.constants.MatchResult;
 import net.purelic.cgm.events.match.MatchEndEvent;
@@ -18,11 +17,14 @@ import net.purelic.cgm.events.match.MatchStartEvent;
 import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
 import net.purelic.cgm.events.participant.ParticipantEliminateEvent;
 import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
+import net.purelic.cgm.match.countdowns.CycleCountdown;
+import net.purelic.cgm.match.countdowns.RestartCountdown;
 import net.purelic.cgm.utils.PlaceUtils;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.NickUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -61,7 +63,13 @@ public class MatchEnd implements Listener {
 
         ScoreboardManager.setNameVisibility(true);
 
-        new CycleCountdown().runTaskTimer(CGM.get(), 0, 20);
+        // new CycleCountdown().runTaskTimer(CGM.get(), 0, 20);
+
+        if (CGM.getMatchManager2().hasPendingRestart()) {
+            TaskUtils.runAsync(new RestartCountdown());
+        } else {
+            TaskUtils.runAsync(new CycleCountdown());
+        }
     }
 
     private void sendGameOverTitles(boolean forced) {

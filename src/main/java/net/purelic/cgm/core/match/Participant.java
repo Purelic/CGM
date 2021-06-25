@@ -6,8 +6,8 @@ import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.managers.TabManager;
-import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.tab.TabManager;
+import net.purelic.cgm.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.core.stats.PlayerStats;
 import net.purelic.cgm.events.participant.ParticipantScoreEvent;
@@ -137,7 +137,7 @@ public class Participant {
         this.score += score;
         this.totalScore += score;
         this.getStats().addScore(score);
-        TabManager.updateScore(this);
+        TabManager.updateStats(this);
         if (!skipEvent) Commons.callEvent(new ParticipantScoreEvent(this, score));
     }
 
@@ -184,7 +184,7 @@ public class Participant {
         this.getStats().setBestKillstreak(this.killstreak);
         this.getStats().setBestMultiKill(this.multiKill);
 
-        TabManager.updateKills(this);
+        TabManager.updateStats(this);
         this.sendStatsMessage();
     }
 
@@ -213,7 +213,7 @@ public class Participant {
         this.deaths++;
         this.killstreak = 0;
         this.multiKill = 0;
-        TabManager.updateDeaths(this);
+        TabManager.updateStats(this);
         this.sendStatsMessage();
     }
 

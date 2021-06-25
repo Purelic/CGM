@@ -1,9 +1,10 @@
 package net.purelic.cgm.listeners;
 
 import net.md_5.bungee.api.ChatColor;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.commons.events.PlayerRankChangeEvent;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.utils.NickUtils;
@@ -27,7 +28,7 @@ public class PlayerRankChange implements Listener {
         }
 
         player.setPlayerListName(profile.getFlairs() + player.getDisplayName());
-        TabManager.updateTeam(player);
+        CGM.getTabManager().updateTeam(player);
     }
 
 }

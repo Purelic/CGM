@@ -1,4 +1,4 @@
-package net.purelic.cgm.core.match.constants;
+package net.purelic.cgm.match.constants;
 
 public enum ParticipantState {
 

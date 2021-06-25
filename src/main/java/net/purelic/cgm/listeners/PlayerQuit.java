@@ -3,7 +3,7 @@ package net.purelic.cgm.listeners;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.commons.Commons;
 import org.bukkit.entity.Player;
@@ -29,7 +29,7 @@ public class PlayerQuit implements Listener {
             MatchTeam.removePlayer(player);
         }
 
-        TabManager.destroy(player);
+        CGM.getTabManager().destroy(player);
     }
 
 }

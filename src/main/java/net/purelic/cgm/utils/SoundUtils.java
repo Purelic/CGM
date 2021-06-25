@@ -117,7 +117,7 @@ public class SoundUtils {
                         .addSound(SoundBuilder.Key.FS5, 2)
         ),
 
-        MATCH_WON( // Crab Rave
+        CRAB_RAVE( // Crab Rave
                 new SoundBuilder(Sound.NOTE_PIANO, SoundBuilder.Key.A3)
                         .addSound(SoundBuilder.Key.F4, 4)
                         .addSound(SoundBuilder.Key.D4, 4)

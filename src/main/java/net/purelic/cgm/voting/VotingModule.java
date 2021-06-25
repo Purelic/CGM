@@ -1,6 +1,7 @@
 package net.purelic.cgm.voting;
 
 import net.purelic.cgm.core.constants.MatchState;
+import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.commons.modules.Module;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.entity.Player;
@@ -55,6 +56,11 @@ public class VotingModule implements Module {
         if (MatchState.isState(MatchState.VOTING) && !this.votingManager.getSettings().allowOfflineVotes()) {
             this.votingManager.clearVotes(event.getPlayer());
         }
+    }
+
+    @EventHandler
+    public void onMatchCycle(MatchCycleEvent event) {
+        this.votingManager.setLastPlayed(event.getMatch());
     }
 
 }

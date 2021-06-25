@@ -9,7 +9,7 @@ import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.match.constants.ParticipantState;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;

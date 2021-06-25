@@ -1,7 +1,7 @@
 package net.purelic.cgm.listeners.modules.stats;
 
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.core.managers.TabManager;
+import net.purelic.cgm.tab.TabManager;
 import net.purelic.cgm.core.stats.MatchStats;
 import net.purelic.cgm.core.stats.PlayerStats;
 import net.purelic.cgm.events.match.MatchEndEvent;
