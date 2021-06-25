@@ -232,9 +232,9 @@ public class MatchManager {
     }
 
     public boolean allEliminated() {
-        return MatchUtils.isElimination() && EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ?
+        return MatchUtils.isElimination() && (EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ?
             (this.getParticipantAlive() == 0 || this.getLastParticipantAlive() != null) :
-            (this.getTeamsAlive() == 0 || this.getLastTeamAlive() != null);
+            (this.getTeamsAlive() == 0 || this.getLastTeamAlive() != null));
     }
 
     public MatchTeam getLastTeamAlive() {
