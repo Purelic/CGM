@@ -235,6 +235,10 @@ public enum MatchTeam {
     }
 
     public static MatchTeam getTeam(Player player) {
+        if (MatchManager.isPlaying(player)) {
+            return MatchManager.getParticipant(player).getTeam();
+        }
+
         for (MatchTeam team : MatchTeam.values()) {
             if (team.hasPlayer(player)) return team;
         }
