@@ -122,23 +122,33 @@ public class TabManager {
             }
 
             if (authors.size() == 1) {
-                header.append(Fetcher.getBasicName(authors.get(0)));
+                header.append(getAuthor(authors.get(0)));
             } else if (authors.size() == 2) {
-                header.append(Fetcher.getBasicName(authors.get(0))).append(" and ").append(Fetcher.getBasicName(authors.get(1)));
+                header.append(getAuthor(authors.get(0))).append(" and ").append(getAuthor(authors.get(1)));
             } else {
                 for (int i = 0; i < authors.size(); i++) {
                     if (i == 0) {
-                        header.append(Fetcher.getBasicName(authors.get(i)));
+                        header.append(getAuthor(authors.get(i)));
                     } else if (i == authors.size() - 1) {
-                        header.append(", and ").append(Fetcher.getBasicName(authors.get(i)));
+                        header.append(", and ").append(getAuthor(authors.get(i)));
                     } else {
-                        header.append(", ").append(Fetcher.getBasicName(authors.get(i)));
+                        header.append(", ").append(getAuthor(authors.get(i)));
                     }
                 }
             }
         }
 
         return new TextComponent(header.toString());
+    }
+
+    private static String getAuthor(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+
+        if (player != null && player.isOnline()) {
+            return Fetcher.getBasicName(uuid);
+        } else {
+            return ChatColor.DARK_AQUA + Fetcher.getNameOf(uuid) + ChatColor.RESET;
+        }
     }
 
     public static TextComponent getFooter(Player player) {

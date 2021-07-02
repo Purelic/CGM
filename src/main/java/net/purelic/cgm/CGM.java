@@ -102,6 +102,7 @@ public class CGM extends JavaPlugin {
         }
         System.out.println("The server is now ready!");
 
+        // Cache all the author names
         TaskUtils.runAsync(() -> playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
     }
 
