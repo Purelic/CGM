@@ -2,7 +2,7 @@ package net.purelic.cgm.core.gamemodes;
 
 public enum ToggleSetting implements GameSetting {
 
-    FRIENDLY_FIRE(GameSettingType.GENERAL, true),
+    FRIENDLY_FIRE(GameSettingType.GENERAL, false),
     DYNAMIC_REGEN(GameSettingType.KILL_REWARDS, false),
     TEAM_SWITCHING(GameSettingType.GENERAL, true),
     ATTACK_DEFENSE(GameSettingType.GENERAL, false),
