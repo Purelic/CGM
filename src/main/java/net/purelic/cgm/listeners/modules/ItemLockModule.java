@@ -24,7 +24,9 @@ public class ItemLockModule implements Listener {
             return;
         }
 
-        if (this.isLocked(event.getItemDrop().getItemStack())) {
+        ItemStack item = event.getItemDrop().getItemStack();
+
+        if (this.isLocked(item) || new ItemCrafter(item).hasTag("kit")) {
             event.setCancelled(true);
         }
     }
