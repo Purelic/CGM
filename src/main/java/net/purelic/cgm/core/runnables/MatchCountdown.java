@@ -1,6 +1,5 @@
 package net.purelic.cgm.core.runnables;
 
-import jdk.javadoc.internal.doclets.formats.html.markup.Head;
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -121,11 +120,12 @@ public class MatchCountdown extends BukkitRunnable {
             HeadModule.displayParticles();
 
             int interval = NumberSetting.HEAD_COLLECTION_INTERVAL.value();
-            int seconds = MatchCountdown.getElapsed() % interval;
-            seconds = interval - seconds;
-            seconds = seconds == 0 ? interval : seconds;
 
             if (interval > 0) {
+                int seconds = MatchCountdown.getElapsed() % interval;
+                seconds = interval - seconds;
+                seconds = seconds == 0 ? interval : seconds;
+
                 if (elapsed % interval == 0 && elapsed > 0) {
                     ChatUtils.broadcastActionBar("Heads collected!",true);
                     MatchManager.getParticipants().forEach(HeadModule::scoreHeads);
