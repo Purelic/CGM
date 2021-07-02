@@ -10,6 +10,8 @@ public enum NumberSetting implements GameSetting {
     DEATHMATCH_KILL_POINTS(GameSettingType.DEATHMATCH, 1),
     DEATHMATCH_DEATH_POINTS(GameSettingType.DEATHMATCH, 0),
     DEATHMATCH_SUICIDE_POINTS(GameSettingType.DEATHMATCH, -1),
+    DEATHMATCH_ASSIST_POINTS(GameSettingType.DEATHMATCH, 0),
+    DEATHMATCH_BETRAYAL_POINTS(GameSettingType.DEATHMATCH, -1),
 
     KILL_REWARD_GAPPLES(GameSettingType.KILL_REWARDS, 1),
     KILL_REWARD_ARROWS(GameSettingType.KILL_REWARDS, 0),
@@ -20,7 +22,7 @@ public enum NumberSetting implements GameSetting {
     PLAYER_CHESTPLATE_PROT(GameSettingType.PLAYER_CHESTPLATE, 0),
     PLAYER_LEGGINGS_PROT(GameSettingType.PLAYER_LEGGINGS, 0),
     PLAYER_BOOTS_PROT(GameSettingType.PLAYER_BOOTS, 0),
-    PLAYER_BOOTS_FF(GameSettingType.PLAYER_BOOTS, 1),
+    PLAYER_BOOTS_FF(GameSettingType.PLAYER_BOOTS, 0),
 
     PLAYER_SWORD_SHARP(GameSettingType.PLAYER_SWORD, 1),
     PLAYER_SWORD_KB(GameSettingType.PLAYER_SWORD, 0),

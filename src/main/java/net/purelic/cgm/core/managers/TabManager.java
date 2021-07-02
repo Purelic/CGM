@@ -13,12 +13,15 @@ import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.utils.TimeUtils;
 import net.purelic.cgm.utils.tab.TabList;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.Fetcher;
 import net.purelic.commons.utils.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class TabManager {
     
@@ -101,17 +104,41 @@ public class TabManager {
     }
 
     public static TextComponent getHeader() {
-        String header = ChatColor.BOLD + ServerUtils.getName();
-        if (Commons.hasOwner())  header += "'s Server";
+        StringBuilder header = new StringBuilder(ChatColor.BOLD + ServerUtils.getName());
+        if (Commons.hasOwner())  header.append("'s Server");
 
         CustomGameMode gameMode = MatchManager.getCurrentGameMode();
         CustomMap map = MatchManager.getCurrentMap();
 
         if (gameMode != null && map != null) {
-            header += "\n" + gameMode.getColoredName() + " on " + map.getColoredName();
+            header.append("\n").append(gameMode.getColoredName()).append(" on ").append(map.getColoredName());
+
+            List<UUID> authors = map.getYaml().getAuthors();
+
+            if (authors.size() >= 3) {
+                header.append("\nby ");
+            } else {
+                header.append(" by ");
+            }
+
+            if (authors.size() == 1) {
+                header.append(Fetcher.getBasicName(authors.get(0)));
+            } else if (authors.size() == 2) {
+                header.append(Fetcher.getBasicName(authors.get(0))).append(" and ").append(Fetcher.getBasicName(authors.get(1)));
+            } else {
+                for (int i = 0; i < authors.size(); i++) {
+                    if (i == 0) {
+                        header.append(Fetcher.getBasicName(authors.get(i)));
+                    } else if (i == authors.size() - 1) {
+                        header.append(", and ").append(Fetcher.getBasicName(authors.get(i)));
+                    } else {
+                        header.append(", ").append(Fetcher.getBasicName(authors.get(i)));
+                    }
+                }
+            }
         }
 
-        return new TextComponent(header);
+        return new TextComponent(header.toString());
     }
 
     public static TextComponent getFooter(Player player) {

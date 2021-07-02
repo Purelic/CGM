@@ -57,7 +57,7 @@ public class Waypoint {
         this(
             hill.getCenter(),
             hill.getTitle(),
-            hill.getColor(),
+            hill.getBaseColor(),
             3,
             hill.getType() == HillType.CTF_GOAL
         );
@@ -82,26 +82,25 @@ public class Waypoint {
 
         this.setName(label);
 
-        if (hideBeam) { // only show name of waypoint
-            return;
+        if (!hideBeam) { // only show name of waypoint
+            this.particleBase = location;
+            this.particleColor = color;
+
+            this.runnable = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (int i = (offset + 1); i <= (offset + 26); i++) {
+                        Location particleLoc = particleBase.clone().add(0, i, 0);
+                        ParticleUtils.spawnColoredParticle(particleColor, particleLoc);
+                    }
+                }
+
+            };
+
+            this.runnable.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
         }
 
-        this.particleBase = location;
-        this.particleColor = color;
-
-        this.runnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (int i = (offset + 1); i <= (offset + 26); i++) {
-                    Location particleLoc = particleBase.clone().add(0, i, 0);
-                    ParticleUtils.spawnColoredParticle(particleColor, particleLoc);
-                }
-            }
-
-        };
-
-        this.runnable.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
-
+        // we always show the lunar waypoint
         this.lunarWaypoint = new LunarWaypoint(label, location, color);
         this.lunarWaypoint.show();
     }

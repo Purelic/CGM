@@ -6,52 +6,44 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.RoundResult;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import java.util.List;
 
 public class RoundEndEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    private final Participant winner;
-    private final MatchTeam winnerTeam;
-
-    public RoundEndEvent(Participant winner) {
-        this.winner = winner;
-        this.winnerTeam = EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ? null : MatchTeam.getTeam(winner.getPlayer());
-    }
+    private final RoundResult result;
 
     public RoundEndEvent() {
         MatchManager matchManager = CGM.get().getMatchManager();
+
         if (matchManager.allEliminated()) {
             if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                Participant participant = matchManager.getLastParticipantAlive();
-                List<Participant> ordered = MatchManager.getOrderedParticipants(false);
-                this.winner = participant != null || ordered.size() == 0 ? participant : ordered.get(0);
-                this.winnerTeam = null;
+                this.result = new RoundResult(matchManager.getLastAlive());
             } else {
-                this.winner = null;
-                this.winnerTeam = matchManager.getLastTeamAlive();
+                this.result = new RoundResult(matchManager.getLastTeamAlive());
             }
         } else {
             if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                this.winner = MatchManager.getTopParticipant(false);
-                this.winnerTeam = null;
+                this.result = new RoundResult(MatchManager.getTopParticipant(false));
             } else {
-                this.winner = null;
-                this.winnerTeam = MatchTeam.getTopTeam(false);
+                this.result = new RoundResult(MatchTeam.getTopTeam(false));
             }
         }
     }
 
-    public Participant getWinner() {
-        return this.winner;
+    public RoundEndEvent(Participant winner) {
+        this.result = new RoundResult(winner);
+   }
+
+    public RoundEndEvent(MatchTeam team) {
+        this.result = new RoundResult(team);
     }
 
-    public MatchTeam getWinnerTeam() {
-        return this.winnerTeam;
+    public RoundResult getResult() {
+        return this.result;
     }
 
     public HandlerList getHandlers() {

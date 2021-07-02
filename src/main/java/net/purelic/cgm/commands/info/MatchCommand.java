@@ -16,8 +16,12 @@ import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
+import net.purelic.commons.utils.Fetcher;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.List;
+import java.util.UUID;
 
 public class MatchCommand implements CustomCommand {
 
@@ -33,21 +37,23 @@ public class MatchCommand implements CustomCommand {
                         CustomGameMode gameMode = MatchManager.getCurrentGameMode();
                         boolean rounds = NumberSetting.ROUNDS.value() > 1;
                         int lives = NumberSetting.LIVES_PER_ROUND.value();
-                        TeamType teamType =  EnumSetting.TEAM_TYPE.get();
-                        String teamSizes = teamType == TeamType.SOLO ? "" : " (" + teamType.getTeams().size() + " teams of " + MatchUtils.getMaxTeamPlayers() + ")";
                         boolean regen = ToggleSetting.PLAYER_NATURAL_REGEN.isEnabled();
+
+                        List<UUID> authorIds = map.getYaml().getAuthors();
+                        String authors = Fetcher.getBasicName(authorIds.get(0));
+
+                        if (authorIds.size() == 2) {
+                            authors += " and " + Fetcher.getBasicName(authorIds.get(1));
+                        } else if (authorIds.size() > 2) {
+                            authors += " and " + authorIds.size() + " others";
+                        }
 
                         player.sendMessage("");
                         player.sendMessage(ChatUtils.getHeader("Match #" + MatchManager.getMatches()));
                         player.sendMessage(ChatColor.ITALIC + gameMode.getDescription());
                         player.sendMessage("");
-                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Map: " + ChatColor.YELLOW + map.getName());
-                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Game Mode: " + ChatColor.GOLD + gameMode.getName() + ChatColor.GRAY + " (" + gameMode.getAlias() + ")");
-                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Game Type: " + ChatColor.AQUA + gameMode.getGameType().getName());
-                        // player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Team Type: " + ChatColor.AQUA + teamType.getName() + ChatColor.GRAY + teamSizes);
-                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Objective: " + MatchUtils.getObjectiveString());
-                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Time Limit: " + ChatColor.AQUA + NumberSetting.TIME_LIMIT.value() + "m" + (rounds ? ChatColor.WHITE + " per round" : ""));
-                        if (rounds) player.sendMessage(ChatColor.GRAY + " • " + TabManager.getRounds(false));
+                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Map: " + map.getColoredName() + " by " + authors);
+                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Game Mode: " + gameMode.getColoredNameWithAlias());
                         if (lives > 0) player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Lives: " + ChatColor.AQUA + lives + (rounds ? ChatColor.WHITE + " per round" : ""));
                         if (!regen) player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Natural Regen: " + ChatColor.AQUA + "Off");
                         player.sendMessage("");

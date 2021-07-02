@@ -374,7 +374,7 @@ public enum MatchTeam {
         Map<MatchTeam, Integer> scores = new LinkedHashMap<>();
 
         for (MatchTeam team : ordered) {
-            scores.put(team, team.getScore() + team.getAlive() + team.getEliminatedScore());
+            scores.put(team, team.getScore() + team.getAlive() + team.getEliminatedScore() + team.getRoundsWon());
         }
 
         return scores;

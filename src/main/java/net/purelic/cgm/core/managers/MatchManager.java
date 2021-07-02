@@ -188,7 +188,7 @@ public class MatchManager {
         round++;
     }
 
-    public void setRoundWinner(MatchTeam team) {
+    public static void setRoundWinner(MatchTeam team) {
         rounds.get(round - 1).setComplete(team);
         if (team != null && team != MatchTeam.SOLO) team.addRoundWin();
     }
@@ -237,6 +237,12 @@ public class MatchManager {
             (this.getTeamsAlive() == 0 || this.getLastTeamAlive() != null));
     }
 
+    public Participant getLastAlive() {
+        Participant participant = this.getLastParticipantAlive();
+        List<Participant> ordered = MatchManager.getOrderedParticipants(false);
+        return  participant != null || ordered.size() == 0 ? participant : ordered.get(0);
+    }
+
     public MatchTeam getLastTeamAlive() {
         int teamsAlive = 0;
         MatchTeam lastAlive = null;
@@ -277,7 +283,7 @@ public class MatchManager {
         return teamsAlive;
     }
 
-    public Participant getLastParticipantAlive() {
+    private Participant getLastParticipantAlive() {
         int playersAlive = 0;
         Participant lastAlive = null;
 

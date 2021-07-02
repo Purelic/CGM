@@ -70,13 +70,13 @@ public class SoundUtils {
                         .addSound(SoundBuilder.Key.FS5, 2)
         ),
 
-        HILL_CAPTURED(
-                new SoundBuilder(Sound.FIREWORK_TWINKLE)
-        ),
+        HILL_CAPTURED(new SoundBuilder(Sound.FIREWORK_TWINKLE, 1.25F)),
 
-        HILL_LOST(
-                new SoundBuilder(Sound.FIREWORK_LAUNCH)
-        ),
+        HILL_RECLAIMED(),
+
+        HILL_LOST(new SoundBuilder(Sound.WITHER_SPAWN, 2F, 0.5F)),
+
+        LEVEL_UP(new SoundBuilder(Sound.LEVEL_UP, 0.5F)),
 
         TRAP_TRIGGERED(
                 new SoundBuilder(Sound.NOTE_PIANO, SoundBuilder.Key.A4)
@@ -117,7 +117,7 @@ public class SoundUtils {
                         .addSound(SoundBuilder.Key.FS5, 2)
         ),
 
-        MATCH_WON( // Crab Rave
+        CRAB_RAVE( // Crab Rave
                 new SoundBuilder(Sound.NOTE_PIANO, SoundBuilder.Key.A3)
                         .addSound(SoundBuilder.Key.F4, 4)
                         .addSound(SoundBuilder.Key.D4, 4)
@@ -229,23 +229,27 @@ public class SoundUtils {
 
         FLAG_TAKEN(new SoundBuilder(Sound.ENDERMAN_TELEPORT)),
 
+        FLAG_STOLEN(new SoundBuilder(Sound.WITHER_SPAWN, 2F, 0.5F)),
+
         // FLAG_DROPPED(new SoundBuilder(Sound.WOLF_WHINE)),
 
-        FLAG_RETURNED(),
+        FLAG_RETURNED(Sound.FIREWORK_LAUNCH),
 
         FLAG_CAPTURED(new SoundBuilder(Sound.FIREWORK_TWINKLE)),
 
         BED_DESTROYED(new SoundBuilder(Sound.WITHER_DEATH)),
 
-        ENEMY_BED_DESTROYED(new SoundBuilder(Sound.FIREWORK_TWINKLE)),
+        ENEMY_BED_DESTROYED(new SoundBuilder(Sound.FIREWORK_LAUNCH)),
 
-        TEAM_DESTROYED_BED(new SoundBuilder(Sound.FIREWORK_LAUNCH)),
+        TEAM_DESTROYED_BED(new SoundBuilder(Sound.FIREWORK_TWINKLE)),
 
         SHOP_ITEM_PURCHASED(new SoundBuilder(Sound.NOTE_PLING, 2F, 0)),
 
         SHOP_PURCHASE_FAILED(new SoundBuilder(Sound.NOTE_PLING, 0.5F, 0)),
 
         TEAM_UPGRADE_PURCHASED(new SoundBuilder(Sound.ANVIL_USE)),
+
+        TELEPORT(new SoundBuilder(Sound.ENDERMAN_TELEPORT, 0.5F)),
 
         ENDER_PEARL_TELEPORT(new SoundBuilder(Sound.ENDERMAN_TELEPORT)),
 

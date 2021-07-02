@@ -5,6 +5,7 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.PlayerArgument;
 import net.purelic.commons.utils.CommandUtils;
@@ -30,7 +31,7 @@ public class TeleportCommand implements CustomCommand {
                     if (MatchManager.isPlaying(player)) {
                        Participant participant = MatchManager.getParticipant(player);
 
-                       if (!participant.isEliminated()) {
+                       if (!participant.isState(ParticipantState.ELIMINATED, ParticipantState.QUEUED) && !CommandUtils.isOp(player)) {
                            CommandUtils.sendErrorMessage(player, "You cannot teleport to other players right now!");
                            return;
                        }

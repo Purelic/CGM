@@ -1,5 +1,6 @@
 package net.purelic.cgm.core.runnables;
 
+import jdk.javadoc.internal.doclets.formats.html.markup.Head;
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
@@ -17,13 +18,18 @@ import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.participant.ParticipantScoreEvent;
 import net.purelic.cgm.listeners.modules.HeadModule;
 import net.purelic.cgm.utils.*;
-import net.purelic.commons.utils.CommandUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
+import net.purelic.commons.utils.CommandUtils;
 import net.purelic.commons.utils.ServerUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class MatchCountdown extends BukkitRunnable {
 
@@ -58,7 +64,8 @@ public class MatchCountdown extends BukkitRunnable {
         }
 
         if (EnumSetting.GAME_TYPE.is(GameType.KING_OF_THE_HILL)
-                || (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER) && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())) {
+            || (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER) && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())
+            || (EnumSetting.GAME_TYPE.is(GameType.DEATHMATCH) && ToggleSetting.DEATHMATCH_SCOREBOXES.isEnabled())) {
             if (NumberSetting.HILL_MOVE_INTERVAL.value() > 0) {
                 HillUtils.getHills().stream().filter(Hill::isActive).forEach(hill -> hill.getWaypoint().setName(hill.getTitle()));
 
@@ -82,13 +89,18 @@ public class MatchCountdown extends BukkitRunnable {
                     int points = NumberSetting.HILL_CAPTURE_POINTS.value();
 
                     if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                        Participant participant = hill.getCapturedByParticipant();
-                        participant.addScore(points, true);
-                        scoredParticipants.put(participant, points);
+                        for (Player player : hill.getPlayers()) {
+                            Participant participant = MatchManager.getParticipant(player);
+                            participant.addScore(points, true);
+                            scoredParticipants.put(participant, points);
+                        }
                     } else {
-                        MatchTeam team = hill.getCapturedByTeam();
-                        team.addScore(points, true);
-                        scoredTeams.put(team, points);
+                        MatchTeam team = hill.getCapturedBy();
+
+                        if (team != hill.getOwner()) {
+                            team.addScore(points, true);
+                            scoredTeams.put(team, points);
+                        }
                     }
                 }
             }
@@ -107,13 +119,30 @@ public class MatchCountdown extends BukkitRunnable {
             }
         } else if (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER)) {
             HeadModule.displayParticles();
+
+            int interval = NumberSetting.HEAD_COLLECTION_INTERVAL.value();
+            int seconds = MatchCountdown.getElapsed() % interval;
+            seconds = interval - seconds;
+            seconds = seconds == 0 ? interval : seconds;
+
+            if (interval > 0) {
+                if (elapsed % interval == 0 && elapsed > 0) {
+                    ChatUtils.broadcastActionBar("Heads collected!",true);
+                    MatchManager.getParticipants().forEach(HeadModule::scoreHeads);
+                } else if (seconds <= 20) {
+                    ChatUtils.broadcastActionBar(
+                        "Heads collecting in " + ChatColor.AQUA + seconds + ChatColor.RESET + " second" + ((seconds == 1) ? "!" : "s!"),
+                        seconds % 5 == 0
+                    );
+                }
+            }
         } else if (EnumSetting.GAME_TYPE.is(GameType.CAPTURE_THE_FLAG)) {
             FlagUtils.scoreCarrierPoints();
 
             if (NumberSetting.FLAG_COLLECTION_INTERVAL.value() > 0) {
                 HillUtils.getHills().forEach(hill -> hill.getWaypoint().setName(hill.getTitle()));
 
-                if (elapsed % NumberSetting.FLAG_COLLECTION_INTERVAL.value() == 0 && elapsed > 0){
+                if (elapsed % NumberSetting.FLAG_COLLECTION_INTERVAL.value() == 0 && elapsed > 0) {
                     FlagUtils.collectFlags();
                 }
             }
@@ -149,7 +178,7 @@ public class MatchCountdown extends BukkitRunnable {
             if (activeHills.length == 0) {
                 int index = ToggleSetting.RANDOM_HILLS.isEnabled() ? new Random().nextInt(hills.size()) : 0;
                 this.currentHill = hills.get(index);
-                Bukkit.broadcastMessage(" ⦿ The hill has spawned at " + this.currentHill.getColoredName() + "!");
+                Bukkit.broadcastMessage(" ⦿ The hill has spawned at " + this.currentHill.getName() + "!");
             } else {
                 this.currentHill = (Hill) activeHills[0];
                 Bukkit.broadcastMessage(" ⦿ The hill moves every " + ChatColor.AQUA + NumberSetting.HILL_MOVE_INTERVAL.value() + ChatColor.RESET + " seconds!");
@@ -170,11 +199,11 @@ public class MatchCountdown extends BukkitRunnable {
                 if (index == hills.size()) index = 0; // go back to first hill if we've reached the end
             }
 
-            this.currentHill.cancel(true);
+            this.currentHill.reset(true);
             this.currentHill = hills.get(index);
             this.currentHill.activate();
 
-            Bukkit.broadcastMessage(" ⦿ The hill has moved to " + this.currentHill.getColoredName() + "!");
+            Bukkit.broadcastMessage(" ⦿ The hill has moved to " + this.currentHill.getName() + "!");
         }
     }
 

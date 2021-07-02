@@ -19,7 +19,6 @@ import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
-import net.purelic.commons.Commons;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,6 +36,7 @@ public class MatchStart implements Listener {
         TabManager.blockUpdates();
 
         ScoreboardManager.setNameVisibility(ToggleSetting.PLAYER_NAME_VISIBLE.isEnabled());
+        ScoreboardManager.setFriendlyFire(ToggleSetting.FRIENDLY_FIRE.isEnabled());
 
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         TeamSize teamSize = EnumSetting.TEAM_SIZE.get();

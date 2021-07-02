@@ -367,8 +367,10 @@ public class BlockProtectionModule implements Listener {
 
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
-        blocks.forEach(block -> block.setType(Material.AIR));
-        blocks.clear();
+        if (ToggleSetting.RESET_BLOCKS.isEnabled()) {
+            blocks.forEach(block -> block.setType(Material.AIR));
+            blocks.clear();
+        }
     }
 
     @EventHandler

@@ -1,36 +1,33 @@
 package net.purelic.cgm.core.maps.hill;
 
 import net.md_5.bungee.api.ChatColor;
-import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.gamemodes.EnumSetting;
+import net.purelic.cgm.core.constants.WaypointVisibility;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
-import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.maps.Area;
+import net.purelic.cgm.core.maps.region.Area;
+import net.purelic.cgm.core.maps.Objective;
 import net.purelic.cgm.core.maps.Waypoint;
 import net.purelic.cgm.core.maps.flag.Flag;
+import net.purelic.cgm.core.maps.hill.constants.HillModifiers;
 import net.purelic.cgm.core.maps.hill.constants.HillType;
-import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.maps.hill.events.HillLostEvent;
+import net.purelic.cgm.core.maps.hill.events.HillReclaimedEvent;
+import net.purelic.cgm.core.maps.hill.runnables.HillCaptureCountdown;
+import net.purelic.cgm.core.maps.hill.runnables.HillChecker;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.events.match.MatchEndEvent;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.cgm.events.participant.ParticipantDeathEvent;
-import net.purelic.cgm.listeners.modules.HeadModule;
 import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.FlagUtils;
-import net.purelic.cgm.utils.SoundUtils;
-import net.purelic.cgm.utils.YamlUtils;
+import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ChatUtils;
-import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.TaskUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -39,193 +36,219 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class Hill implements Listener {
+public class Hill extends Objective<HillModifiers> implements Listener {
 
-    private final int[] coords;
-    private final MatchTeam owner;
+    private static final int VERTICAL_HEIGHT = 5;
+
+    // modifiers
     private final int radius;
     private final boolean square;
+    private final String rawName;
     private final String name;
     private final Material material;
     private final HillType type;
+    private final boolean destructive;
+    private final WaypointVisibility waypointVisibility;
 
-    private int scoreboardRow;
-    private World world;
-    private Location center;
-    private boolean active;
-    private Set<BlockState> blocks;
-    private Area area;
+    // visual
+    private final ChatColor baseColor;
+    private final List<BlockState> blockStates;
     private Waypoint waypoint;
+    private Area area;
 
-    private Set<Participant> participants;
-    private Set<MatchTeam> teams;
-    private MatchTeam capturedByTeam;
-    private Participant capturedByParticipant;
-    private boolean captured;
-    private boolean contested;
-    private float captureProgress;
-    private ChatColor capturingColor;
+    // runnables
+    private HillChecker checker;
+    private HillCaptureCountdown captureCountdown;
 
-    private BukkitRunnable capturing;
-    private BukkitRunnable checker;
+    // capturing
+    private final List<Player> players;
+    private final List<MatchTeam> teams;
+    private float progress;
+    private MatchTeam capturedBy;
+    private MatchTeam controlledBy;
 
-    public Hill(Map<String, Object> map) {
-        this.coords = YamlUtils.getCoords(((String) map.get("location")).split(","));
-        this.owner = MatchTeam.valueOf((String) map.getOrDefault("owner", "SOLO"));
-        this.radius = (int) map.getOrDefault("radius", 3);
-        this.square = !((boolean) map.getOrDefault("circle", true));
-        this.name = (String) map.getOrDefault("name", "The Hill");
-        this.material = Material.valueOf((String) map.getOrDefault("material", "WOOL"));
-        this.type = HillType.valueOf((String) map.getOrDefault("type", "KOTH_HILL"));
-        this.reset();
-        CGM.get().registerListener(this);
-    }
+    // utils
+    private int scoreboardRow;
+    private boolean locked;
 
-    public int[] getCoords() {
-        return this.coords;
+    public Hill(Map<String, Object> yaml) {
+        super(yaml);
+        this.radius = this.get(HillModifiers.RADIUS, 3);
+        this.square = !this.get(HillModifiers.CIRCLE, true);
+        this.rawName = this.get(HillModifiers.NAME, "Hill");
+        this.name = (this.isNeutral() ? ChatColor.WHITE : this.getOwner().getColor()) + this.rawName + ChatColor.RESET;
+        this.material = this.get(HillModifiers.MATERIAL, Material.WOOL);
+        this.destructive = this.get(HillModifiers.DESTRUCTIVE, true);
+        this.type = this.get(HillModifiers.TYPE, HillType.KOTH_HILL);
+        this.waypointVisibility = this.get(HillModifiers.WAYPOINT_VISIBILITY, WaypointVisibility.EVERYONE);
+        boolean invert = this.getOwner().getColor() == ChatColor.WHITE;
+        this.baseColor = this.isNeutral() ? ChatColor.WHITE : (invert ? ChatColor.BLACK : this.getOwner().getColor());
+        this.blockStates = new ArrayList<>();
+        this.scoreboardRow = -1;
+        this.locked = false;
+        this.players = new ArrayList<>();
+        this.teams = new ArrayList<>();
+        this.progress = 1F;
+        this.capturedBy = this.isNeutral() ? null : this.getOwner();
+        this.controlledBy = this.capturedBy;
+        Commons.registerListener(this);
     }
 
     public HillType getType() {
         return this.type;
     }
 
-    public MatchTeam getOwner() {
-        return this.owner;
-    }
-
-    public MatchTeam getControlledBy() {
-        return this.captured ? this.capturedByTeam : this.getOwner();
-    }
-
-    public Material getMaterial() {
-        return this.material;
-    }
-
-    public boolean isNeutral() {
-        return this.owner == MatchTeam.SOLO;
-    }
-
     public String getName() {
         return this.name;
     }
 
-    public String getColoredName() {
-        return (this.isNeutral() ? ChatColor.WHITE : this.owner.getColor()) + this.name + ChatColor.RESET;
+    public ChatColor getBaseColor() {
+        return this.baseColor;
     }
 
-    public Location getCenter() {
-        return this.center;
+    public boolean isLocked() {
+        return this.locked;
     }
 
-    public boolean isActive() {
-        return this.active;
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+        this.updateScoreboard();
     }
 
-    public boolean isLoaded() {
-        return this.world != null;
+    public List<Player> getPlayers() {
+        return this.players;
     }
 
-    public boolean isEmpty() {
-        return this.participants.isEmpty();
+    public List<MatchTeam> getTeams() {
+        return this.teams;
     }
 
-    public boolean hasNoEnemies() {
-        return !this.isNeutral() && this.participants.stream().noneMatch(participant -> MatchTeam.getTeam(participant) != this.owner);
+    public MatchTeam getCapturedBy() {
+        return this.capturedBy;
+    }
+
+    @Override
+    public boolean isCapturedBy(MatchTeam team) {
+        return this.capturedBy == team;
+    }
+
+    public void setCapturedBy(MatchTeam team) {
+        this.capturedBy = team;
+    }
+
+    public MatchTeam getControlledBy() {
+        return this.controlledBy;
+    }
+
+    public void setControlledBy(MatchTeam team) {
+        this.controlledBy = team;
+    }
+
+    public float getProgress() {
+        return this.progress;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
+        this.updateProgress();
+        this.updateScoreboard();
     }
 
     public boolean isCaptured() {
-        return this.captured;
-    }
-
-    public Participant getCapturedByParticipant() {
-        return this.capturedByParticipant;
-    }
-
-    public MatchTeam getCapturedByTeam() {
-        return this.capturedByTeam;
+        return this.capturedBy != null;
     }
 
     public Waypoint getWaypoint() {
         return this.waypoint;
     }
 
-    public void setWorld(int scoreboardRow, World world, boolean active) {
+    public void setWorld(World world, int scoreboardRow, boolean active) {
+        super.setWorld(world);
         this.scoreboardRow = scoreboardRow;
-        this.world = world;
-        this.center = new Location(world, this.coords[0], this.coords[1], this.coords[2]).add(0.5, 0, 0.5);
-        this.active = active;
-
-        if (active) {
-            this.resetColor();
-        }
+        this.setActive(active);
+        this.area = new Area(
+            this.getCenter().clone().subtract(this.radius, 0, this.radius),
+            this.getCenter().clone().add(this.radius, 0, this.radius)
+        );
+        if (active) this.resetProgress();
     }
 
-    public ChatColor getColor() {
-        boolean invert = this.owner.getColor() == ChatColor.WHITE;
-        return !this.isNeutral() ? (invert ? ChatColor.BLACK : this.owner.getColor()) : ChatColor.WHITE;
+    public int getScoreboardRow() {
+        return this.scoreboardRow;
     }
 
-    private void resetColor() {
-        this.setColor(this.getColor(), 1F);
+    public void activate() {
+        this.setActive(true);
+        this.checker = new HillChecker(this);
+        this.resetProgress();
+        TaskUtils.runTimerAsync(this.checker, 5);
+    }
 
-        // Clears the green score color if applicable
+    public void resetProgress() {
+        this.setProgress(1F);
+
+        // clears the green score color if applicable
         ScoreboardManager.updateSoloBoard();
+        ScoreboardManager.updateTeamBoard();
     }
 
-    private void clear() {
-        this.blocks.forEach(state -> state.update(true));
-        this.blocks.clear();
-        this.waypoint.destroy();
-        this.waypoint = null;
-    }
+    private void updateProgress() {
+        ChatColor chatColor = this.controlledBy == null ? this.baseColor : this.controlledBy.getColor();
 
-    private void setColor(ChatColor chatColor, float percent) {
-        if (percent == 1F) {
+        if (this.progress == 1F) {
             if (this.waypoint == null) {
-                final Hill hill = this;
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        waypoint = new Waypoint(hill);
-                    }
-                }.runTask(CGM.get());
-               //  this.waypoint = new Waypoint(this);
+                if (this.waypointVisibility == WaypointVisibility.EVERYONE) this.waypoint = new Waypoint(this);
             } else {
                 this.waypoint.update(chatColor, this.getTitle());
             }
         }
 
-        this.updateScoreboard();
-
-        DyeColor color = ColorConverter.getDyeColor(chatColor);
-        Block center = this.center.getBlock();
-        boolean save = this.blocks.isEmpty();
+        Block center = this.getCenterBlock();
+        boolean save = this.blockStates.isEmpty();
 
         for (int xPoint = center.getX() - this.radius; xPoint <= center.getX() + this.radius; xPoint++) {
             for (int zPoint = center.getZ() - this.radius; zPoint <= center.getZ() + this.radius; zPoint++) {
-                Block block = center.getWorld().getBlockAt(xPoint, center.getY(), zPoint);
-                if (save) this.blocks.add(block.getState());
-                if (this.isInside(block, percent)) this.updateBlockColor(block, color);
+                Block block = this.getWorld().getBlockAt(xPoint, center.getY(), zPoint);
+
+                // If the hill is not destructive, only replace blocks
+                // that are the same type of material as the hill
+                if (!this.destructive) {
+                    Material type = block.getType();
+
+                    if ((this.material == Material.STAINED_GLASS && type != Material.GLASS)
+                        || (this.material == Material.STAINED_CLAY && type != Material.HARD_CLAY)
+                        || (this.material == Material.WOOL && type != Material.WOOL)) {
+                        continue;
+                    }
+                }
+
+                if (save) this.blockStates.add(block.getState());
+
+                if (this.isInside(block, this.progress)) this.updateBlockColor(block, chatColor);
+                else if (this.isInside(block, 1F)) this.updateBlockColor(block, this.baseColor);
             }
         }
     }
 
-    private void updateBlockColor(Block block, DyeColor color) {
-        if (block.getType() != this.material) block.setType(this.material);
+    public boolean isInside(Location location) {
+        int hillY = this.getCenter().getBlockY();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                block.setData(color.getWoolData());
-            }
-        }.runTask(CGM.get());
+        // check if the player has a valid y-level
+        if (location.getY() < hillY || location.getY() > hillY + VERTICAL_HEIGHT) {
+            return false;
+        }
+
+        if (this.square) {
+            return this.area.contains(location);
+        } else {
+            // normalize the player's (or flag's) location y-level with the hill's y-level
+            Location normalized = location.clone();
+            normalized.setY(hillY);
+            return this.isInsideCircle(normalized, true, 1F);
+        }
     }
 
     public boolean isInside(Block block, float percent) {
@@ -233,45 +256,12 @@ public class Hill implements Listener {
         else return this.isInsideCircle(block, percent);
     }
 
-    public boolean isInside(Player player) {
-        return this.isInside(player.getLocation());
-    }
-
-    public boolean isInside(Location loc) {
-        // TODO temporary, not critical but sometimes this gets called after the match ends and center has been reset to null
-        if (this.center == null) return false;
-
-        Location location = loc.clone();
-        int yLevel = this.center.getBlockY();
-
-        // check if the player has a correct y-level
-        if (location.getY() < yLevel || location.getY() > yLevel + 5) {
-            return false;
-        }
-
-        if (this.square) {
-            if (this.area == null) {
-                this.area = new Area(
-                        this.center.clone().subtract(this.radius, 0, this.radius),
-                        this.center.clone().add(this.radius, 0, this.radius)
-                );
-            }
-
-            return this.area.contains(location);
-        } else {
-            // normalize the player's y-level with the hill's y-level
-            location.setY(yLevel);
-            return this.isInsideCircle(location, true, 1F);
-        }
-    }
-
     private boolean isInsideCircle(Block block, float percent) {
         return this.isInsideCircle(block.getLocation().clone().add(0.5, 0, 0.5), false, percent);
     }
 
     private boolean isInsideCircle(Location location, boolean player, float percent) {
-        if (this.center.getWorld() != location.getWorld()) return false; // todo idk why/how this happens
-        return this.center.distance(location) <= (this.radius + (player ? 1.0 : 0.5)) * percent;
+        return this.getCenter().distance(location) <= (this.radius + (player ? 1.0 : 0.5)) * percent;
     }
 
     private boolean isInsideSquare(Block block, float percent) {
@@ -279,295 +269,121 @@ public class Hill implements Listener {
 
         int radius = (int) (this.radius * percent);
 
-        Area area = new Area(
-                this.center.clone().subtract(radius, 0, radius),
-                this.center.clone().add(radius, 0, radius)
-        );
-
-        return area.contains(block.getLocation());
+        return new Area(
+            this.getCenter().clone().subtract(radius, 0, radius),
+            this.getCenter().clone().add(radius, 0, radius)
+        ).contains(block.getLocation());
     }
 
-    public void activate() {
-        this.active = true;
-        this.resetColor();
+    private void updateBlockColor(Block block, ChatColor chatColor) {
+        final DyeColor color = ColorConverter.getDyeColor(chatColor);
+        final BlockState state = block.getState();
 
-        this.checker = new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Participant participant : MatchManager.getParticipants()) {
-                    Player player = participant.getPlayer();
-                    boolean inside = !participant.isDead() && isInside(player);
+        TaskUtils.run(() -> {
+            boolean update = false;
 
-                    if (!ToggleSetting.PERMANENT_HILLS.isEnabled()) {
-                        if (inside) addParticipant(participant);
-                        else removeParticipant(participant);
-                    }
-
-                    objectiveCheck(participant, inside);
-                }
+            if (state.getType() != this.material) {
+                state.setType(this.material);
+                update = true;
             }
-        };
 
-        this.checker.runTaskTimerAsynchronously(CGM.get(), 0, 2);
+            if (state.getRawData() != color.getWoolData()) {
+                state.setRawData(color.getWoolData());
+                update = true;
+            }
+
+            if (update) state.update(true, false);
+        });
     }
 
-    private void addParticipant(Participant participant) {
-        Player player = participant.getPlayer();
-
-        if (this.participants.add(participant)) { // if new player enters hill
+    public void enter(Player player) {
+        if (!this.players.contains(player)) { // if new player enters hill
+            this.players.add(player);
             MatchTeam team = MatchTeam.getTeam(player);
 
-            if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                if (this.participants.size() == 1) {
-                    if (this.capturedByParticipant != participant) this.startCapture(participant); // only player in hill
-                } else {
-                    this.contested = true; // not only player in hill
-                }
-            } else {
-                if (this.teams.add(team)) { // if new team enters hill
-                    if (this.teams.size() == 1) {
-                        if (this.isNeutral() || this.owner != team) {
-                            if (this.capturedByTeam != team) this.startCapture(participant); // only team in hill and hill is neutral or enemy hill
-                        } // else they're in their own hill - do nothing
-                    } else {
-                        this.contested = true; // other teams are inside
-                    }
-                }
-            }
-        }
-
-        if (this.contested) ChatUtils.sendActionBar(player, this.getColoredName() + " is contested!");
-    }
-
-    private void removeParticipant(Participant participant) {
-        if (this.participants.remove(participant)) { // if the player was removed from the hill
-            Player player = participant.getPlayer();
-            MatchTeam team = MatchTeam.getTeam(player);
-            boolean teamRemoved = false;
-
-            ChatUtils.sendActionBar(player, "");
-
-            // if all players of this participant's team have left the hill
-            if (this.participants.stream().filter(p -> MatchTeam.getTeam(p.getPlayer()) == team).toArray().length == 0) {
-                this.teams.remove(team); // remove team from hill
-                teamRemoved = true;
-            }
-
-            if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                this.contested = this.participants.size() > 1; // check if multiple players are present
-            } else {
-                this.contested = this.teams.size() > 1; // check if multiple teams are present
-            }
-
-            // reset hill if capture lock is not enabled and hill is currently captured and empty
-            if (!ToggleSetting.CAPTURE_LOCK.isEnabled() && this.captured && (this.isEmpty() || !this.contested)) {
-                if (teamRemoved && this.capturedByTeam == team) { // reset if the team that captured the hill is the team that was removed
-                    if (this.isNeutral()) Bukkit.broadcastMessage(" ⦿ " + this.getColoredName() + " is now uncontested!");
-                    else Bukkit.broadcastMessage(" ⦿ " + this.getColoredName() + " has been reclaimed!");
-
-                    // clear action bar message
-                    this.participants.forEach(p -> ChatUtils.sendActionBar(p.getPlayer(), ""));
-
-                    this.captured = false;
-                    this.contested = false;
-                    this.capturedByTeam = null;
-                    this.capturedByParticipant = null;
-                    this.captureProgress = 1F;
-
-                    this.resetColor();
-
-                    // clears green scoreboard color
-                    ScoreboardManager.updateTeamBoard();
-                    // ScoreboardManager.updateTeamBoard(team);
-
-                    return;
-                }
-            }
-
-            // if hill is not contested
-            if (!this.contested && !this.isEmpty()) {
-                Participant capturedBy = this.participants.stream().findFirst().get();
-                MatchTeam capturedByTeam = MatchTeam.getTeam(capturedBy.getPlayer());
-
-                // if hill is not captured by participant or their team and hill is neutral or not owned by participant
-                if (this.capturedByParticipant != capturedBy && (this.isNeutral() || this.owner != capturedByTeam)) {
-                    if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO) || this.capturedByTeam != capturedByTeam) {
-                        if (!ToggleSetting.CAPTURE_LOCK.isEnabled()) {
-                            MatchTeam previouslyCapturedBy = this.capturedByTeam;
-
-                            this.captured = false;
-                            this.capturedByTeam = null;
-                            this.capturedByParticipant = null;
-                            this.captureProgress = 1F;
-                            this.resetColor();
-
-                            // clears green scoreboard color
-                            ScoreboardManager.updateTeamBoard();
-                        }
-
-                        this.startCapture(capturedBy);
-                    }
-                } else {
-                    // clear action bar message
-                    this.participants.forEach(p -> ChatUtils.sendActionBar(p.getPlayer(), ""));
-                }
+            if (!this.teams.contains(team)) { // if new team enters hill
+                this.teams.add(team);
+                if (this.capturedBy != team || this.progress < 1F) this.startCapture();
             }
         }
     }
 
-    private void objectiveCheck(Participant participant, boolean insideHill) {
-        MatchTeam team = participant.getTeam();
-        boolean captured = EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ?
-                (this.capturedByParticipant == participant)
-                : (this.isNeutral() || this.captured ? this.capturedByTeam == team : this.owner == team);
+    public void exit(Player player) {
+        // if the player was not in the hill
+        if (!this.players.remove(player)) return;
 
-        if (insideHill && captured) {
-            if (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER)) {
-                HeadModule.scoreHeads(participant);
-            } else if (EnumSetting.GAME_TYPE.is(GameType.CAPTURE_THE_FLAG)) {
-                FlagUtils.captureFlag(participant);
-            }
+        ChatUtils.clearActionBar(player);
+
+        // removes green score color (if applicable)
+        ScoreboardManager.updateSoloBoard();
+
+        MatchTeam team = MatchTeam.getTeam(player);
+        boolean teamRemoved = false;
+
+        // if all players of this participant's team have left the hill
+        if (this.players.stream().noneMatch(p -> MatchTeam.getTeam(p) == team)) {
+            teamRemoved = this.teams.remove(team); // remove team from hill
         }
+
+        // reset hill if capture lock is not enabled and the team that captured the hill is the team that was removed
+        if (!ToggleSetting.CAPTURE_LOCK.isEnabled() && teamRemoved && this.capturedBy == team && (this.isNeutral() || this.getOwner() != team)) {
+            if (!this.isNeutral()) Commons.callEvent(new HillReclaimedEvent(this));
+            Commons.callEvent(new HillLostEvent(this, this.capturedBy));
+
+            this.capturedBy = this.isNeutral() ? null : this.getOwner();
+            this.controlledBy = this.capturedBy;
+            this.resetProgress();
+        }
+
+        if (this.teams.size() == 1) this.startCapture();
     }
 
-    public Set<Flag> getCollectedFlags() {
-        Set<Flag> flags = new HashSet<>();
+    private void startCapture() {
+        if (TaskUtils.isRunning(this.captureCountdown)) return;
+        this.captureCountdown = new HillCaptureCountdown(this);
+        TaskUtils.runTimerAsync(this.captureCountdown, 2);
+    }
+
+    public List<Flag> getCollectedFlags() {
+        List<Flag> flags = new ArrayList<>();
 
         FlagUtils.getFlags()
-                .stream()
-                .filter(flag ->
-                        !flag.hasCarrier()
-                                && this.isInside(flag.getLocation())
-                                && this.getControlledBy() != flag.getOwner())
-                .forEach(flags::add);
+            .stream()
+            .filter(flag ->
+                !flag.hasCarrier()
+                    && this.isInside(flag.getLocation())
+                    && this.capturedBy != flag.getOwner())
+            .forEach(flags::add);
 
         return flags;
-    }
-
-    private void startCapture(Participant participant) {
-        if (TaskUtils.isRunning(this.capturing)) return;
-
-        Player player = participant.getPlayer();
-        MatchTeam team = MatchTeam.getTeam(player);
-        boolean solo = EnumSetting.TEAM_TYPE.is(TeamType.SOLO);
-        String capturedBy = (solo ? NickUtils.getDisplayName(player) : team.getColoredName()) + ChatColor.RESET;
-        Bukkit.broadcastMessage(" ⦿ " + this.getColoredName() + " is now being captured by " + capturedBy + "!");
-        this.capturingColor = team.getColor();
-
-        this.capturing = new BukkitRunnable() {
-
-            private final int delay = NumberSetting.HILL_CAPTURE_DELAY.value();
-            private float progress = 0;
-            private int tick = 0;
-
-            @Override
-            public void run() {
-                this.tick++;
-
-                if (isEmpty() || contested || hasNoEnemies()) {
-                    captureProgress = 1F;
-
-                    if (!captured) resetColor();
-                    else setColor(capturedByTeam.getColor(), 1F);
-
-                    this.cancel();
-                } else if (this.progress >= this.delay) {
-                    // sound effects
-                    if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                        if (capturedByParticipant != null) {
-                            SoundUtils.SFX.HILL_LOST.play(capturedByParticipant.getPlayer());
-                        }
-
-                        SoundUtils.SFX.HILL_CAPTURED.play(player);
-                    } else {
-                        if (capturedByTeam != null) {
-                            SoundUtils.SFX.HILL_LOST.play(capturedByTeam.getPlayers());
-                        }
-
-                        SoundUtils.SFX.HILL_CAPTURED.play(team.getPlayers());
-                    }
-
-                    MatchTeam previouslyCapturedBy = capturedByTeam;
-
-                    captured = true;
-                    capturedByTeam = team;
-                    capturedByParticipant = participant;
-                    captureProgress = 1F;
-
-                    // clears green scoreboard color
-                    if (previouslyCapturedBy != null) {
-                        ScoreboardManager.updateTeamBoard();
-                        // ScoreboardManager.updateTeamBoard(previouslyCapturedBy);
-                    }
-
-                    Bukkit.broadcastMessage(" ⦿ " + getColoredName() + " has been captured by " + capturedBy + "!");
-                    setColor(team.getColor(), 1F);
-                    this.cancel();
-                } else {
-                    double multiplier = NumberSetting.HILL_CAPTURE_MULTIPLIER.value();
-                    double bonus = (0.1 * (multiplier / 100)) * (participants.size() - 1);
-                    this.progress += (0.1 + bonus);
-                    Set<Participant> participantCopy = new HashSet<>(participants); // it's possible players could get removed (ConcurrentModificationException)
-
-                    for (Participant participant : participantCopy) {
-                        Player pl = participant.getPlayer();
-
-                        if (!isInside(pl) || participant.isDead()) continue; // check if player is still in hill
-
-                        if (this.progress < this.delay) {
-                            float percent = this.progress / this.delay;
-                            captureProgress = percent;
-
-                            ChatUtils.sendActionBar(pl, getProgressBar());
-                            setColor(team.getColor(), percent);
-
-                            if (this.tick % 4 == 0) { // sound effect
-                                float pitch = (1.5F * percent) + 0.5F;
-                                pl.playSound(pl.getLocation(), Sound.CLICK, 1F, pitch);
-                            }
-                        } else {
-                            ChatUtils.sendActionBar(pl, team.getColor() + "You" + ChatColor.RESET + " captured " + getColoredName() + "!");
-                        }
-                    }
-                }
-            }
-
-        };
-
-        this.capturing.runTaskTimerAsynchronously(CGM.get(), 0L, 2L);
-    }
-
-    private String getProgressBar() {
-        char symbol = '|';
-        ChatColor completed = ChatColor.GREEN;
-        ChatColor incomplete = ChatColor.GRAY;
-        int totalBars = 40;
-        int progressBars = (int) (totalBars * this.captureProgress);
-        String progress = (new DecimalFormat("#.#").format(this.captureProgress * 100));
-
-        return "Capturing " + this.getColoredName() + " " +
-                ChatColor.DARK_GRAY + "[" + ChatColor.RESET +
-                StringUtils.repeat("" + completed + symbol, progressBars) +
-                StringUtils.repeat("" + incomplete + symbol, totalBars - progressBars) +
-                ChatColor.DARK_GRAY + "]" +
-                ChatColor.AQUA + " " + progress + (progress.contains(".") ? "" : ".0") + "%";
     }
 
     public void updateScoreboard() {
         if (this.scoreboardRow == -1) return;
 
-        String symbol = this.captured || !this.isNeutral() ? "⦿" : "⦾";
-        ChatColor iconColor = this.captured ? this.capturedByTeam.getColor() : this.getColor();
-        String icon = this.captureProgress == 1F ? iconColor + symbol + " " : "";
+        String score = this.getTitle(true, true, true);
+        String forceColor = "";
 
-        String progress = this.captureProgress < 1F ? this.capturingColor + "" + ((int) (this.captureProgress * 100F)) + "% " : "";
-        String score = " " + progress + icon + this.getColor() + this.name + this.getScoreboardTime();
+        if (this.locked) {
+            ChatColor color = this.capturedBy == null ? ChatColor.WHITE : this.capturedBy.getColor();
+            forceColor = "" + color + ChatColor.STRIKETHROUGH;
+        }
 
-        ScoreboardManager.setScore(this.scoreboardRow, score);
+        ScoreboardManager.setScore(this.scoreboardRow, score, forceColor);
     }
 
-    public int getScoreboardRow() {
-        return this.scoreboardRow;
+    public String getTitle() {
+        return this.getTitle(true, false, true);
+    }
+
+    public String getTitle(boolean showSymbol, boolean showProgress, boolean showTime) {
+        String symbol = showSymbol ? this.baseColor + (this.isCaptured() || !this.isNeutral() ? "⦿ " : "⦾ ") : "";
+        ChatColor color = this.capturedBy == null ? ChatColor.WHITE : this.capturedBy.getColor();
+        String progress = this.controlledBy != null && this.progress < 1F ? this.controlledBy.getColor() + "" + ((int) (this.progress * 100F)) + "% " : "";
+        String time = showTime ? this.getScoreboardTime() : "";
+        String prefix = showProgress && this.progress < 1F ? progress : symbol;
+        String strike = this.locked ? ChatColor.STRIKETHROUGH + "" : "";
+        return prefix + color + strike + this.rawName + ChatColor.RESET + time;
     }
 
     public String getScoreboardTime() {
@@ -589,50 +405,48 @@ public class Hill implements Listener {
         return showSeconds ? ChatColor.GRAY + " " + seconds + "s" : "";
     }
 
-    public String getTitle() {
-        String symbol = this.captured || !this.isNeutral() ? "⦿ " : "⦾ ";
-        ChatColor iconColor = this.captured ? this.capturedByTeam.getColor() : this.getColor();
-        return iconColor + symbol + this.getColoredName() + this.getScoreboardTime();
-    }
-
-    public void cancel(boolean clear) {
-        this.participants.clear();
-        this.teams.clear();
-        this.capturedByTeam = null;
-        this.capturedByParticipant = null;
-        this.captured = false;
-        this.contested = false;
-        this.captureProgress = 1F;
-
-        if (this.checker != null) this.checker.cancel();
-        if (this.capturing != null) this.capturing.cancel();
-
-        if (clear) this.clear();
-        else this.resetColor();
-
-        this.active = false;
-    }
-
-    public void reset() {
-        this.scoreboardRow = -1;
-        this.world = null;
-        this.center = null;
-        this.active = false;
-        this.blocks = new HashSet<>();
-        this.area = null;
+    public void destroyWaypoint() {
+        if (this.waypoint != null) this.waypoint.destroy();
         this.waypoint = null;
+    }
 
-        this.participants = new HashSet<>();
-        this.teams = new HashSet<>();
-        this.capturedByTeam = null;
-        this.capturedByParticipant = null;
-        this.captured = false;
-        this.contested = false;
-        this.captureProgress = 1F;
-        this.capturingColor = null;
+    private void remove() {
+        this.blockStates.forEach(state -> state.update(true));
+        this.blockStates.clear();
+        this.destroyWaypoint();
+    }
 
-        if (this.checker != null) this.checker.cancel();
-        if (this.capturing != null) this.capturing.cancel();
+    public void reset(boolean remove) {
+        this.players.clear();
+        this.teams.clear();
+        this.capturedBy = this.isNeutral() ? null : this.getOwner();
+        this.controlledBy = this.capturedBy;
+
+        TaskUtils.cancelIfRunning(this.checker);
+        TaskUtils.cancelIfRunning(this.captureCountdown);
+
+        if (remove) this.remove();
+        else this.resetProgress();
+
+        this.setActive(false);
+        this.locked = false;
+    }
+
+    public void destroy() {
+        this.destroyWaypoint();
+
+        TaskUtils.cancelIfRunning(this.checker);
+        TaskUtils.cancelIfRunning(this.captureCountdown);
+
+        this.unload();
+        this.setActive(false);
+        this.scoreboardRow = -1;
+        this.progress = 1F;
+        this.blockStates.clear();
+        this.players.clear();
+        this.teams.clear();
+        this.capturedBy = this.isNeutral() ? null : this.getOwner();
+        this.controlledBy = this.capturedBy;
     }
 
     @EventHandler
@@ -642,22 +456,22 @@ public class Hill implements Listener {
 
     @EventHandler
     public void onRoundEnd(RoundEndEvent event) {
-        if (this.isActive() || this.isLoaded()) this.cancel(false);
+        if (this.isActive() || this.isLoaded()) this.reset(false);
     }
 
     @EventHandler
     public void onMatchEnd(MatchEndEvent event) {
-        if (this.isActive() || this.isLoaded()) this.reset();
+        if (this.isActive() || this.isLoaded()) this.destroy();
     }
 
     @EventHandler (priority = EventPriority.LOW)
     public void onMatchQuit(MatchQuitEvent event) {
-        this.removeParticipant(event.getParticipant());
+        this.exit(event.getPlayer());
     }
 
     @EventHandler (priority = EventPriority.LOW)
     public void onParticipantDeath(ParticipantDeathEvent event) {
-        this.removeParticipant(event.getParticipant());
+        this.exit(event.getParticipant().getPlayer());
     }
 
     @EventHandler
