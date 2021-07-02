@@ -11,6 +11,7 @@ import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.DropType;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
+import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.DamageManger;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ShopManager;
@@ -71,7 +72,7 @@ public class ParticipantDeath implements Listener {
         // Set final killer (if one) and send death message
         Player killer = killerParticipant == null ? null : killerParticipant.getPlayer();
         boolean suicide = killer == null;
-        boolean betrayal = !suicide && EnumSetting.TEAM_TYPE.get() != MatchTeam.SOLO && participant.getTeam() == killerParticipant.getTeam();
+        boolean betrayal = !suicide && EnumSetting.TEAM_TYPE.get() != TeamType.SOLO && participant.getTeam() == killerParticipant.getTeam();
 
         // Broadcast death message
         deathEvent.setDeathMessage(null);
