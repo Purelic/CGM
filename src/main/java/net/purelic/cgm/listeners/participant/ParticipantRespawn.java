@@ -13,6 +13,7 @@ import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
+import net.purelic.cgm.listeners.modules.BlockProtectionModule;
 import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SpawnUtils;
@@ -26,6 +27,8 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ParticipantRespawn implements Listener {
@@ -96,6 +99,14 @@ public class ParticipantRespawn implements Listener {
                 player.setFlying(false);
                 player.setSneaking(false);
                 player.setSprinting(false);
+
+                if (NumberSetting.PLAYER_HASTE.value() == 0 && BlockProtectionModule.canPlaceBlocks()) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 2));
+                }
+
+                if (NumberSetting.PLAYER_RESISTANCE.value() == 0) {
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 200));
+                }
             }
         }.runTask(CGM.get());
     }
