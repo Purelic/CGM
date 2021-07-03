@@ -6,9 +6,11 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.MatchStartEvent;
 import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.commons.modules.Module;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -219,7 +221,8 @@ public class RegionModule implements Module {
         return this.regions.isEmpty()
             || !MatchState.isActive()
             || !MatchManager.isPlaying(player)
-            || !MatchManager.getParticipant(player).isState(ParticipantState.ALIVE);
+            || !MatchManager.getParticipant(player).isState(ParticipantState.ALIVE)
+            || TaskUtils.isRunning(RoundCountdown.getCountdown());
     }
 
     private void sendWarningMessage(Player player, Region region, RegionModifiers modifier) {
