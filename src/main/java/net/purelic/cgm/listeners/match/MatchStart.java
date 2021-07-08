@@ -2,6 +2,7 @@ package net.purelic.cgm.listeners.match;
 
 import net.purelic.cgm.commands.match.SpectateCommand;
 import net.purelic.cgm.commands.toggles.ToggleAutoJoinCommand;
+import net.purelic.cgm.commands.toggles.ToggleFriendlyFireCommand;
 import net.purelic.cgm.core.constants.JoinState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
@@ -36,7 +37,7 @@ public class MatchStart implements Listener {
         TabManager.blockUpdates();
 
         ScoreboardManager.setNameVisibility(ToggleSetting.PLAYER_NAME_VISIBLE.isEnabled());
-        ScoreboardManager.setFriendlyFire(ToggleSetting.FRIENDLY_FIRE.isEnabled());
+        ScoreboardManager.setFriendlyFire(ToggleSetting.FRIENDLY_FIRE.isEnabled() || ToggleFriendlyFireCommand.friendlyFire);
 
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         TeamSize teamSize = EnumSetting.TEAM_SIZE.get();

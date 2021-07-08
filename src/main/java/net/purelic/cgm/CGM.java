@@ -310,6 +310,7 @@ public class CGM extends JavaPlugin {
         // Toggles
         this.registerCommand(new ToggleAutoJoinCommand());
         this.registerCommand(new ToggleAutoStartCommand());
+        this.registerCommand(new ToggleFriendlyFireCommand());
         this.registerCommand(new ToggleGameModeCommand());
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());

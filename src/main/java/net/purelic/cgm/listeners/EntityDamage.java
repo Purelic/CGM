@@ -1,5 +1,6 @@
 package net.purelic.cgm.listeners;
 
+import net.purelic.cgm.commands.toggles.ToggleFriendlyFireCommand;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
@@ -89,7 +90,9 @@ public class EntityDamage implements Listener {
             MatchTeam damagerTeam = MatchTeam.getTeam(damager);
             Player player = (Player) event.getEntity();
 
-            if (damagerTeam == MatchTeam.OBS || (!ToggleSetting.FRIENDLY_FIRE.isEnabled() && MatchTeam.isSameTeam(player, damager))) {
+            boolean friendlyFire = ToggleSetting.FRIENDLY_FIRE.isEnabled() || ToggleFriendlyFireCommand.friendlyFire;
+
+            if (damagerTeam == MatchTeam.OBS || (!friendlyFire && MatchTeam.isSameTeam(player, damager))) {
                 event.setCancelled(true);
                 return;
             }

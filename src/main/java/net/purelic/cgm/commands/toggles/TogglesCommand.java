@@ -24,6 +24,7 @@ public class TogglesCommand implements CustomCommand {
                 player.sendMessage(getToggle("Voting", CGM.getVotingManager().isEnabled(), "voting").create());
                 player.sendMessage(getToggle("Auto-Start", ToggleAutoStartCommand.autostart, "autostart").create());
                 player.sendMessage(getToggle("Auto-Join", ToggleAutoJoinCommand.autoJoin, "autojoin").create());
+                player.sendMessage(getToggle("Friendly Fire", ToggleFriendlyFireCommand.friendlyFire, "friendly_fire").create());
             });
     }
 
