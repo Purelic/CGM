@@ -22,8 +22,16 @@ public enum EnumSetting implements GameSetting {
     PLAYER_LEGGINGS_TYPE(GameSettingType.PLAYER_LEGGINGS, ArmorType.class, ArmorType.LEATHER),
     PLAYER_BOOTS_TYPE(GameSettingType.PLAYER_BOOTS, ArmorType.class, ArmorType.LEATHER),
 
+    INFECTED_HELMET_TYPE(GameSettingType.INFECTED_HELMET, ArmorType.class, ArmorType.NONE),
+    INFECTED_CHESTPLATE_TYPE(GameSettingType.INFECTED_CHESTPLATE, ArmorType.class, ArmorType.LEATHER),
+    INFECTED_LEGGINGS_TYPE(GameSettingType.INFECTED_LEGGINGS, ArmorType.class, ArmorType.LEATHER),
+    INFECTED_BOOTS_TYPE(GameSettingType.INFECTED_BOOTS, ArmorType.class, ArmorType.LEATHER),
+
     PLAYER_SWORD_TYPE(GameSettingType.PLAYER_SWORD, SwordType.class, SwordType.GOLD),
     PLAYER_BOW_TYPE(GameSettingType.PLAYER_BOW, BowType.class, BowType.BOW),
+
+    INFECTED_SWORD_TYPE(GameSettingType.INFECTED_SWORD, SwordType.class, SwordType.GOLD),
+    INFECTED_BOW_TYPE(GameSettingType.INFECTED_BOW, BowType.class, BowType.NONE),
 
     PLAYER_COMPASS_TYPE(GameSettingType.PLAYER_COMPASS, CompassTrackingType.class, CompassTrackingType.PLAYER),
 

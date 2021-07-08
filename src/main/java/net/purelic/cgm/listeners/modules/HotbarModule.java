@@ -1,6 +1,6 @@
 package net.purelic.cgm.listeners.modules;
 
-import net.purelic.cgm.core.managers.KitManager;
+import net.purelic.cgm.utils.PreferenceUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;
@@ -107,7 +107,7 @@ public class HotbarModule implements Listener {
     }
 
     private static void setOrAddItem(Inventory inventory, Profile profile, Preference preference, int defaultValue, Material material) {
-        int slot = KitManager.convertSlotToIndex(profile.getPreference(preference, defaultValue));
+        int slot = PreferenceUtils.slotToIndex(profile.getPreference(preference, defaultValue));
         setOrAddItem(inventory, slot, material, preference);
     }
 
