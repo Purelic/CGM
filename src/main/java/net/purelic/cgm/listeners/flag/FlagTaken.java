@@ -32,7 +32,12 @@ public class FlagTaken implements Listener {
         FlagItem flagItem = new FlagItem(flag, FlagPattern.random());
         player.getInventory().setHelmet(flagItem.getItemStack());
 
-        SoundUtils.SFX.FLAG_TAKEN.play(player);
+        if (team == MatchTeam.SOLO) SoundUtils.SFX.FLAG_TAKEN.play(player);
+        else SoundUtils.SFX.FLAG_TAKEN.play(team);
+
+        if (!flag.isNeutral()) SoundUtils.SFX.FLAG_STOLEN.play(flag.getOwner());
+
+        ChatUtils.sendTitle(player, "", "Carrying " + flag.getTitle().trim());
 
         new BukkitRunnable() {
             @Override
@@ -45,8 +50,11 @@ public class FlagTaken implements Listener {
                 Hill hill = FlagUtils.getHill(flag);
                 boolean inGoal = hill != null && hill.getControlledBy() == team;
 
-                if (inGoal) ChatUtils.sendActionBar(player, ChatColor.BOLD + "REMOVE HELMET TO DROP FLAG");
-                else ChatUtils.sendActionBar(player, "Carrying " + flag.getTitle().trim());
+                if (inGoal) {
+                    ChatUtils.sendTitle(player, "", ChatColor.BOLD + "REMOVE HELMET TO DROP FLAG");
+                } else {
+                    ChatUtils.sendActionBar(player, "Carrying " + flag.getTitle().trim());
+                }
             }
         }.runTaskTimerAsynchronously(CGM.get(), 0L, 20L);
     }

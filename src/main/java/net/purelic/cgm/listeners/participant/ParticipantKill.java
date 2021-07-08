@@ -46,7 +46,7 @@ public class ParticipantKill implements Listener {
         int points = 0;
 
         if (event.isGameTypeWithScoring()) {
-            points = NumberSetting.DEATHMATCH_KILL_POINTS.value();
+            points = event.isBetrayal() ? NumberSetting.DEATHMATCH_BETRAYAL_POINTS.value() : NumberSetting.DEATHMATCH_KILL_POINTS.value();
         }
 
         if (participant == event.getKilled()) {
@@ -57,7 +57,7 @@ public class ParticipantKill implements Listener {
         participant.addKill();
         participant.addScore(points);
 
-        this.awardMedals(participant, event.getKilled(), points, event.getAssist());
+        this.awardMedals(participant, event.getKilled(), points, event.getAssist(), event.isBetrayal());
 
         if (!MatchState.isState(MatchState.STARTED)
                 || TaskUtils.isRunning(RoundCountdown.getCountdown())
@@ -84,21 +84,23 @@ public class ParticipantKill implements Listener {
         }
     }
 
-    private void awardMedals(Participant killer, Participant killed, int points, KillAssist assist) {
+    private void awardMedals(Participant killer, Participant killed, int points, KillAssist assist, boolean betrayal) {
         new RewardBuilder(
             killer.getPlayer(), points == 0 ? 1 : points
             , points == 0 ? "Kill" : "Point"
-            , this.getKillMedal(killed) + (assist == null || assist.getPercentage() == 100 ? "" : ChatColor.GRAY + " (" + assist.getPercentage() + "%)"))
+            , this.getKillMedal(killed, betrayal) + (assist == null || assist.getPercentage() == 100 ? "" : ChatColor.GRAY + " (" + assist.getPercentage() + "%)"))
             .addMedal(this.getMultiKillMedal(killer))
             .addMedal(this.getKillStreakMedal(killer))
             .addMedals(this.getStyleMedals(killer, killed))
             .reward();
     }
 
-    private String getKillMedal(Participant killed) {
+    private String getKillMedal(Participant killed, boolean betrayal) {
         Player player = killed.getPlayer();
 
-        if (player.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
+        if (betrayal) {
+            return "Betrayed " + NickUtils.getDisplayName(player);
+        } else if (player.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.PROJECTILE) {
             return "Bow Kill";
         } else if (player.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return "Melee Kill";
@@ -236,8 +238,8 @@ public class ParticipantKill implements Listener {
             for (Hill hill : MatchManager.getCurrentMap().getYaml().getHills()) {
                 if (!hill.isActive()) continue;
 
-                if (hill.isInside(pKiller)) {
-                    if (hill.isCaptured() && hill.getCapturedByTeam() == killerTeam
+                if (hill.isInside(pKiller.getLocation())) {
+                    if (hill.isCaptured() && hill.getCapturedBy() == killerTeam
                         || (!hill.isNeutral() && hill.getOwner() == killerTeam)) {
                         // kill enemy while on own or captured hill
                         medals.add(Medal.DEFENDER);
@@ -248,8 +250,8 @@ public class ParticipantKill implements Listener {
                     continue;
                 }
 
-                if (hill.isInside(pKilled)) {
-                    if (hill.isCaptured() && hill.getCapturedByTeam() == killerTeam
+                if (hill.isInside(pKilled.getLocation())) {
+                    if (hill.isCaptured() && hill.getCapturedBy() == killerTeam
                             || (!hill.isNeutral() && hill.getOwner() == killerTeam)) {
                         // kill enemy that's on own or captured hill
                         medals.add(Medal.WATCH_DOG);

@@ -2,7 +2,6 @@ package net.purelic.cgm.core.maps.bed;
 
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.maps.Objective;
 import net.purelic.cgm.core.maps.bed.constants.BedDefense;
 import net.purelic.cgm.core.maps.bed.events.BedBreakEvent;
 import net.purelic.cgm.listeners.modules.BlockProtectionModule;
@@ -24,9 +23,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Bed implements Listener, Objective {
+public class Bed implements Listener {
 
-    private final int[] coords;
+    private final double[] coords;
     private final MatchTeam owner;
     private final BedDefense defense;
     private final BlockFace direction;
@@ -49,7 +48,6 @@ public class Bed implements Listener, Objective {
         CGM.get().registerListener(this);
     }
 
-    @Override
     public MatchTeam getOwner() {
         return this.owner;
     }
@@ -79,7 +77,6 @@ public class Bed implements Listener, Objective {
         return this.location;
     }
 
-    @Override
     public boolean isLoaded() {
         return this.location != null;
     }
@@ -107,7 +104,6 @@ public class Bed implements Listener, Objective {
         }
     }
 
-    @Override
     public void reset() {
         this.blocks.clear();
 

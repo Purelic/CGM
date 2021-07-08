@@ -60,6 +60,7 @@ public class MatchEnd implements Listener {
         MatchManager.addMatch();
 
         ScoreboardManager.setNameVisibility(true);
+        ScoreboardManager.setFriendlyFire(false);
 
         new CycleCountdown().runTaskTimer(CGM.get(), 0, 20);
     }

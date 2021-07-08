@@ -1,4 +1,4 @@
-package net.purelic.cgm.core.maps;
+package net.purelic.cgm.core.maps.region;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -24,44 +24,44 @@ public class Area {
     }
 
     public World getWorld() {
-        return world;
+        return this.world;
     }
 
     public int getMinX() {
-        return minX;
+        return this.minX;
     }
 
     public int getMinZ() {
-        return minZ;
+        return this.minZ;
     }
 
     public int getMaxX() {
-        return maxX;
+        return this.maxX;
     }
 
     public int getMaxZ() {
-        return maxZ;
+        return this.maxZ;
     }
 
     public boolean contains(Area area) {
-        return area.getWorld().equals(world) &&
-                area.getMinX() >= minX && area.getMaxX() <= maxX &&
-                area.getMinZ() >= minZ && area.getMaxZ() <= maxZ;
+        return area.getWorld().equals(this.world) &&
+                area.getMinX() >= this.minX && area.getMaxX() <= this.maxX &&
+                area.getMinZ() >= this.minZ && area.getMaxZ() <= this.maxZ;
     }
 
     public boolean contains(Location location) {
-        return contains(location.getBlockX(), location.getBlockZ());
+        return this.contains(location.getBlockX(), location.getBlockZ());
     }
 
     public boolean contains(int x, int z) {
-        return x >= minX && x <= maxX &&
-                z >= minZ && z <= maxZ;
+        return x >= this.minX && x <= this.maxX &&
+                z >= this.minZ && z <= this.maxZ;
     }
 
     public boolean overlaps(Area area) {
-        return area.getWorld().equals(world) &&
-                !(area.getMinX() > maxX || area.getMinZ() > maxZ ||
-                        minZ > area.getMaxX() || minZ > area.getMaxZ());
+        return area.getWorld().equals(this.world) &&
+                !(area.getMinX() > this.maxX || area.getMinZ() > this.maxZ ||
+                    this.minZ > area.getMaxX() || this.minZ > area.getMaxZ());
     }
 
 }

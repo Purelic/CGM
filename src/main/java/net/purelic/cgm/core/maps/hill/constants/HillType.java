@@ -5,6 +5,6 @@ public enum HillType {
     KOTH_HILL,
     HH_GOAL,
     CTF_GOAL,
-    ;
+    SCOREBOX,
 
 }

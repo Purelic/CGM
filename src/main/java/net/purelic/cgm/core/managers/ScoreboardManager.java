@@ -82,6 +82,21 @@ public class ScoreboardManager {
         }
     }
 
+    public static void setFriendlyFire(boolean friendlyFire) {
+        TeamType teamType = EnumSetting.TEAM_TYPE.get();
+        List<MatchTeam> teams = teamType.getTeams();
+
+        for (MatchTeam matchTeam : teams) {
+            Team team = board.getTeam(matchTeam.getDefaultName());
+
+            if (matchTeam == MatchTeam.SOLO) {
+                team.setAllowFriendlyFire(true);
+            } else {
+                team.setAllowFriendlyFire(friendlyFire);
+            }
+        }
+    }
+
     public static void updateTeam(Player player, MatchTeam matchTeam) {
         String entry = NickUtils.getRealName(player);
         Team team = board.getEntryTeam(entry);
@@ -176,7 +191,7 @@ public class ScoreboardManager {
             return ChatColor.GREEN.toString();
         } else if (EnumSetting.GAME_TYPE.is(GameType.KING_OF_THE_HILL)
             && EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
-            && HillUtils.hasCaptured(participant)) {
+            && HillUtils.hasCaptured(participant.getPlayer())) {
             return ChatColor.GREEN.toString();
         }
 
@@ -219,32 +234,6 @@ public class ScoreboardManager {
         }
     }
 
-//    public static void updateTeamBoard(MatchTeam team) {
-//        CustomGameMode gameMode = MatchManager.getCurrentGameMode();
-//        if (gameMode != null) updateTeamBoard(team, EnumSetting.TEAM_TYPE.get());
-//    }
-//
-//    public static void updateTeamBoard(MatchTeam team, TeamType teamType) {
-//        if (MatchState.isState(MatchState.ENDED)
-//            || teamType == TeamType.SOLO) return;
-//
-//        List<MatchTeam> teams = teamType.getTeams();
-//        int index = teams.indexOf(team);
-//
-//        if (index < 0) return;
-//
-//        int limit = NumberSetting.SCORE_LIMIT.value();
-//        String scoreSuffix = limit == 0 ? "" : ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + limit;
-//
-//        String scoreColor = getScoreColor(team);
-//
-//        if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
-//            setScore(index, scoreColor + team.getScore() + scoreSuffix + "  " + team.getColoredName());
-//        } else {
-//            setScore(index, BedUtils.getScoreboardScore(team));
-//        }
-//    }
-
     public static void setDisplayName(String displayName) {
         sidebar.setDisplayName(displayName);
     }
@@ -256,13 +245,21 @@ public class ScoreboardManager {
     }
 
     public static void setScore(int row, String score) {
+        setScore(row, score, "");
+    }
+
+    public static void setScore(int row, String score, String forceColor) {
         if (row > 15 || row < 0) return;
         String entry = ChatColor.values()[row].toString();
-        setEntry(entry, score);
+        setEntry(entry, score, forceColor);
         sidebar.getScore(entry).setScore(15 - row);
     }
 
     public static void setEntry(String entry, String value) {
+        setEntry(entry, value, "");
+    }
+
+    public static void setEntry(String entry, String value, String forceColor) {
         Team team = registerTeam(entry);
 
         // player display names end with ChatColor.RESET
@@ -283,7 +280,7 @@ public class ScoreboardManager {
                 suffix = value.substring(17);
             }
 
-            suffix = color + suffix;
+            suffix = color + forceColor + suffix;
             suffix = suffix.length() > 16 ? suffix.substring(0, 16) : suffix;
 
             if (!team.getPrefix().equals(prefix)) team.setPrefix(prefix);

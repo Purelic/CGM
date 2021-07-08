@@ -22,7 +22,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.github.paperspigot.Title;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -124,7 +123,7 @@ public class FlagUtils {
 
         HillUtils.getHills().forEach(hill -> {
             MatchTeam team = hill.getControlledBy();
-            Set<Flag> flags = hill.getCollectedFlags();
+            List<Flag> flags = hill.getCollectedFlags();
             collected.putIfAbsent(team, new HashSet<>());
             collected.get(team).addAll(flags);
         });
@@ -151,7 +150,7 @@ public class FlagUtils {
         if (!ToggleSetting.FLAG_GOALS.isEnabled()) return false;
         return HillUtils.getHills().stream()
                 .filter(Hill::isActive)
-                .filter(hill -> hill.getCapturedByTeam() == owner)
+                .filter(hill -> hill.getCapturedBy() == owner)
                 .anyMatch(hill -> hill.getCenter().distance(player.getLocation()) <= dist);
     }
 

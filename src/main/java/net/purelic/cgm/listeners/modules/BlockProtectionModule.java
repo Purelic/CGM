@@ -4,7 +4,6 @@ import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
-import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
@@ -45,8 +44,6 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleUpdateEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -367,8 +364,10 @@ public class BlockProtectionModule implements Listener {
 
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
-        blocks.forEach(block -> block.setType(Material.AIR));
-        blocks.clear();
+        if (ToggleSetting.RESET_BLOCKS.isEnabled()) {
+            blocks.forEach(block -> block.setType(Material.AIR));
+            blocks.clear();
+        }
     }
 
     @EventHandler
@@ -407,21 +406,12 @@ public class BlockProtectionModule implements Listener {
     public void onParticipantRespawn(ParticipantRespawnEvent event) {
         if (!ToggleSetting.SPAWN_PROTECTION.isEnabled()) return;
 
+        Player player = event.getPlayer();
+        if (blocks.size() == 0) return;
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                Player player = event.getPlayer();
-
-                if (NumberSetting.PLAYER_HASTE.value() == 0 && canPlaceBlocks()) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 60, 2));
-                }
-
-                if (NumberSetting.PLAYER_RESISTANCE.value() == 0) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 200));
-                }
-
-                if (blocks.size() == 0) return;
-
                 Location loc = player.getLocation().add(0, 1, 0);
                 int radius = 3;
 

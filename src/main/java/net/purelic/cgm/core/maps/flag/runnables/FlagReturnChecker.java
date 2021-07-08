@@ -1,5 +1,6 @@
 package net.purelic.cgm.core.maps.flag.runnables;
 
+import net.minecraft.server.v1_8_R3.PacketListener;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.ProgressBar;
@@ -7,7 +8,9 @@ import net.purelic.cgm.core.maps.flag.Flag;
 import net.purelic.cgm.core.maps.flag.constants.FlagState;
 import net.purelic.cgm.core.maps.flag.events.FlagEvent;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.utils.ChatUtils;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
@@ -43,8 +46,11 @@ public class FlagReturnChecker extends BukkitRunnable {
             this.cancel();
         } else if (this.progress >= this.delay) {
             this.flag.setState(FlagState.RESPAWNING);
-            participants.forEach(participant ->
-                    ChatUtils.sendActionBar(participant.getPlayer(),""));
+            participants.forEach(participant -> {
+                Player player = participant.getPlayer();
+                ChatUtils.sendActionBar(player, "Returned " + this.flag.getColoredName() + "!");
+                SoundUtils.SFX.FLAG_RETURNED.play(player);
+            });
             this.cancel();
         } else {
             double bonus = (0.1 * (this.multiplier / 100)) * (participants.size() - 1);

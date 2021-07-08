@@ -1,11 +1,13 @@
 package net.purelic.cgm.listeners.participant;
 
 import net.purelic.cgm.core.damage.KillAssist;
+import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.rewards.RewardBuilder;
 import net.purelic.cgm.events.participant.ParticipantAssistEvent;
+import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.utils.NickUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -42,12 +44,19 @@ public class ParticipantAssist implements Listener {
 
         if (assist.isKiller() || participant == null) return;
 
+        int assistPoints = NumberSetting.DEATHMATCH_ASSIST_POINTS.value();
+        boolean scoreAssist = percent >= 50 && MatchUtils.hasKillScoring() && assistPoints > 0;
+
+        if (scoreAssist) {
+            participant.addScore(assistPoints);
+        }
+
         participant.getStats().addAssist();
 
         new RewardBuilder(
                 player,
-                1,
-                "Assist",
+                scoreAssist ? assistPoints : 1,
+                scoreAssist ? "Point" : "Assist",
                 "Assisted Killing " + NickUtils.getDisplayName(killed) + ChatColor.GRAY + " (" + percent + "%)")
                 .reward(Sound.ORB_PICKUP);
     }
