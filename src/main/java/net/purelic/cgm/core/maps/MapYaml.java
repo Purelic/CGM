@@ -6,9 +6,11 @@ import net.purelic.cgm.core.maps.chest.LootChest;
 import net.purelic.cgm.core.maps.chest.constants.LootChestTier;
 import net.purelic.cgm.core.maps.flag.Flag;
 import net.purelic.cgm.core.maps.hill.Hill;
+import net.purelic.cgm.core.maps.region.*;
 
 import java.util.*;
 
+@SuppressWarnings("unchecked")
 public class MapYaml {
 
     private final Map<String, Object> yaml;
@@ -32,6 +34,7 @@ public class MapYaml {
     private final List<Spawner> spawners;
     private final List<JumpPad> jumpPads;
     private final List<LootChest> lootChests;
+    private final List<Region> regions;
 
     // General Settings
     private final int maxBuildLimit;
@@ -63,6 +66,7 @@ public class MapYaml {
         this.spawners = this.loadSpawners();
         this.jumpPads = this.loadJumpPads();
         this.lootChests = this.loadLootChests();
+        this.regions = this.loadRegions();
         Map<String, Object> generalSettings = (Map<String, Object>) yaml.getOrDefault("general", new HashMap<>());
         this.maxBuildLimit = (int) generalSettings.getOrDefault("max_build_limit", 100);
         this.minBuildLimit = (int) generalSettings.getOrDefault("min_build_limit", 0);
@@ -148,6 +152,10 @@ public class MapYaml {
         return this.lootChests;
     }
 
+    public List<Region> getRegions() {
+        return this.regions;
+    }
+
     public int getMaxBuildLimit() {
         return this.maxBuildLimit;
     }
@@ -231,6 +239,24 @@ public class MapYaml {
         }
 
         return lootChests;
+    }
+
+    private List<Region> loadRegions() {
+        List<Region> regions = new ArrayList<>();
+
+        ((List<Map<String, Object>>) this.yaml.getOrDefault("regions", new ArrayList<Map<String, Object>>())).forEach(entry -> {
+            RegionType type = RegionType.valueOf((String) entry.getOrDefault("type", RegionType.CUBOID.name()));
+
+            if (type == RegionType.CUBOID) {
+                regions.add(new CuboidRegion(entry));
+            } else if (type == RegionType.CYLINDER) {
+                regions.add(new CylinderRegion(entry));
+            } else if (type == RegionType.ELLIPSOID) {
+                regions.add(new EllipsoidRegion(entry));
+            }
+        });
+
+        return regions;
     }
 
 }

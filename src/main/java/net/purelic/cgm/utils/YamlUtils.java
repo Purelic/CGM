@@ -2,11 +2,11 @@ package net.purelic.cgm.utils;
 
 public class YamlUtils {
 
-    public static int[] getCoords(String[] args) {
-        int[] coords = new int[3];
+    public static double[] getCoords(String[] args) {
+        double[] coords = new double[3];
 
         for (int i = 0; i < args.length; i++) {
-            coords[i] = Integer.parseInt(args[i]);
+            coords[i] = Double.parseDouble(args[i]);
         }
 
         return coords;

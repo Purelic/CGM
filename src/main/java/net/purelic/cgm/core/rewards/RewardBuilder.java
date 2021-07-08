@@ -60,7 +60,7 @@ public class RewardBuilder {
         boolean positive = this.amount >= 0;
 
         ComponentBuilder message =
-                new ComponentBuilder((positive ? "+" : "") + this.amount + " " + this.type + (this.amount == 1 || this.excludeSuffix ? "" : "s"))
+                new ComponentBuilder((positive ? "+" : "") + this.amount + " " + this.type + (Math.abs(this.amount) == 1 || this.excludeSuffix ? "" : "s"))
                             .color(positive ? ChatColor.GREEN : ChatColor.RED).bold(true)
                         .append(" | ").reset().color(ChatColor.DARK_GRAY)
                         .append(this.reason).reset();

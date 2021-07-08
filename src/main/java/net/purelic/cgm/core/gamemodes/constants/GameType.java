@@ -7,7 +7,7 @@ import java.util.HashSet;
 
 public enum GameType {
 
-    DEATHMATCH("Deathmatch", "Kill the most players to win!", null),
+    DEATHMATCH("Deathmatch", "Kill the most players to win!", HillType.SCOREBOX),
     HEAD_HUNTER("Head Hunter", "Kill other players and collect their head for points!", HillType.HH_GOAL),
     KING_OF_THE_HILL("King of the Hill", "Capture hills for points!", HillType.KOTH_HILL),
     BED_WARS("Bed Wars", "Destroy enemy beds and then eliminate them!", null),

@@ -20,6 +20,8 @@ import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.LootManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
+import net.purelic.cgm.core.maps.hill.HillModule;
+import net.purelic.cgm.core.maps.region.RegionModule;
 import net.purelic.cgm.listeners.*;
 import net.purelic.cgm.listeners.bed.BedBreak;
 import net.purelic.cgm.listeners.flag.*;
@@ -100,6 +102,7 @@ public class CGM extends JavaPlugin {
         }
         System.out.println("The server is now ready!");
 
+        // Cache all the author names
         TaskUtils.runAsync(() -> playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
     }
 
@@ -128,6 +131,10 @@ public class CGM extends JavaPlugin {
 
     private void registerModules() {
         Commons.registerListener(new VotingModule(this.votingManager));
+        Commons.registerListener(new HillModule());
+        Commons.registerListener(new CaptureEffectModule());
+        Commons.registerListener(new GearModule());
+        Commons.registerListener(new RegionModule());
     }
 
     private void registerListeners() {
@@ -155,6 +162,7 @@ public class CGM extends JavaPlugin {
         this.registerListener(new MatchStateChange());
         this.registerListener(new RoundEnd());
         this.registerListener(new RoundStart());
+        this.registerListener(new MatchCycle());
 
         // Modules - Bed Wars
         this.registerListener(new BlastProofModule());

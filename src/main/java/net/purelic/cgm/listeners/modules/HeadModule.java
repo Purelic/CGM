@@ -9,9 +9,13 @@ import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.rewards.Medal;
 import net.purelic.cgm.core.rewards.RewardBuilder;
+import net.purelic.cgm.events.match.MatchStartEvent;
+import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.cgm.events.participant.ParticipantKillEvent;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.ItemCrafter;
 import net.purelic.commons.utils.NickUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +39,7 @@ public class HeadModule implements Listener {
         MatchTeam killerTeam = MatchTeam.getTeam(killer);
         MatchTeam killedTeam = MatchTeam.getTeam(killed);
 
-        if (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER)) {
+        if (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER) && ToggleSetting.PLAYERS_DROP_HEADS.isEnabled()) {
             ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
             SkullMeta meta = (SkullMeta) skull.getItemMeta();
             meta.setOwner(killed.getName());
@@ -68,6 +72,17 @@ public class HeadModule implements Listener {
 
         Participant participant = MatchManager.getParticipant(player);
         HeadModule.scoreHeads(participant);
+    }
+
+    @EventHandler (priority = EventPriority.HIGH)
+    public void onRoundStart(RoundStartEvent event) {
+        int interval = NumberSetting.HEAD_COLLECTION_INTERVAL.value();
+        if (interval > 0) {
+            long delay = NumberSetting.ROUNDS.value() > 1 ? 50L : 0L;
+            delay += NumberSetting.LIVES_PER_ROUND.value() > 0 ? 50L : 0L;
+            TaskUtils.runLaterAsync(() -> ChatUtils.broadcastTitle("", "Heads collect every " +
+                ChatColor.AQUA + interval + "s" + ChatColor.RESET + "!"), delay);
+        }
     }
 
     public static void scoreHeads(Participant participant) {

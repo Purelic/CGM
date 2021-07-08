@@ -19,16 +19,16 @@ public class HillUtils {
     }
 
     public static boolean hasCaptured(MatchTeam team) {
-        return getHills().stream().anyMatch(hill -> hill.getCapturedByTeam() == team);
+        return getHills().stream().anyMatch(hill -> hill.getCapturedBy() == team && hill.getOwner() != team);
     }
 
-    public static boolean hasCaptured(Participant participant) {
-        return HillUtils.getCapturedHills().containsKey(participant);
+    public static boolean hasCaptured(Player player) {
+        return HillUtils.getCapturedHills().values().stream().anyMatch(hill -> hill.getPlayers().contains(player));
     }
 
-    public static Map<Participant, Hill> getCapturedHills() {
-        Map<Participant, Hill> captured = new HashMap<>();
-        MatchManager.getCurrentMap().getLoadedHills().stream().filter(Hill::isCaptured).forEach(hill -> captured.put(hill.getCapturedByParticipant(), hill));
+    public static Map<MatchTeam, Hill> getCapturedHills() {
+        Map<MatchTeam, Hill> captured = new HashMap<>();
+        MatchManager.getCurrentMap().getLoadedHills().stream().filter(Hill::isCaptured).forEach(hill -> captured.put(hill.getCapturedBy(), hill));
         return captured;
     }
 
@@ -41,12 +41,6 @@ public class HillUtils {
             if ((!hill.isNeutral() && hill.getControlledBy() == team)
                 || !hill.isActive()) {
                 continue;
-            }
-
-            if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
-                if (hill.isCaptured() && hill.getCapturedByParticipant() == MatchManager.getParticipant(player)) {
-                    continue;
-                }
             }
 
             double tempDist = player.getLocation().distance(hill.getCenter());

@@ -14,13 +14,15 @@ public class ParticipantKillEvent extends Event {
     private final KillAssist assist;
     private final boolean elimination;
     private final boolean gameTypeWithScoring;
+    private final boolean betrayal;
 
-    public ParticipantKillEvent(Participant participant, Participant killed, KillAssist assist, boolean elimination, boolean gameTypeWithScoring) {
+    public ParticipantKillEvent(Participant participant, Participant killed, KillAssist assist, boolean elimination, boolean gameTypeWithScoring, boolean betrayal) {
         this.participant = participant;
         this.killed = killed;
         this.assist = assist;
         this.elimination = elimination;
         this.gameTypeWithScoring = gameTypeWithScoring;
+        this.betrayal = betrayal;
     }
 
     public Participant getParticipant() {
@@ -41,6 +43,10 @@ public class ParticipantKillEvent extends Event {
 
     public boolean isGameTypeWithScoring() {
         return this.gameTypeWithScoring;
+    }
+
+    public boolean isBetrayal() {
+        return this.betrayal;
     }
 
     public HandlerList getHandlers() {

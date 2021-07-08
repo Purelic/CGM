@@ -15,7 +15,7 @@ import java.util.Set;
 public interface Broadcastable {
 
     default SoundUtils.SFX getSFX() {
-        return SoundUtils.SFX.DEFAULT_SFX;
+        return null;
     }
 
     default void broadcast() {

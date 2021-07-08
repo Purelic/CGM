@@ -235,6 +235,10 @@ public enum MatchTeam {
     }
 
     public static MatchTeam getTeam(Player player) {
+        if (MatchManager.isPlaying(player)) {
+            return MatchManager.getParticipant(player).getTeam();
+        }
+
         for (MatchTeam team : MatchTeam.values()) {
             if (team.hasPlayer(player)) return team;
         }
@@ -374,7 +378,7 @@ public enum MatchTeam {
         Map<MatchTeam, Integer> scores = new LinkedHashMap<>();
 
         for (MatchTeam team : ordered) {
-            scores.put(team, team.getScore() + team.getAlive() + team.getEliminatedScore());
+            scores.put(team, team.getScore() + team.getAlive() + team.getEliminatedScore() + team.getRoundsWon());
         }
 
         return scores;

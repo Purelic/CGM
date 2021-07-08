@@ -5,13 +5,16 @@ public enum ToggleSetting implements GameSetting {
     FRIENDLY_FIRE(GameSettingType.GENERAL, false),
     DYNAMIC_REGEN(GameSettingType.KILL_REWARDS, false),
     TEAM_SWITCHING(GameSettingType.GENERAL, true),
+    ATTACK_DEFENSE(GameSettingType.GENERAL, false),
 
     BLACKOUT_RESPAWN(GameSettingType.RESPAWN, false),
 
-    PLAYER_HELMET_LOCKED(GameSettingType.PLAYER_HELMET, true),
-    PLAYER_CHESTPLATE_LOCKED(GameSettingType.PLAYER_CHESTPLATE, true),
-    PLAYER_LEGGINGS_LOCKED(GameSettingType.PLAYER_LEGGINGS, true),
-    PLAYER_BOOTS_LOCKED(GameSettingType.PLAYER_BOOTS, true),
+    DROP_TRADED_ITEMS(GameSettingType.DEATH_DROPS, false),
+
+    PLAYER_HELMET_LOCKED(GameSettingType.PLAYER_HELMET, false),
+    PLAYER_CHESTPLATE_LOCKED(GameSettingType.PLAYER_CHESTPLATE, false),
+    PLAYER_LEGGINGS_LOCKED(GameSettingType.PLAYER_LEGGINGS, false),
+    PLAYER_BOOTS_LOCKED(GameSettingType.PLAYER_BOOTS, false),
 
     INFECTED_HELMET_LOCKED(GameSettingType.INFECTED_HELMET, true),
     INFECTED_CHESTPLATE_LOCKED(GameSettingType.INFECTED_CHESTPLATE, true),
@@ -88,11 +91,18 @@ public enum ToggleSetting implements GameSetting {
 
     COLLECT_HEADS_INSTANTLY(GameSettingType.HEAD_HUNTER, true),
     HEAD_COLLECTION_HILLS(GameSettingType.HEAD_HUNTER, false),
+    PLAYERS_DROP_HEADS(GameSettingType.HEAD_HUNTER, true),
+
+    DEATHMATCH_SCOREBOXES(GameSettingType.DEATHMATCH, false),
 
     NEUTRAL_HILLS(GameSettingType.KING_OF_THE_HILL, true),
     RANDOM_HILLS(GameSettingType.KING_OF_THE_HILL, false),
     CAPTURE_LOCK(GameSettingType.KING_OF_THE_HILL, true),
     PERMANENT_HILLS(GameSettingType.KING_OF_THE_HILL, false),
+    CAPTURED_HILLS_TELEPORT(GameSettingType.KING_OF_THE_HILL, false),
+    SEQUENTIAL_HILLS(GameSettingType.KING_OF_THE_HILL, false), // TODO impl
+    SINGLE_CAPTURE_HILLS(GameSettingType.KING_OF_THE_HILL, false),
+    ALL_HILLS_WIN(GameSettingType.KING_OF_THE_HILL, false),
 
     FLAG_CARRIER_DISABLE_SPRINTING(GameSettingType.FLAG_CARRIER_MOVEMENT, false),
     NEUTRAL_FLAGS(GameSettingType.CAPTURE_THE_FLAG, false),
@@ -101,6 +111,8 @@ public enum ToggleSetting implements GameSetting {
     FLAG_AT_HOME(GameSettingType.CAPTURE_THE_FLAG, false),
     TELEPORT_ON_CAPTURE(GameSettingType.CAPTURE_THE_FLAG, false),
     RESPAWN_ON_DROP(GameSettingType.CAPTURE_THE_FLAG, false),
+    SINGLE_CAPTURE_FLAGS(GameSettingType.CAPTURE_THE_FLAG, true), // TODO impl
+    ALL_FLAGS_WIN(GameSettingType.KING_OF_THE_HILL, true), // TODO impl
 
     SPAWN_PROTECTION(GameSettingType.WORLD, true),
     MOB_SPAWNING(GameSettingType.WORLD, false),
@@ -111,6 +123,7 @@ public enum ToggleSetting implements GameSetting {
     LEAVES_DECAY(GameSettingType.WORLD, false),
     DAYLIGHT_CYCLE(GameSettingType.WORLD, false),
     INSTANT_TNT(GameSettingType.WORLD, true),
+    RESET_BLOCKS(GameSettingType.WORLD, false);
     ;
 
     private final GameSettingType settingType;

@@ -11,6 +11,7 @@ import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.DropType;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
+import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.DamageManger;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ShopManager;
@@ -71,24 +72,25 @@ public class ParticipantDeath implements Listener {
         // Set final killer (if one) and send death message
         Player killer = killerParticipant == null ? null : killerParticipant.getPlayer();
         boolean suicide = killer == null;
+        boolean betrayal = !suicide && EnumSetting.TEAM_TYPE.get() != TeamType.SOLO && participant.getTeam() == killerParticipant.getTeam();
 
         // Broadcast death message
         deathEvent.setDeathMessage(null);
-        this.sendDeathMessage(player, killer, eliminated, assists.size() - 1, combatLog);
-
-        // Award assists
-        for (KillAssist assist : assists) {
-            assist.setKiller(killer == assist.getAttacker());
-            Commons.callEvent(new ParticipantAssistEvent(assist, player));
-        }
+        this.sendDeathMessage(player, killer, eliminated, assists.size() - 1, combatLog, betrayal);
 
         // Stat and score tracking
         if (!suicide) {
             // oq gm was index out of bounds
             KillAssist assist = assists.stream().filter(KillAssist::isKiller).collect(Collectors.toList()).stream().findFirst().orElse(null);
-            Commons.callEvent(new ParticipantKillEvent(killerParticipant, participant, assist, eliminated, gameTypeWithScoring));
+            Commons.callEvent(new ParticipantKillEvent(killerParticipant, participant, assist, eliminated, gameTypeWithScoring, betrayal));
         } else if (gameTypeWithScoring) {
             participant.addScore(NumberSetting.DEATHMATCH_SUICIDE_POINTS.value());
+        }
+
+        // Award assists
+        for (KillAssist assist : assists) {
+            assist.setKiller(killer == assist.getAttacker());
+            Commons.callEvent(new ParticipantAssistEvent(assist, player));
         }
 
         // Drop items
@@ -242,6 +244,8 @@ public class ParticipantDeath implements Listener {
                 remove.add(item);
             } else if (material == Material.BANNER && !item.getItemMeta().getLore().isEmpty()) {
                 remove.add(item);
+            } else if (!ToggleSetting.DROP_TRADED_ITEMS.isEnabled() && itemCrafter.hasTag("traded_item")) {
+                remove.add(item);
             }
         }
 
@@ -270,9 +274,14 @@ public class ParticipantDeath implements Listener {
         }
     }
 
-    private void sendDeathMessage(Player player, Player killer, boolean eliminated, int assists, boolean combatLog) {
+    private void sendDeathMessage(Player player, Player killer, boolean eliminated, int assists, boolean combatLog, boolean betrayal) {
         String whiteMessage = DeathMessageUtils.getDeathMessage(player, killer, ChatColor.WHITE);
         String grayMessage = DeathMessageUtils.getDeathMessage(player, killer, ChatColor.GRAY);
+
+        if (betrayal) {
+            whiteMessage = whiteMessage.replaceFirst("killed by", "betrayed by");
+            grayMessage = grayMessage.replaceFirst("killed by", "betrayed by");
+        }
 
         String assistMessage = assists < 1 ? "" : " assisted by " + assists + " other" + (assists == 1 ? "" : "s");
         whiteMessage += ChatColor.WHITE + assistMessage;
@@ -315,15 +324,17 @@ public class ParticipantDeath implements Listener {
             return;
         }
 
-        if (VersionUtils.isLegacy(player)) {
-            CommandUtils.sendAlertMessage(player, "You will respawn in " + ChatColor.AQUA + new DecimalFormat("#.#").format(seconds) + ChatColor.RESET + " second" + (seconds == 1 ? "" : "s"));
-        } else {
-            ChatUtils.sendTitle(
-                player,
-                ChatColor.RED + "You died!",
-                DeathMessageUtils.getShortDeathMessage(player, killer),
-                (int) (seconds * 20)
-            );
+        if (seconds > 0) {
+            if (VersionUtils.isLegacy(player)) {
+                CommandUtils.sendAlertMessage(player, "You will respawn in " + ChatColor.AQUA + new DecimalFormat("#.#").format(seconds) + ChatColor.RESET + " second" + (seconds == 1 ? "" : "s"));
+            } else {
+                ChatUtils.sendTitle(
+                    player,
+                    ChatColor.RED + "You died!",
+                    DeathMessageUtils.getShortDeathMessage(player, killer),
+                    (int) (seconds * 20)
+                );
+            }
         }
 
         new RespawnCountdown(seconds, participant).runTaskTimerAsynchronously(CGM.get(), 0L, 1L);

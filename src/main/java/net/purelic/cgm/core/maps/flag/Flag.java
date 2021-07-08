@@ -53,7 +53,7 @@ public class Flag implements Listener {
     private static final double DROP_COOLDOWN = 2.0;
     public static final double RETURN_RADIUS = 2.0;
 
-    private final int[] coords;
+    private final double[] coords;
     private final String name;
     private final MatchTeam owner;
     private final FlagDirection direction;
@@ -89,7 +89,7 @@ public class Flag implements Listener {
         CGM.get().registerListener(this);
     }
 
-    public int[] getCoords() {
+    public double[] getCoords() {
         return this.coords;
     }
 
