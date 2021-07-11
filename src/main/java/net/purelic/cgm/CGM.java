@@ -222,6 +222,7 @@ public class CGM extends JavaPlugin {
 
         // General
         this.registerListener(new EntityDamage());
+        this.registerListener(new EntityTarget());
         // this.registerListener(new OpStatusChange());
         this.registerListener(new PlayerChat());
         this.registerListener(new ItemLockModule());
