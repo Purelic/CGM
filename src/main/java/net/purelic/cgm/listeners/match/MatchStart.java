@@ -83,6 +83,7 @@ public class MatchStart implements Listener {
         }
 
         JoinState.setState(JoinState.EVERYONE);
+        MatchJoin.setAddParticipants(false);
 
         List<Player> premiumPlayers = Bukkit.getOnlinePlayers().stream()
             .filter(player -> CommandUtils.isOp(player) || (!Commons.getProfile(player).isStaff() && Commons.getProfile(player).isDonator()))
@@ -102,6 +103,8 @@ public class MatchStart implements Listener {
                 if (ToggleAutoJoinCommand.autoJoin) player.performCommand("join");
             }
         }
+
+        MatchJoin.setAddParticipants(true);
 
         for (MatchTeam team : teamType.getTeams()) {
             if (team == MatchTeam.OBS) continue;
