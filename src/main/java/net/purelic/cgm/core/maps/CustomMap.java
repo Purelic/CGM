@@ -357,9 +357,17 @@ public class CustomMap {
     }
 
     public boolean supportsGameMode(CustomGameMode gameMode) {
-        TeamType teamType = TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
-        boolean supports = this.supportsTeamType(teamType);
         GameType gameType = gameMode.getGameType();
+        TeamType teamType = TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
+
+        boolean supports;
+
+        if (gameType == GameType.UHC) {
+            // UHC game types don't use the map yaml spawn points and can only be set for the map named "UHC"
+            supports = this.name.equals("UHC");
+        } else {
+            supports = this.supportsTeamType(teamType);
+        }
 
         if (gameType == GameType.KING_OF_THE_HILL
             || (gameType == GameType.HEAD_HUNTER && gameMode.getToggleSetting(ToggleSetting.HEAD_COLLECTION_HILLS))) {
