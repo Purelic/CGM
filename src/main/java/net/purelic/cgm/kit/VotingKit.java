@@ -1,5 +1,6 @@
 package net.purelic.cgm.kit;
 
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.voting.VotingManager;
 import net.purelic.cgm.voting.VotingOption;
 import net.purelic.commons.utils.ItemCrafter;
@@ -31,7 +32,8 @@ public class VotingKit implements Kit {
     }
 
     private ItemStack getVotingItem(Player player, VotingOption option, boolean random) {
-        String name = option.getGameMode().getColoredName() + " on " + option.getMap().getColoredName();
+        boolean uhc = option.getGameMode().getGameType() == GameType.UHC;
+        String name = option.getGameMode().getColoredName() + (uhc ? "" : " on " + option.getMap().getColoredName());
         if (random) name = ChatColor.YELLOW + "Random";
         Material material = option.voted(player) ? this.votingManager.getSettings().getVotedItem() : this.votingManager.getSettings().getVoteItem();
         return new ItemCrafter(material).name(name).setTag(this.nbtTag, option.getId()).craft();
