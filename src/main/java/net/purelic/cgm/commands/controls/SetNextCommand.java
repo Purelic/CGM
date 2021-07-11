@@ -6,6 +6,7 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.info.GameModesCommand;
 import net.purelic.cgm.commands.info.MapsCommand;
+import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
@@ -55,6 +56,17 @@ public class SetNextCommand implements CustomCommand {
 
                     if (map == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapArg.get() + "\"!");
+                        return;
+                    }
+
+                    if (map.getName().equals("UHC") && !MatchState.isState(MatchState.WAITING)) {
+                        String error = "You can only set UHC matches while waiting in the lobby!";
+
+                        if (MatchState.isState(MatchState.VOTING)) {
+                            error = "You can't set UHC matches right now! Please cancel the voting countdowns first, then try again.";
+                        }
+
+                        CommandUtils.sendErrorMessage(player, error);
                         return;
                     }
 
