@@ -9,16 +9,13 @@ import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.commons.utils.ChatUtils;
-import net.purelic.commons.utils.ItemCrafter;
 import net.purelic.commons.utils.ServerUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerJoin implements Listener {
 
@@ -26,11 +23,11 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-//        if (CGM.isPrivate() && !CGM.hasOwner()) {
-//            CGM.setOwner(player);
-//        }
-
         CGM.get().getScoreboardManager().setScoreboard(player);
+
+        // specifically flag first joins when adding a a player to obs because
+        // we put the player in spectator mode, then hide them from participants,
+        // then put them in adventure mode with a 1 tick delay (see below)
         MatchTeam.OBS.addPlayer(player, true);
 
         if (ServerUtils.isRanked()) {
@@ -61,38 +58,18 @@ public class PlayerJoin implements Listener {
 
         TabManager.enable(player);
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (MatchState.isState(MatchState.STARTED) && MatchTeam.getTeam(player) == MatchTeam.OBS) {
-                    for (Participant participant : MatchManager.getParticipants()) {
-                        Player online = participant.getPlayer();
-                        online.hidePlayer(player);
-                    }
+        // 1 tick after joining hide them from participants and set their game mode back to adventure
+        TaskUtils.runLater(() -> {
+            if (MatchState.isState(MatchState.STARTED) && MatchTeam.getTeam(player) == MatchTeam.OBS) {
+                for (Participant participant : MatchManager.getParticipants()) {
+                    Player online = participant.getPlayer();
+                    online.hidePlayer(player);
                 }
-
-                player.setGameMode(GameMode.ADVENTURE);
-                player.setAllowFlight(!MatchState.isState(MatchState.WAITING, MatchState.VOTING));
             }
-        }.runTaskLater(CGM.get(), 1L);
-    }
 
-    public static void getItemKit(Player player) {
-        player.getInventory().addItem(getSetNextItem(), getTogglesItem());
-    }
-
-    private static ItemStack getSetNextItem() {
-        return new ItemCrafter(Material.ENCHANTED_BOOK)
-            .name("" + org.bukkit.ChatColor.RESET + org.bukkit.ChatColor.BOLD + "Set Match" + org.bukkit.ChatColor.RESET + org.bukkit.ChatColor.GRAY + " (/setnext)")
-            .addTag("setnext")
-            .craft();
-    }
-
-    private static ItemStack getTogglesItem() {
-        return new ItemCrafter(Material.PAPER)
-            .name("" + org.bukkit.ChatColor.RESET + org.bukkit.ChatColor.BOLD + "Toggles" + org.bukkit.ChatColor.RESET + org.bukkit.ChatColor.GRAY + " (/toggles)")
-            .addTag("toggles")
-            .craft();
+            player.setGameMode(GameMode.ADVENTURE);
+            player.setAllowFlight(!MatchState.isState(MatchState.WAITING, MatchState.VOTING));
+        }, 1L);
     }
 
 }

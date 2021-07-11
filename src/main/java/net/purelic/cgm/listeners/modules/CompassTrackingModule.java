@@ -16,10 +16,7 @@ import net.purelic.cgm.utils.BedUtils;
 import net.purelic.cgm.utils.FlagUtils;
 import net.purelic.cgm.utils.HillUtils;
 import net.purelic.cgm.utils.PlayerUtils;
-import net.purelic.commons.utils.ChatUtils;
-import net.purelic.commons.utils.NickUtils;
-import net.purelic.commons.utils.TaskUtils;
-import net.purelic.commons.utils.VersionUtils;
+import net.purelic.commons.utils.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -91,7 +88,7 @@ public class CompassTrackingModule implements Listener {
 
     public static boolean isHoldingCompass(Player player) {
         ItemStack item = player.getItemInHand();
-        return item != null && item.getType() == Material.COMPASS;
+        return item != null && item.getType() == Material.COMPASS && new ItemCrafter(item).hasTag("tracking_compass");
     }
 
     public static String getTrackingMessage(Player tracker) {

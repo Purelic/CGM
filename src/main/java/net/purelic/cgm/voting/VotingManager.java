@@ -4,6 +4,7 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.CustomMap;
+import net.purelic.cgm.kit.VotingKit;
 import net.purelic.cgm.server.Playlist;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.utils.ItemCrafter;
@@ -11,7 +12,6 @@ import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,6 +25,7 @@ public class VotingManager {
     private final VotingSettings settings;
     private final Map<String, VotingOption> options;
     private final List<VotingOption> selected;
+    private final VotingKit kit;
     private CustomMap lastPlayedMap;
     private CustomGameMode lastPlayedGameMode;
     private VotingCountdown countdown;
@@ -35,6 +36,7 @@ public class VotingManager {
         this.settings = playlist.getVotingSettings();
         this.options = new HashMap<>();
         this.selected = new ArrayList<>();
+        this.kit = new VotingKit(this, NBT_TAG);
         this.lastPlayedMap = null;
         this.lastPlayedGameMode = null;
         this.countdown = null;
@@ -76,6 +78,14 @@ public class VotingManager {
 
     public VotingCountdown getCountdown() {
         return this.countdown;
+    }
+
+    public List<VotingOption> getSelected() {
+        return this.selected;
+    }
+
+    public VotingKit getKit() {
+        return this.kit;
     }
 
     public void setLastPlayed(CustomMap map, CustomGameMode gameMode) {
@@ -143,7 +153,7 @@ public class VotingManager {
 
         // give players the selected voting items
         for (Player player : Bukkit.getOnlinePlayers()) {
-            this.getVotingItems(player);
+            this.kit.apply(player);
         }
 
         // start the voting countdown
@@ -155,24 +165,6 @@ public class VotingManager {
         ScoreboardManager.resetScores(0);
         ScoreboardManager.setDisplayName("Voting");
         this.updateSidebar();
-    }
-
-    public void getVotingItems(Player player) {
-        int start = 4 - (this.settings.getVotingOptions() / 2);
-        int slot = start; // starting slot index (centers items in hotbar)
-
-        for (VotingOption option : this.selected) {
-            // if random option is enabled and it's the last voting option
-            boolean random = this.settings.hasRandomOption() && slot == (start + this.selected.size() - 1);
-            player.getInventory().setItem(slot++, this.getVotingItem(player, option, random));
-        }
-    }
-
-    private ItemStack getVotingItem(Player player, VotingOption option, boolean random) {
-        String name = option.getGameMode().getColoredName() + " on " + option.getMap().getColoredName();
-        if (random) name = ChatColor.YELLOW + "Random";
-        Material material = option.voted(player) ? this.settings.getVotedItem() : this.settings.getVoteItem();
-        return new ItemCrafter(material).name(name).setTag(NBT_TAG, option.getId()).craft();
     }
 
     public VotingOption getMostVotedOption() {
@@ -189,11 +181,7 @@ public class VotingManager {
 
     public void clearVotingItems() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            for (ItemStack item : player.getInventory().getContents()) {
-                if (new ItemCrafter(item).hasTag(NBT_TAG)) {
-                    player.getInventory().remove(item);
-                }
-            }
+            this.kit.remove(player);
         }
     }
 

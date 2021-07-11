@@ -1,8 +1,6 @@
 package net.purelic.cgm.core.constants;
 
 import net.md_5.bungee.api.ChatColor;
-import net.purelic.cgm.CGM;
-import net.purelic.cgm.commands.toggles.ToggleSpectatorsCommand;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
@@ -13,16 +11,14 @@ import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.RoundEndEvent;
-import net.purelic.cgm.listeners.PlayerJoin;
+import net.purelic.cgm.events.match.SpectatorJoinEvent;
 import net.purelic.cgm.listeners.match.MatchEnd;
 import net.purelic.cgm.utils.BedUtils;
 import net.purelic.cgm.utils.MatchUtils;
-import net.purelic.cgm.utils.PlayerUtils;
-import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
-import net.purelic.commons.utils.*;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import net.purelic.commons.utils.NickUtils;
+import net.purelic.commons.utils.ServerUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -130,7 +126,7 @@ public enum MatchTeam {
         this.addPlayer(player, false);
     }
 
-    public void addPlayer(Player player, boolean join) {
+    public void addPlayer(Player player, boolean initialJoin) {
         removePlayer(player);
         this.players.add(player);
         this.allowed.add(player.getUniqueId());
@@ -140,42 +136,8 @@ public enum MatchTeam {
         TabManager.updateTeam(this, true);
 
         if (this == MatchTeam.OBS) {
-            if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
-                if (!join) PlayerUtils.reset(player, GameMode.ADVENTURE);
-                else PlayerUtils.reset(player, GameMode.SPECTATOR);
-
-                if (MatchState.isState(MatchState.STARTED) && !join) {
-                    // PlayerUtils.hideFromPlaying(player);
-                    PlayerUtils.updateVisibility(player);
-                }
-
-                if (MatchState.isActive() && (!JoinState.isState(JoinState.LOCKED) || Commons.getProfile(player).isDonator() || ServerUtils.isPrivate())) {
-                    player.getInventory().addItem(
-                        new ItemCrafter(Material.EMERALD)
-                            .name(ChatColor.BOLD + "Join Match" + ChatColor.RESET + ChatColor.GRAY + " (/join)")
-                            .setTag("join", "true")
-                            .craft(),
-                        ToggleSpectatorsCommand.getToggleItem(player)
-                    );
-                }
-            } else {
-                PlayerUtils.reset(player, GameMode.ADVENTURE);
-                if (CommandUtils.isOp(player) || Commons.getProfile(player).isMapDev()) PlayerJoin.getItemKit(player);
-            }
-
-            CGM.get().getMatchManager().removeParticipant(player);
-            SpawnUtils.teleportObsSpawn(player);
-
-            // TODO make this not necessary
-            if (MatchState.isState(MatchState.VOTING)) {
-                CGM.getVotingManager().getVotingItems(player);
-            }
+            Commons.callEvent(new SpectatorJoinEvent(player, initialJoin));
         }
-//        else {
-//            if (MatchState.isState(MatchState.STARTED)) {
-//                PlayerUtils.showToPlaying(player);
-//            }
-//        }
     }
 
     public static void removePlayer(Player player) {

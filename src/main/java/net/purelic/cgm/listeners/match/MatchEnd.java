@@ -23,11 +23,11 @@ import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.NickUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,20 +41,19 @@ public class MatchEnd implements Listener {
 
     @EventHandler
     public void onMatchEnd(MatchEndEvent event) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getOnlinePlayers().forEach(player -> {
-                    player.setAllowFlight(true);
-                    player.spigot().setCollidesWithEntities(false);
-                    PlayerUtils.clearInventory(player);
-                    player.setLevel(0);
-                    player.setExp(0);
-                });
+        TaskUtils.run(() -> {
+            PlayerUtils.showEveryone();
 
-                PlayerUtils.showEveryone();
+            for (Participant participant : MatchManager.getParticipants()) {
+                Player player = participant.getPlayer();
+                player.setAllowFlight(true);
+                player.spigot().setCollidesWithEntities(false);
+                PlayerUtils.clearInventory(player);
+                PlayerUtils.clearEffects(player);
+                player.setLevel(0);
+                player.setExp(0);
             }
-        }.runTask(CGM.get());
+        });
 
         this.sendGameOverTitles(event.isForced());
         MatchManager.addMatch();

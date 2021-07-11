@@ -1,12 +1,16 @@
 package net.purelic.cgm.voting;
 
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.events.match.MatchCycleEvent;
+import net.purelic.cgm.events.match.MatchStateChangeEvent;
+import net.purelic.cgm.events.match.SpectatorJoinEvent;
 import net.purelic.commons.modules.Module;
 import net.purelic.commons.utils.ItemCrafter;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -44,10 +48,16 @@ public class VotingModule implements Module {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MatchState.isState(MatchState.VOTING)) {
-            this.votingManager.getVotingItems(event.getPlayer());
-        } else if (this.votingManager.shouldStartVoting()) {
+        if (this.votingManager.shouldStartVoting()) {
             MatchState.setState(MatchState.VOTING);
+        }
+    }
+
+    // run this listener after others since joining specs will clear your inventory
+    @EventHandler (priority = EventPriority.HIGH)
+    public void onSpectatorJoin(SpectatorJoinEvent event) {
+        if (MatchState.isState(MatchState.VOTING)) {
+            this.votingManager.getKit().apply(event.getPlayer());
         }
     }
 
@@ -62,6 +72,13 @@ public class VotingModule implements Module {
     @EventHandler
     public void onMatchCycle(MatchCycleEvent event) {
         TaskUtils.cancelIfRunning(this.votingManager.getCountdown());
+    }
+
+    @EventHandler
+    public void onMatchStateChange(MatchStateChangeEvent event) {
+        if (event.getNewState() == MatchState.VOTING) {
+            CGM.getVotingManager().startVoting(event.getSeconds(), event.isForced());
+        }
     }
 
 }

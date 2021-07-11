@@ -59,12 +59,4 @@ public class ToggleSpectatorsCommand implements CustomCommand {
         return hidingSpectators.contains(player.getUniqueId());
     }
 
-    public static ItemStack getToggleItem(Player player) {
-        boolean hiding = hideSpectators(player);
-        return new ItemCrafter(hiding ? Material.REDSTONE : Material.GLOWSTONE_DUST)
-            .name(ChatColor.BOLD + (hiding ? "Hiding" : "Showing") + " Spectators" + ChatColor.RESET + ChatColor.GRAY + " (R-Click)")
-            .setTag("toggle_spectators", "true")
-            .craft();
-    }
-
 }

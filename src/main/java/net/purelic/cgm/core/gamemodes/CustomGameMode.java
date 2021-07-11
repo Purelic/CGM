@@ -2,7 +2,7 @@ package net.purelic.cgm.core.gamemodes;
 
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.kit.Kit;
+import net.purelic.cgm.kit.MatchKit;
 import net.purelic.cgm.kit.KitType;
 import shaded.com.google.cloud.Timestamp;
 import shaded.com.google.cloud.firestore.QueryDocumentSnapshot;
@@ -24,7 +24,7 @@ public class CustomGameMode {
     private final GameType gameType;
     private final boolean isPublic;
     private final Timestamp createdAt;
-    private final Map<KitType, Kit> kits;
+    private final Map<KitType, MatchKit> kits;
 
     public CustomGameMode(QueryDocumentSnapshot doc) {
         this.doc = doc;
@@ -129,13 +129,13 @@ public class CustomGameMode {
         for (GameSetting setting : settings) setting.reset();
     }
 
-    public Kit getKit(KitType kitType) {
+    public MatchKit getKit(KitType kitType) {
         return this.kits.get(kitType);
     }
 
     private void setKits() {
         for (KitType kitType : KitType.values()) {
-            this.kits.put(kitType, new Kit(this, kitType));
+            this.kits.put(kitType, new MatchKit(this, kitType));
         }
     }
 

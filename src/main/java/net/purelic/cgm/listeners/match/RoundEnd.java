@@ -33,7 +33,16 @@ public class RoundEnd implements Listener {
         MatchTeam winningTeam = result.getWinningTeam();
         Participant winningParticipant = result.getWinningParticipant();
 
-        this.resetParticipantStates();
+        for (Participant participant : MatchManager.getParticipants()) {
+            Player player = participant.getPlayer();
+            PlayerUtils.clearEffects(player);
+            PlayerUtils.clearInventory(player);
+
+            // Set all participant states back to ALIVE on round end
+            // This is mainly important for updating player visibility
+            // e.g. RESPAWNING participants might not get shown to others
+            participant.setState(ParticipantState.ALIVE);
+        }
 
         if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO) && winningParticipant != null) {
             MatchManager.setRoundWinner(MatchTeam.SOLO);
@@ -44,7 +53,6 @@ public class RoundEnd implements Listener {
 
         MatchCountdown.getCountdown().cancel();
         TabManager.updateRounds();
-        PlayerUtils.clearEffectsAll();
 
         if ((!NumberSetting.ROUNDS.isDefault() && winningTeam != null && winningTeam.getRoundsWon() > (NumberSetting.ROUNDS.value() / 2))
             || (NumberSetting.ROUNDS.value() <= MatchManager.getRound())) {
@@ -54,7 +62,6 @@ public class RoundEnd implements Listener {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 TaskUtils.run(() -> player.setAllowFlight(true));
-                PlayerUtils.clearInventory(player);
 
                 if (result.isDraw()) {
                     this.sendPlacement(player, "Round Over", ChatColor.YELLOW + "Draw!");
@@ -66,15 +73,6 @@ public class RoundEnd implements Listener {
                     this.sendPlacement(player, title, result.getWinner() + ChatColor.RESET + " won the round!");
                 }
             }
-        }
-    }
-
-    // Set all participant states back to ALIVE on round end
-    // This is mainly important for updating player visibility
-    // e.g. RESPAWNING participants might not get shown to others
-    private void resetParticipantStates() {
-        for (Participant participant : MatchManager.getParticipants()) {
-            participant.setState(ParticipantState.ALIVE);
         }
     }
 

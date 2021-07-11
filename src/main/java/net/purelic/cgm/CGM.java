@@ -163,6 +163,7 @@ public class CGM extends JavaPlugin {
         this.registerListener(new RoundEnd());
         this.registerListener(new RoundStart());
         this.registerListener(new MatchCycle());
+        this.registerListener(new SpectatorJoin());
 
         // Modules - Bed Wars
         this.registerListener(new BlastProofModule());
@@ -224,7 +225,6 @@ public class CGM extends JavaPlugin {
         // this.registerListener(new OpStatusChange());
         this.registerListener(new PlayerChat());
         this.registerListener(new ItemLockModule());
-        this.registerListener(new PlayerInteract());
         this.registerListener(new PlayerJoin());
         this.registerListener(new PlayerQuit());
         this.registerListener(new PlayerRankChange());

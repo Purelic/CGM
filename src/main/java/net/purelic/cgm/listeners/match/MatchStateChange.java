@@ -37,8 +37,6 @@ public class MatchStateChange implements Listener {
         if (newState == MatchState.WAITING) {
             ScoreboardManager.resetScores(0);
             this.scoreboardManager.updateWaitingSidebar(false);
-        } else if (newState == MatchState.VOTING) {
-            CGM.getVotingManager().startVoting(seconds, forced);
         } else if (newState == MatchState.STARTING) {
             if (ToggleAutoStartCommand.autostart || forced) {
                 new StartCountdown(ServerUtils.isRanked() ? 60 : seconds, forced).runTaskTimer(CGM.get(), 0, 20);
