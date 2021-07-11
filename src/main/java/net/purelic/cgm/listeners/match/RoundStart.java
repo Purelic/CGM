@@ -6,6 +6,7 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
@@ -17,6 +18,7 @@ import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.listeners.participant.ParticipantKill;
 import net.purelic.cgm.utils.MatchUtils;
+import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -37,6 +39,10 @@ public class RoundStart implements Listener {
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
         ParticipantKill.firstBlood = true;
+
+        if (EnumSetting.GAME_TYPE.is(GameType.UHC)) {
+            SpawnUtils.spread(MatchManager.getParticipants());
+        }
 
         if (NumberSetting.ROUNDS.value() <= MatchManager.getRound()) {
             MatchState.setState(MatchState.ENDED);

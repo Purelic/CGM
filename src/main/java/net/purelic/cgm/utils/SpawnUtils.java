@@ -2,16 +2,23 @@ package net.purelic.cgm.utils;
 
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
+import net.purelic.cgm.core.gamemodes.EnumSetting;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
+import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
 import net.purelic.cgm.core.maps.SpawnPoint;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.TaskUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SpawnUtils {
@@ -37,6 +44,13 @@ public class SpawnUtils {
     }
 
     public static void teleportRandom(Player player, boolean initialSpawn) {
+        // When it's UHC we spread players vs using respawn points.
+        // For initial spawn/match start we do a massive spread of everyone so that's why we skip it here.
+        if (EnumSetting.GAME_TYPE.is(GameType.UHC)) {
+            if (!initialSpawn) spread(Collections.singletonList(MatchManager.getParticipant(player)));
+            return;
+        }
+
         MatchTeam team = MatchTeam.getTeam(player);
         MapYaml yaml = MatchManager.getCurrentMap().getYaml();
 
@@ -49,6 +63,21 @@ public class SpawnUtils {
         else if (team == MatchTeam.GRAY) teleportRandom(player, yaml.getGraySpawns(), initialSpawn);
         else if (team == MatchTeam.WHITE) teleportRandom(player, yaml.getWhiteSpawns(), initialSpawn);
         else teleportRandom(player, yaml.getSoloSpawns(), false);
+    }
+
+    public static void spread(Collection<Participant> participants) {
+        Location center = MatchManager.getCurrentMap().getYaml().getObsSpawn().getLocation(MatchManager.getCurrentMap().getWorld());
+        int x = center.getBlockX();
+        int z = center.getBlockZ();
+        TeamType teamType = EnumSetting.TEAM_TYPE.get();
+        boolean teams = teamType != TeamType.SOLO;
+
+        StringBuilder playersArg = new StringBuilder();
+        for (Participant participant : participants) playersArg.append(" ").append(participant.getPlayer().getName());
+
+        String command = "spreadplayers " + x + " " + z + " 50 100 " + (teams ? "true" : "false") + playersArg;
+
+        TaskUtils.run(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
     }
 
     private static void teleportRandom(Player player, List<SpawnPoint> spawnPoints, boolean initialSpawn) {
