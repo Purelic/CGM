@@ -1,5 +1,6 @@
 package net.purelic.cgm.listeners.modules;
 
+import net.minecraft.server.v1_8_R3.BiomeBase;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
@@ -10,7 +11,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.lang.reflect.Field;
+
 public class WorldSettingModule implements Listener {
+
+    public WorldSettingModule() {
+        this.replaceOceanBiomes();
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMatchStart(MatchStartEvent event) {
@@ -34,6 +41,21 @@ public class WorldSettingModule implements Listener {
         world.setGameRuleValue("doTileDrops", "" + false);
         world.setGameRuleValue("doEntityDrops", "" + false);
         world.setGameRuleValue("doDaylightCycle", "" + false);
+    }
+
+    private void replaceOceanBiomes() {
+        try {
+            Field biomesField = BiomeBase.class.getDeclaredField("biomes");
+            biomesField.setAccessible(true);
+
+            if (biomesField.get(null) instanceof BiomeBase[]) {
+                BiomeBase[] biomes = (BiomeBase[]) biomesField.get(null);
+                biomes[BiomeBase.FROZEN_OCEAN.id] = BiomeBase.COLD_TAIGA;
+                biomes[BiomeBase.DEEP_OCEAN.id] = BiomeBase.FOREST;
+                biomes[BiomeBase.OCEAN.id] = BiomeBase.PLAINS;
+                biomesField.set(null, biomes);
+            }
+        } catch (Exception ignored) { }
     }
 
 }
