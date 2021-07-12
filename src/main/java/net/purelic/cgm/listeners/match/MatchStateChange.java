@@ -40,7 +40,6 @@ public class MatchStateChange implements Listener {
         } else if (newState == MatchState.STARTING) {
             if (ToggleAutoStartCommand.autostart || forced) {
                 if (ServerUtils.isRanked()) seconds = 60;
-                else if (MatchManager.getNextMap().getName().equals("UHC")) seconds = 20;
 
                 new StartCountdown(seconds, forced).runTaskTimer(CGM.get(), 0, 20);
             } else {
