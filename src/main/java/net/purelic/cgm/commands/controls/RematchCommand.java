@@ -24,6 +24,11 @@ public class RematchCommand implements CustomCommand {
                     return;
                 }
 
+                if (MatchManager.getCurrentMap().getName().equals("UHC")) {
+                    CommandUtils.sendErrorMessage(player, "You can only set UHC matches while waiting in the lobby!");
+                    return;
+                }
+
                 MatchManager.setNext(MatchManager.getCurrentMap(), MatchManager.getCurrentGameMode());
             });
     }
