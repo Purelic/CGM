@@ -204,6 +204,7 @@ public class CGM extends JavaPlugin {
         this.registerListener(new RespawnModule());
         this.registerListener(new SpawnerModule());
         this.registerListener(new TeamChatModule());
+        this.registerListener(new UHCWorldModule());
         this.registerListener(new WeatherModule());
         this.registerListener(new WorldBorderModule());
         this.registerListener(new WorldSettingModule());
@@ -230,6 +231,10 @@ public class CGM extends JavaPlugin {
         this.registerListener(new PlayerQuit());
         this.registerListener(new PlayerRankChange());
         this.registerListener(new ServerListPing());
+
+        // Dynamic Modules
+        new DynamicModuleModule().register();
+        DynamicModuleModule.add(new UHCWorldModule());
     }
 
     public void registerListener(Listener listener) {
