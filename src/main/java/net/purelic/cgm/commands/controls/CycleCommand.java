@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.managers.MatchManager;
+import net.purelic.cgm.core.runnables.ChunkLoader;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
@@ -31,6 +32,11 @@ public class CycleCommand implements CustomCommand {
             .permission(Permission.isMapDev(true))
             .handler(c -> {
                 Player player = (Player) c.getSender();
+
+                if (ChunkLoader.isActive()) {
+                    CommandUtils.sendErrorMessage(player, "You can't cycle while UHC maps are being pre-generated!");
+                    return;
+                }
 
                 if (TaskUtils.isRunning(CycleCountdown.getCountdown())) {
                     CycleCountdown.setCountdown(0);

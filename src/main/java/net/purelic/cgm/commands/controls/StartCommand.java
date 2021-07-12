@@ -9,6 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.match.SpectateCommand;
 import net.purelic.cgm.core.constants.MatchState;
+import net.purelic.cgm.core.runnables.ChunkLoader;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.StartCountdown;
 import net.purelic.commons.commands.parsers.CustomCommand;
@@ -34,6 +35,11 @@ public class StartCommand implements CustomCommand {
                 Player player = (Player) c.getSender();
                 Optional<Integer> secondsArg = c.getOptional("seconds");
                 int seconds = secondsArg.map(integer -> Math.max(0, integer)).orElse(20);
+
+                if (ChunkLoader.isActive()) {
+                    CommandUtils.sendErrorMessage(player, "You can't start countdowns while UHC maps are being pre-generated!");
+                    return;
+                }
 
                 if (TaskUtils.isRunning(CycleCountdown.getCountdown())) {
                     CommandUtils.sendErrorMessage(player, "You can't start a countdown while a map is cycling!");
