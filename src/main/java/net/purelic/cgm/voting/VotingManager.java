@@ -5,6 +5,7 @@ import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.CustomMap;
+import net.purelic.cgm.core.runnables.ChunkLoader;
 import net.purelic.cgm.kit.VotingKit;
 import net.purelic.cgm.server.Playlist;
 import net.purelic.cgm.utils.SoundUtils;
@@ -99,7 +100,8 @@ public class VotingManager {
             && Bukkit.getOnlinePlayers().size() >= this.settings.getMinPlayers()
             && !this.canceled
             && this.enabled
-            && !ServerUtils.isRanked();
+            && !ServerUtils.isRanked()
+            && !ChunkLoader.isActive();
     }
 
     public void startVoting(int seconds, boolean forced) {
