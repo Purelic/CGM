@@ -305,8 +305,12 @@ public class PlayerUtils {
     }
 
     public static void setLevelAll(int level) {
+        setLevelAll(level, 0F);
+    }
+
+    public static void setLevelAll(int level, float exp) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            setLevel(player, level);
+            setLevel(player, level, exp);
         }
     }
 
