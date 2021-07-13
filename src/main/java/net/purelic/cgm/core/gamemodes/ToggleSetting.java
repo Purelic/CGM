@@ -6,6 +6,7 @@ public enum ToggleSetting implements GameSetting {
     DYNAMIC_REGEN(GameSettingType.KILL_REWARDS, false),
     TEAM_SWITCHING(GameSettingType.GENERAL, true),
     ATTACK_DEFENSE(GameSettingType.GENERAL, false),
+    HUNGER(GameSettingType.GENERAL, false),
 
     BLACKOUT_RESPAWN(GameSettingType.RESPAWN, false),
 
