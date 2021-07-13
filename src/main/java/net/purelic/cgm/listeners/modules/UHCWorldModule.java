@@ -17,9 +17,6 @@ public class UHCWorldModule implements DynamicModule {
         // performance when loading a potentially large world. So, when
         // the match starts we want to set the difficulty back to hard.
         world.setDifficulty(Difficulty.HARD);
-
-        // Reset the time to early day.
-        world.setTime(1000L);
     }
 
     @Override
