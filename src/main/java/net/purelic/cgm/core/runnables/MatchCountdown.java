@@ -157,7 +157,8 @@ public class MatchCountdown extends BukkitRunnable {
         // MatchUtils.updateTabAll(seconds);
         TabManager.updateTime(NumberSetting.TIME_LIMIT.value() == 0 ? elapsed : seconds);
 
-        if (seconds >= 0 && (seconds / 60 % 15 == 0 || (seconds % 60 == 0 && seconds <= 300) || seconds <= 15)) {
+        // every 15 minutes, every minute if less than 5 minutes
+        if (seconds >= 0 && (seconds % 900 == 0 || (seconds % 60 == 0 && seconds <= 300) || seconds <= 15)) {
             if (seconds >= 15) Bukkit.broadcastMessage(TabManager.getTime(false));
             SoundUtils.playCountdownNote(seconds);
         }
