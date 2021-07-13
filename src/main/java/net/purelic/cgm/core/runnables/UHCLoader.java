@@ -49,6 +49,8 @@ public class UHCLoader extends BukkitRunnable {
             World world = wc.createWorld();
             world.setDifficulty(Difficulty.PEACEFUL);
             world.setAutoSave(false);
+            world.setGameRuleValue("doDaylightCycle", "false");
+            world.setTime(1000L);
             WorldGenCaves.loadForWorld(world, 3); // load 3x the normal number of caves
 
             // copy default uhc map yaml file into new world dir
