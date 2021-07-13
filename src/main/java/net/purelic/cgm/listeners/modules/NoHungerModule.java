@@ -17,7 +17,7 @@ public class NoHungerModule implements Listener {
         if (MatchState.isState(MatchState.STARTED)
             && MatchManager.isPlaying(player)
             && MatchManager.getParticipant(player).isAlive()
-            && !ToggleSetting.HUNGER.isEnabled()) {
+            && ToggleSetting.HUNGER.isEnabled()) {
             return;
         }
 
