@@ -14,6 +14,7 @@ import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.Round;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.MatchCountdown;
+import net.purelic.cgm.core.runnables.UHCLoader;
 import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.listeners.match.MatchStart;
@@ -26,6 +27,7 @@ import net.purelic.commons.utils.*;
 import net.purelic.commons.utils.constants.ServerStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -89,9 +91,22 @@ public class MatchManager {
         }
     }
 
+    public static void startPregen(WorldType worldType) {
+        if (nextMap != null) {
+            MapUtils.deleteWorld(nextMap.getWorld());
+        }
+
+        setNextGameMode(CGM.getPlaylist().getGameModeByAlias("UHC"));
+
+        nextMap = CGM.getPlaylist().getMapByName("UHC");
+        TaskUtils.runAsync(new UHCLoader(nextMap, worldType));
+    }
+
     private static void setNextMap(CustomMap map) {
         nextMap = map;
-        new MapLoader(map.getName(), UUID.randomUUID().toString()).runTaskAsynchronously(CGM.get());
+
+        if (map.getName().equals("UHC")) TaskUtils.runAsync(new UHCLoader(map));
+        else TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString()));
     }
 
     private static void setNextGameMode(CustomGameMode gameMode) {
