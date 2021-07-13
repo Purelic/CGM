@@ -2,6 +2,7 @@ package net.purelic.cgm.core.runnables;
 
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
+import net.purelic.cgm.utils.WorldGenCaves;
 import net.purelic.commons.Commons;
 import net.purelic.commons.runnables.MapLoader;
 import net.purelic.commons.utils.CommandUtils;
@@ -48,6 +49,7 @@ public class UHCLoader extends BukkitRunnable {
             World world = wc.createWorld();
             world.setDifficulty(Difficulty.PEACEFUL);
             world.setAutoSave(false);
+            WorldGenCaves.loadForWorld(world, 3); // load 3x the normal number of caves
 
             // copy default uhc map yaml file into new world dir
             try {
