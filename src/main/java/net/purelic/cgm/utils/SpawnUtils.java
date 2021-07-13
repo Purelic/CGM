@@ -66,16 +66,18 @@ public class SpawnUtils {
     }
 
     public static void spread(Collection<Participant> participants) {
-        Location center = MatchManager.getCurrentMap().getYaml().getObsSpawn().getLocation(MatchManager.getCurrentMap().getWorld());
+        CustomMap current = MatchManager.getCurrentMap();
+        Location center = current.getYaml().getObsSpawn().getLocation(MatchManager.getCurrentMap().getWorld());
         int x = center.getBlockX();
         int z = center.getBlockZ();
+        int max = (int) current.getWorld().getWorldBorder().getSize() - 10;
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         boolean teams = teamType != TeamType.SOLO;
 
         StringBuilder playersArg = new StringBuilder();
         for (Participant participant : participants) playersArg.append(" ").append(participant.getPlayer().getName());
 
-        String command = "spreadplayers " + x + " " + z + " 50 100 " + (teams ? "true" : "false") + playersArg;
+        String command = "spreadplayers " + x + " " + z + " 50 " + max +" " + (teams ? "true" : "false") + playersArg;
 
         TaskUtils.run(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
     }
