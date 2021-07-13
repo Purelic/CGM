@@ -53,6 +53,10 @@ public class CustomMap {
         if (this.world == null) this.world = world;
     }
 
+    public World getNextWorld() {
+        return this.nextWorld;
+    }
+
     public void loadObjectives() {
         this.world = this.nextWorld;
 

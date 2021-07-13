@@ -52,6 +52,9 @@ public class CycleCommand implements CustomCommand {
                             Fetcher.getFancyName(player),
                             new TextComponent(" force ended the match and cycled")
                         );
+                    } else if (MatchManager.getNextMap().getNextWorld() == null) {
+                        CommandUtils.sendErrorMessage(player, "The next map hasn't fully loaded yet! Please try again in a moment.");
+                        return;
                     } else {
                         MatchManager.cycle();
                         CommandUtils.broadcastAlertMessage(

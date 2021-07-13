@@ -87,7 +87,7 @@ public class SetNextCommand implements CustomCommand {
                         }
 
                         MatchManager.setNext(map, gameMode);
-                        CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
+                        if (!map.getName().equals("UHC")) CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
                     } else {
                         CommandUtils.sendErrorMessage(player, map.getName() + " does not support " + gameMode.getName() + "!");
                     }
