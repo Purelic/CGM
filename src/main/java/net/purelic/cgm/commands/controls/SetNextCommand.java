@@ -10,6 +10,7 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
+import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -86,8 +87,15 @@ public class SetNextCommand implements CustomCommand {
                             return;
                         }
 
+                        boolean uhc = map.getName().equals("UHC");
+
+                        if (uhc && !Commons.getProfile(player).isDonator(true)) {
+                            CommandUtils.sendErrorMessage(player, "Only Premium players can set UHC matches!");
+                            return;
+                        }
+
                         MatchManager.setNext(map, gameMode);
-                        if (!map.getName().equals("UHC")) CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
+                        if (!uhc) CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
                     } else {
                         CommandUtils.sendErrorMessage(player, map.getName() + " does not support " + gameMode.getName() + "!");
                     }
