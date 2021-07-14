@@ -293,6 +293,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new MatchCommand());
         this.registerCommand(new RoundsCommand());
         this.registerCommand(new ScoreLimitCommand());
+        this.registerCommand(new SeedCommand());
         this.registerCommand(new TimeCommand());
         this.registerCommand(new WorldBorderCommand());
 
