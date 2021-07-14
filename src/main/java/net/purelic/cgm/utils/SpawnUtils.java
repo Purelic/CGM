@@ -70,7 +70,7 @@ public class SpawnUtils {
         Location center = current.getYaml().getObsSpawn().getLocation(MatchManager.getCurrentMap().getWorld());
         int x = center.getBlockX();
         int z = center.getBlockZ();
-        int max = (int) current.getWorld().getWorldBorder().getSize() - 10;
+        int max = (int) (current.getWorld().getWorldBorder().getSize() / 2) - 10;
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         boolean teams = teamType != TeamType.SOLO;
 
