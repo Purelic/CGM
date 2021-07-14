@@ -17,6 +17,7 @@ public class MapLoad implements Listener {
         CustomMap map = MatchManager.getNextMap();
 
         world.setGameRuleValue("randomTickSpeed", String.valueOf(map.getYaml().getTickSpeed()));
+        world.setStorm(false);
         map.setNextWorld(world);
 
         // Auto-cycle if they're in the waiting game state
