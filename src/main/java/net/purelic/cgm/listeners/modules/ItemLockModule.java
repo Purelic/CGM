@@ -3,7 +3,9 @@ package net.purelic.cgm.listeners.modules;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
+import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ShopManager;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,7 +21,9 @@ public class ItemLockModule implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
 
-        if (!MatchState.isState(MatchState.STARTED) || MatchTeam.getTeam(player) == MatchTeam.OBS) {
+        if (!MatchState.isState(MatchState.STARTED)
+            || MatchTeam.getTeam(player) == MatchTeam.OBS
+            || (MatchManager.isPlaying(player) && !MatchManager.getParticipant(player).isState(ParticipantState.ALIVE))) {
             event.setCancelled(true);
             return;
         }
