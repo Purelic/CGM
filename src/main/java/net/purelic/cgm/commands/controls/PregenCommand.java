@@ -16,7 +16,7 @@ public class PregenCommand implements CustomCommand {
     enum WorldType {
 
         NORMAL(org.bukkit.WorldType.NORMAL),
-        AMPLIFIED(org.bukkit.WorldType.AMPLIFIED),
+        // AMPLIFIED(org.bukkit.WorldType.AMPLIFIED),
         LARGE_BIOMES(org.bukkit.WorldType.LARGE_BIOMES),
         ;
 
