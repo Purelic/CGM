@@ -16,6 +16,9 @@ import net.purelic.cgm.commands.preferences.ColorCommand;
 import net.purelic.cgm.commands.preferences.HotbarCommand;
 import net.purelic.cgm.commands.preferences.SoundCommand;
 import net.purelic.cgm.commands.toggles.*;
+import net.purelic.cgm.commands.uhc.UHCCommand;
+import net.purelic.cgm.commands.uhc.UHCScenarioPresetCommand;
+import net.purelic.cgm.commands.uhc.UHCScenarioToggleCommand;
 import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.LootManager;
 import net.purelic.cgm.core.managers.MatchManager;
@@ -34,6 +37,7 @@ import net.purelic.cgm.listeners.participant.*;
 import net.purelic.cgm.listeners.shop.ShopItemPurchase;
 import net.purelic.cgm.listeners.shop.TeamUpgradePurchase;
 import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.uhc.UHCModule;
 import net.purelic.cgm.voting.VotingManager;
 import net.purelic.cgm.voting.VotingModule;
 import net.purelic.commons.Commons;
@@ -204,7 +208,6 @@ public class CGM extends JavaPlugin {
         this.registerListener(new RespawnModule());
         this.registerListener(new SpawnerModule());
         this.registerListener(new TeamChatModule());
-        this.registerListener(new UHCModule());
         this.registerListener(new WeatherModule());
         this.registerListener(new WorldBorderModule());
         this.registerListener(new WorldSettingModule());
@@ -243,7 +246,7 @@ public class CGM extends JavaPlugin {
 
     private void registerCommandManager() {
         final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
-                CommandExecutionCoordinator.simpleCoordinator();
+            CommandExecutionCoordinator.simpleCoordinator();
 
 //        final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
 //            AsynchronousCommandExecutionCoordinator.<CommandSender>newBuilder().build();
@@ -323,6 +326,11 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());
         this.registerCommand(new ToggleVotingCommand(this.votingManager));
+
+        // UHC
+        this.registerCommand(new UHCCommand());
+        this.registerCommand(new UHCScenarioPresetCommand());
+        this.registerCommand(new UHCScenarioToggleCommand());
     }
 
     public void registerCommand(CustomCommand customCommand) {

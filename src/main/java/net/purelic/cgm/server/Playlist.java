@@ -15,6 +15,7 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class Playlist {
 
+    private final String name;
     private final Map<String, Object> yaml;
     private final VotingSettings votingSettings;
     private final Map<String, CustomMap> maps;
@@ -29,10 +30,11 @@ public class Playlist {
     }
 
     private Playlist(String name) {
-        this(MapUtils.downloadPlaylist(name));
+        this(name, MapUtils.downloadPlaylist(name));
     }
 
-    private Playlist(Map<String, Object> yaml) {
+    private Playlist(String name, Map<String, Object> yaml) {
+        this.name = name;
         this.yaml = yaml;
         this.votingSettings = new VotingSettings((Map<String, Object>) yaml.getOrDefault("settings", new HashMap<>()));
         this.maps = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -41,6 +43,10 @@ public class Playlist {
         this.repo = new HashMap<>();
         this.pool = new HashMap<>();
         this.download();
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public VotingSettings getVotingSettings() {
@@ -208,6 +214,10 @@ public class Playlist {
             CustomMap map = new CustomMap(mapName, yaml);
             this.loadMap(map);
         }
+    }
+
+    public static boolean isUHC() {
+        return CGM.getPlaylist().getName().contains("UHC");
     }
 
 }
