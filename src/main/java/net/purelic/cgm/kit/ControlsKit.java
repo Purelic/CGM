@@ -1,5 +1,6 @@
 package net.purelic.cgm.kit;
 
+import net.purelic.cgm.server.Playlist;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,7 +11,7 @@ public class ControlsKit implements Kit {
 
     @Override
     public void apply(Player player) {
-        player.getInventory().addItem(this.getSetNextItem(), this.getTogglesItem());
+        player.getInventory().addItem(this.getSetNextItem(), (Playlist.isUHC() ? this.getUHCItem() : this.getTogglesItem()));
     }
 
     private ItemStack getSetNextItem() {
@@ -24,6 +25,13 @@ public class ControlsKit implements Kit {
         return new ItemCrafter(Material.PAPER)
             .name("" + ChatColor.RESET + ChatColor.BOLD + "Toggles" + ChatColor.RESET + ChatColor.GRAY + " (/toggles)")
             .command("toggles", false)
+            .craft();
+    }
+
+    private ItemStack getUHCItem() {
+        return new ItemCrafter(Material.GOLD_INGOT)
+            .name("" + ChatColor.RESET + ChatColor.BOLD + "UHC Scenarios" + ChatColor.RESET + ChatColor.GRAY + " (/uhc)")
+            .command("uhc", false)
             .craft();
     }
 
