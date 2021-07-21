@@ -14,7 +14,7 @@ import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.Round;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.MatchCountdown;
-import net.purelic.cgm.core.runnables.UHCLoader;
+import net.purelic.cgm.uhc.runnables.UHCLoader;
 import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.listeners.match.MatchStart;

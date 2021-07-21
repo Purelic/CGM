@@ -9,7 +9,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.match.SpectateCommand;
 import net.purelic.cgm.core.constants.MatchState;
-import net.purelic.cgm.core.runnables.ChunkLoader;
+import net.purelic.cgm.uhc.runnables.ChunkLoader;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.StartCountdown;
 import net.purelic.commons.commands.parsers.CustomCommand;

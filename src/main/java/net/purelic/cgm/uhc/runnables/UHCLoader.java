@@ -1,4 +1,4 @@
-package net.purelic.cgm.core.runnables;
+package net.purelic.cgm.uhc.runnables;
 
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;

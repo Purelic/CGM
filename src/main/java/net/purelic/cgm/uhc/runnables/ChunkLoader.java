@@ -1,4 +1,4 @@
-package net.purelic.cgm.core.runnables;
+package net.purelic.cgm.uhc.runnables;
 
 import net.purelic.cgm.commands.toggles.ToggleAutoStartCommand;
 import net.purelic.cgm.core.managers.MatchManager;
