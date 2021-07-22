@@ -282,6 +282,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new DownloadGameModeCommand());
         this.registerCommand(new DownloadMapCommand());
         this.registerCommand(new EndCommand());
+        this.registerCommand(new LTPCommand(this.getConfig()));
         this.registerCommand(new PregenCommand());
         this.registerCommand(new RematchCommand());
         this.registerCommand(new SetNextCommand());
