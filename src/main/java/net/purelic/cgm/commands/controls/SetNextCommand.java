@@ -10,7 +10,6 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
-import net.purelic.cgm.server.Playlist;
 import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
@@ -42,7 +41,7 @@ public class SetNextCommand implements CustomCommand {
                 Optional<String> gameModeArg = c.getOptional("game mode");
 
                 if (!mapArg.isPresent()) {
-                    if (Playlist.isUHC()) MapsCommand.openMapsBook(player, "/setnext \"UHC\"");
+                    if (CGM.getPlaylist().isUHC()) MapsCommand.openMapsBook(player, "/setnext \"UHC\"");
                     else MapsCommand.openMapsBook(player, "/setnext \"%MAP%\"");
                 } else if (!gameModeArg.isPresent()) {
                     CustomMap map = CGM.getPlaylist().getMap(mapArg.get());

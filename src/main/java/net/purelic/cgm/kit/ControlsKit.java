@@ -1,6 +1,6 @@
 package net.purelic.cgm.kit;
 
-import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.CGM;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -11,7 +11,7 @@ public class ControlsKit implements Kit {
 
     @Override
     public void apply(Player player) {
-        player.getInventory().addItem(this.getSetNextItem(), (Playlist.isUHC() ? this.getUHCItem() : this.getTogglesItem()));
+        player.getInventory().addItem(this.getSetNextItem(), (CGM.getPlaylist().isUHC() ? this.getUHCItem() : this.getTogglesItem()));
     }
 
     private ItemStack getSetNextItem() {

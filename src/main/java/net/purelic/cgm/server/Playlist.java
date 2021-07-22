@@ -126,14 +126,15 @@ public class Playlist {
         this.downloadGameModes(Fetcher.PURELIC_UUID);
         if (Commons.hasOwner()) this.downloadGameModes(Commons.getOwnerId());
 
-        if (isUHC()) {
+        if (this.isUHC()) {
+            MapUtils.downloadPublicMap("Lobby");
             String name = MapUtils.downloadPublicMap("UHC");
             MapYaml yaml = new MapYaml(MapUtils.getMapYaml(name));
             CustomMap map = new CustomMap(name, yaml);
             this.loadMap(map);
         } else {
             this.downloadMaps();
-            if (Commons.hasOwner() && !Playlist.isUHC()) this.downloadPlayerMaps(Commons.getOwnerId());
+            if (Commons.hasOwner()) this.downloadPlayerMaps(Commons.getOwnerId());
         }
     }
 
@@ -158,7 +159,7 @@ public class Playlist {
         if (!gameMode.isPublic()
             || this.gameModes.containsKey(name)
             || this.gameModesByAlias.containsKey(alias)
-            || (isUHC() && gameMode.getGameType() != GameType.UHC)) return;
+            || (this.isUHC() && gameMode.getGameType() != GameType.UHC)) return;
 
         this.gameModes.put(name, gameMode);
         this.gameModesByAlias.put(alias, name);
@@ -226,8 +227,8 @@ public class Playlist {
         }
     }
 
-    public static boolean isUHC() {
-        return CGM.getPlaylist().getName().contains("UHC");
+    public boolean isUHC() {
+        return this.name.contains("UHC");
     }
 
 }

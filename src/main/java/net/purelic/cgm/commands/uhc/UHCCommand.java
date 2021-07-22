@@ -2,7 +2,7 @@ package net.purelic.cgm.commands.uhc;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
-import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.uhc.UHCPreset;
 import net.purelic.cgm.uhc.UHCScenario;
 import net.purelic.commons.commands.parsers.CustomCommand;
@@ -21,7 +21,7 @@ public class UHCCommand implements CustomCommand {
             .handler(c -> {
                 Player player = (Player) c.getSender();
 
-                if (!Playlist.isUHC()) {
+                if (!CGM.getPlaylist().isUHC()) {
                     CommandUtils.sendErrorMessage(player, "You can only use this command on UHC servers!");
                     return;
                 }

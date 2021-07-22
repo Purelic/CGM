@@ -72,11 +72,11 @@ public class CGM extends JavaPlugin {
         plugin = this;
         ready = false;
 
-        // download lobby map
-        TaskUtils.runAsync(new MapLoader("Lobby"));
-
         // download playlist
         this.playlist = new Playlist();
+
+        // download lobby map
+        TaskUtils.runAsync(new MapLoader("Lobby"));
 
         // register managers, listeners, and commands
         this.registerManagers();
