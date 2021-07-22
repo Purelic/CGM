@@ -37,6 +37,7 @@ public class UHCScenarioToggleCommand implements CustomCommand {
                 }
 
                 scenario.toggle();
+                UHCCommand.openMenu(player);
                 CommandUtils.broadcastAlertMessage(ChatColor.AQUA + scenario.getName() + ChatColor.WHITE + " scenario is now " +
                     (scenario.isEnabled() ? ChatColor.GREEN + "enabled" : ChatColor.RED + "disabled"));
             });

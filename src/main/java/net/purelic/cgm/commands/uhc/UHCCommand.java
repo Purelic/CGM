@@ -26,26 +26,30 @@ public class UHCCommand implements CustomCommand {
                     return;
                 }
 
-                Inventory inv = Bukkit.createInventory(null, 54, "UHC Scenarios");
-
-                // Adds the UHC preset items to the top row
-                for (UHCPreset preset : UHCPreset.values()) {
-                    inv.addItem(preset.getItem());
-                }
-
-                int slot = 18;
-
-                for (UHCScenario scenario : UHCScenario.values()) {
-                    inv.setItem(slot, scenario.getScenarioItem());
-                    inv.setItem(slot + 9, scenario.getToggleItem());
-
-                    slot++;
-
-                    if (slot % 9 == 0) slot += 9;
-                }
-
-                player.openInventory(inv);
+                openMenu(player);
             });
+    }
+
+    public static void openMenu(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 54, "UHC Scenarios");
+
+        // Adds the UHC preset items to the top row
+        for (UHCPreset preset : UHCPreset.values()) {
+            inv.addItem(preset.getItem());
+        }
+
+        int slot = 18;
+
+        for (UHCScenario scenario : UHCScenario.values()) {
+            inv.setItem(slot, scenario.getScenarioItem());
+            inv.setItem(slot + 9, scenario.getToggleItem());
+
+            slot++;
+
+            if (slot % 9 == 0) slot += 9;
+        }
+
+        player.openInventory(inv);
     }
 
 }

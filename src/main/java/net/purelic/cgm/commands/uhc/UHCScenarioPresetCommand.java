@@ -37,6 +37,7 @@ public class UHCScenarioPresetCommand implements CustomCommand {
                 }
 
                 preset.apply();
+                UHCCommand.openMenu(player);
                 CommandUtils.broadcastAlertMessage(ChatColor.AQUA + preset.getName() + ChatColor.WHITE +
                     " scenario preset has been applied");
             });

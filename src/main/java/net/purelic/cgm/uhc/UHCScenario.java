@@ -61,11 +61,11 @@ public enum UHCScenario {
         ItemStack dye = new ItemStack(
             Material.INK_SACK,
             1,
-            (this.enabled ? DyeColor.LIME : DyeColor.SILVER).getData()
+            (this.enabled ? DyeColor.LIME : DyeColor.GRAY).getDyeData()
         );
 
         return new ItemCrafter(dye)
-            .name((this.enabled ? ChatColor.RED + "Disable" : ChatColor.GREEN + "Enable") + this.name)
+            .name((this.enabled ? ChatColor.RED + "Disable " : ChatColor.GREEN + "Enable ") + this.name)
             .command("scenario toggle " + this.name(), true)
             .addTag("gui")
             .craft();
