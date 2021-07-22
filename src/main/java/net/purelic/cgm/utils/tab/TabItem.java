@@ -52,13 +52,13 @@ public class TabItem {
         // Teleport fake player far away
         this.player.setLocation(0, Integer.MAX_VALUE, 0, 0, 0);
 
-        // Required to enable the "hat" layer of the skins in tab
+        // Required to apply the "hat" layer of the skins in tab
         DataWatcher watcher = this.player.getDataWatcher();
         watcher.watch(10, (byte) 127);
 
         packets.add(this.getAddPacket()); // add entry to tab
         packets.add(new PacketPlayOutNamedEntitySpawn(this.player)); // spawn fake player
-        packets.add(new PacketPlayOutEntityMetadata(this.player.getId(), watcher, true)); // enable skin parts on fake player
+        packets.add(new PacketPlayOutEntityMetadata(this.player.getId(), watcher, true)); // apply skin parts on fake player
         packets.add(new PacketPlayOutEntityStatus(this.player, (byte) 3)); // kill the fake player
 
         return packets;
