@@ -2,6 +2,7 @@ package net.purelic.cgm.server;
 
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
 import net.purelic.cgm.voting.VotingSettings;
@@ -125,11 +126,19 @@ public class Playlist {
         this.downloadGameModes(Fetcher.PURELIC_UUID);
         if (Commons.hasOwner()) this.downloadGameModes(Commons.getOwnerId());
 
-        this.downloadMaps();
-        if (Commons.hasOwner()) this.downloadPlayerMaps(Commons.getOwnerId());
+        if (isUHC()) {
+            String name = MapUtils.downloadPublicMap("UHC");
+            MapYaml yaml = new MapYaml(MapUtils.getMapYaml(name));
+            CustomMap map = new CustomMap(name, yaml);
+            this.loadMap(map);
+        } else {
+            this.downloadMaps();
+            if (Commons.hasOwner() && !Playlist.isUHC()) this.downloadPlayerMaps(Commons.getOwnerId());
+        }
     }
 
     private void downloadGameModes(UUID uuid) {
+        // TODO only get uhc gms on uhc playlists
         DatabaseUtils.getGameModes(uuid).forEach(this::addGameMode);
     }
 
@@ -148,7 +157,8 @@ public class Playlist {
 
         if (!gameMode.isPublic()
             || this.gameModes.containsKey(name)
-            || this.gameModesByAlias.containsKey(alias)) return;
+            || this.gameModesByAlias.containsKey(alias)
+            || (isUHC() && gameMode.getGameType() != GameType.UHC)) return;
 
         this.gameModes.put(name, gameMode);
         this.gameModesByAlias.put(alias, name);

@@ -52,10 +52,6 @@ public class SetNextCommand implements CustomCommand {
                         return;
                     }
 
-                    if (!map.getName().equals("UHC") && Playlist.isUHC()) {
-                        CommandUtils.sendErrorMessage(player, "You can only set UHC matches on this server!");
-                    }
-
                     GameModesCommand.openGameModesBook(player, "/setnext \"" + map.getName() + "\" \"%GM%\"", new ArrayList<>(CGM.getPlaylist().getRepo().get(map)));
                 } else {
                     CustomMap map = CGM.getPlaylist().getMap(mapArg.get());
@@ -64,10 +60,6 @@ public class SetNextCommand implements CustomCommand {
                     if (map == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapArg.get() + "\"!");
                         return;
-                    }
-
-                    if (!map.getName().equals("UHC") && Playlist.isUHC()) {
-                        CommandUtils.sendErrorMessage(player, "You can only set UHC matches on this server!");
                     }
 
                     if (map.getName().equals("UHC") && !MatchState.isState(MatchState.WAITING)) {
