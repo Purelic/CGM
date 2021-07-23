@@ -6,6 +6,7 @@ public enum NumberSetting implements GameSetting {
     ROUNDS(GameSettingType.GENERAL, 1),
     TIME_LIMIT(GameSettingType.GENERAL, 10),
     OVERTIME(GameSettingType.GENERAL, 30),
+    GRACE_PERIOD(GameSettingType.GENERAL, 0),
 
     DEATHMATCH_KILL_POINTS(GameSettingType.DEATHMATCH, 1),
     DEATHMATCH_DEATH_POINTS(GameSettingType.DEATHMATCH, 0),
