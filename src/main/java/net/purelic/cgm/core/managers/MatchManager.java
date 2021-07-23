@@ -133,7 +133,8 @@ public class MatchManager {
         if (nextMap == null) {
             MatchState.setState(MatchState.WAITING);
             if (CGM.getVotingManager().shouldStartVoting()) MatchState.setState(MatchState.VOTING);
-            currentMap = nextMap;
+            currentMap = null;
+            currentGameMode = null;
             if (ServerUtils.isRanked()) LeagueManager.reset();
             else DatabaseUtils.updateStatus(ServerStatus.STARTING, null, null);
         } else {
@@ -147,6 +148,7 @@ public class MatchManager {
             nextGameMode.loadSettings();
             round = 0;
             currentMap = nextMap;
+            currentGameMode = nextGameMode;
 
             for (int i = 0; i < NumberSetting.ROUNDS.value(); i++) {
                 rounds.add(new Round());
@@ -166,7 +168,6 @@ public class MatchManager {
             }.runTaskAsynchronously(CGM.get());
         }
 
-        currentGameMode = nextGameMode;
         nextMap = null;
         nextGameMode = null;
 
