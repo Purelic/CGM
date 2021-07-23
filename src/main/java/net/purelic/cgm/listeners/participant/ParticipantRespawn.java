@@ -109,7 +109,8 @@ public class ParticipantRespawn implements Listener {
                 }
 
                 if (NumberSetting.PLAYER_RESISTANCE.value() == 0) {
-                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 60, 200));
+                    int duration = EnumSetting.GAME_TYPE.is(GameType.UHC) && event.isRoundStart() ? 600 : 60;
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration, 200));
                 }
             }
         }.runTask(CGM.get());

@@ -25,7 +25,7 @@ public class CycleCountdown extends BukkitRunnable {
     private static boolean restarting;
 
     public CycleCountdown() {
-        this(10, MatchManager.getNextMap(), CGM.get().getMatchManager().getNextGameMode());
+        this(CGM.getPlaylist().isUHC() ? 30 : 10, MatchManager.getNextMap(), CGM.get().getMatchManager().getNextGameMode());
     }
 
     public CycleCountdown(int seconds, VotingOption option) {

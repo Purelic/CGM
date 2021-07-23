@@ -20,6 +20,8 @@ import java.util.Random;
 
 public class CutCleanScenario implements Module {
 
+    private final Random random = new Random();
+
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
         for (int i = 0; i < event.getDrops().size(); i++) {
@@ -76,24 +78,21 @@ public class CutCleanScenario implements Module {
             ExperienceOrb xp = (ExperienceOrb) loc.getWorld().spawnEntity(loc, EntityType.EXPERIENCE_ORB);
             xp.setExperience(ore.get().getXpPerBlock());
         } else if (type == Material.GRAVEL) {
-            Random rand = new Random();
-            int num = rand.nextInt(2) + 1;
+            int num = this.random.nextInt(2) + 1;
 
             if (num == 1) { // 50%
                 drop = new ItemStack(Material.FLINT);
             }
         } else if (type == Material.COAL_ORE) {
-            Random rand = new Random();
-            int num = rand.nextInt(2) + 1;
+            int num = this.random.nextInt(2) + 1;
 
             if (num == 1) { // 50%
                 drop = new ItemStack(Material.TORCH, 4);
             }
         } else if (type.name().contains("LEAVES") && tool != Material.SHEARS) {
-            Random rand = new Random();
-            int num = rand.nextInt(20) + 1;
+            int num = this.random.nextInt(30) + 1;
 
-            if (num == 1) { // 5%
+            if (num == 1) { // 3%
                 TaskUtils.run(() -> block.getWorld().dropItem(block.getLocation().add(.5, .5, .5), new ItemStack(Material.APPLE)));
             }
         }
@@ -108,8 +107,7 @@ public class CutCleanScenario implements Module {
     public void onLeavesDecay(LeavesDecayEvent event) {
         Block block = event.getBlock();
 
-        Random rand = new Random();
-        int num = rand.nextInt(20) + 1;
+        int num = this.random.nextInt(20) + 1;
 
         // 5%
         if (num != 1) return;

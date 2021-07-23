@@ -10,6 +10,8 @@ import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
 import net.purelic.cgm.core.maps.SpawnPoint;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.listeners.modules.NoSleepingModule;
+import net.purelic.cgm.uhc.UHCScenario;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
@@ -35,7 +37,8 @@ public class SpawnUtils {
             player.setSneaking(false);
             player.setSprinting(false);
             currentMap.getYaml().getObsSpawn().teleport(player, currentMap.getWorld());
-            if (currentMap.getYaml().hasNightVision()) PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
+            if (currentMap.getYaml().hasNightVision())
+                PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
         } else {
             player.teleport(Commons.getLobby().getSpawnLocation());
         }
@@ -47,7 +50,14 @@ public class SpawnUtils {
         // When it's UHC we spread players vs using respawn points.
         // For initial spawn/match start we do a massive spread of everyone so that's why we skip it here.
         if (EnumSetting.GAME_TYPE.is(GameType.UHC)) {
-            if (!initialSpawn) spread(Collections.singletonList(MatchManager.getParticipant(player)));
+            Location bedLocation = NoSleepingModule.getBedSpawn(player);
+
+            if (bedLocation != null) {
+                player.teleport(bedLocation);
+            } else {
+                if (!initialSpawn) spread(Collections.singletonList(MatchManager.getParticipant(player)));
+            }
+
             return;
         }
 
@@ -70,6 +80,7 @@ public class SpawnUtils {
         Location center = current.getYaml().getObsSpawn().getLocation(MatchManager.getCurrentMap().getWorld());
         int x = center.getBlockX();
         int z = center.getBlockZ();
+        int min = 50;
         int max = (int) (current.getWorld().getWorldBorder().getSize() / 2) - 10;
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         boolean teams = teamType != TeamType.SOLO;
@@ -77,7 +88,12 @@ public class SpawnUtils {
         StringBuilder playersArg = new StringBuilder();
         for (Participant participant : participants) playersArg.append(" ").append(participant.getPlayer().getName());
 
-        String command = "spreadplayers " + x + " " + z + " 50 " + max +" " + (teams ? "true" : "false") + playersArg;
+        if (UHCScenario.CENTER_SPAWN.isEnabled()) {
+            max = 10;
+            min = 0;
+        }
+
+        String command = "spreadplayers " + x + " " + z + " " + min + " " + max + " " + (teams ? "true" : "false") + playersArg;
 
         TaskUtils.run(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
     }

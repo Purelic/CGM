@@ -289,7 +289,8 @@ public class PlayerUtils {
             if (MatchTeam.isSameTeam(player, tracker)
                     || player == tracker
                     || participant.isDead()
-                    || participant.isEliminated()) {
+                    || participant.isEliminated()
+                    || participant.getPlayer().getWorld() != player.getWorld()) {
                 continue;
             }
 

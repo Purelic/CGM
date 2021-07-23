@@ -11,6 +11,8 @@ import net.purelic.cgm.events.match.MatchEndEvent;
 import net.purelic.cgm.events.match.MatchStartEvent;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.event.EventHandler;
@@ -24,6 +26,8 @@ public class WorldBorderModule implements Listener {
 
     @EventHandler
     public void onMatchCycle(MatchCycleEvent event) {
+        if (!event.hasMap()) return;
+
         CustomMap map = event.getMap();
         World world = map.getWorld();
         WorldBorder border = world.getWorldBorder();
@@ -32,6 +36,16 @@ public class WorldBorderModule implements Listener {
         border.setCenter(map.getYaml().getObsSpawn().getLocation(world));
         border.setSize(maxSize % 2 == 0 ? maxSize + 1 : maxSize);
         border.setDamageBuffer(0);
+
+        if (CGM.getPlaylist().isUHC()) {
+            world = Bukkit.getWorld("uhc_nether");
+            border = world.getWorldBorder();
+            maxSize = maxSize / 2;
+
+            border.setCenter(new Location(world, 0, 0, 0));
+            border.setSize(maxSize % 2 == 0 ? maxSize + 1 : maxSize);
+            border.setDamageBuffer(0);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -46,6 +60,12 @@ public class WorldBorderModule implements Listener {
         TaskUtils.cancelIfRunning(this.borderRunnable);
         WorldBorder border = event.getMap().getWorld().getWorldBorder();
         border.setSize(border.getSize());
+
+        if (CGM.getPlaylist().isUHC()) {
+            World nether = Bukkit.getWorld("uhc_nether");
+            border = nether.getWorldBorder();
+            border.setSize(border.getSize());
+        }
     }
 
     private void shrinkBorder(WorldBorder border) {
@@ -82,6 +102,13 @@ public class WorldBorderModule implements Listener {
                 );
 
                 border.setSize(minSize % 2 == 0 ? minSize + 1 : minSize, speed * 60L);
+
+                if (CGM.getPlaylist().isUHC()) {
+                    World nether = Bukkit.getWorld("uhc_nether");
+                    WorldBorder netherBorder = nether.getWorldBorder();
+                    int netherSize = minSize / 2;
+                    netherBorder.setSize(netherSize % 2 == 0 ? netherSize + 1 : netherSize, speed * 60L);
+                }
             }
         };
 

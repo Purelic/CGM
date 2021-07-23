@@ -522,7 +522,7 @@ public class BlockProtectionModule implements Listener {
     }
 
     public static boolean isSpawnProtected(Block block) {
-        if (!ToggleSetting.SPAWN_PROTECTION.isEnabled()) return false;
+        if (!ToggleSetting.SPAWN_PROTECTION.isEnabled() || EnumSetting.GAME_TYPE.is(GameType.UHC)) return false;
 
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
 

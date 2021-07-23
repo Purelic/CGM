@@ -11,6 +11,7 @@ import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class UHCModule implements DynamicModule {
 
@@ -41,6 +42,16 @@ public class UHCModule implements DynamicModule {
     @EventHandler
     public void onMatchEnd(MatchEndEvent event) {
         Bukkit.getServer().resetRecipes(); // removes any custom crafting recipes
+    }
+
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) {
+        boolean end = event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL;
+        boolean nether = event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL;
+
+        if ((!UHCScenario.DRAGON_RUSH.isEnabled() && end) || (!UHCScenario.NETHER.isEnabled() && nether)) {
+            event.setCancelled(true);
+        }
     }
 
     @Override

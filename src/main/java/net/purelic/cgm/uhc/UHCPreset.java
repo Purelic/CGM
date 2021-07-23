@@ -10,7 +10,10 @@ import java.util.List;
 
 public enum UHCPreset {
 
-    SPEED("Speed UHC", Material.GOLD_PICKAXE, UHCScenario.CUT_CLEAN),
+    RESET("Reset", Material.BARRIER),
+    SPEED("Speed", Material.GOLD_PICKAXE, UHCScenario.CUT_CLEAN, UHCScenario.GOLDEN_HEADS, UHCScenario.BOWLESS, UHCScenario.RODLESS, UHCScenario.FIRELESS, UHCScenario.HORSELESS),
+    PARTY("Party", Material.FIREWORK, UHCScenario.CUT_CLEAN, UHCScenario.GOLDEN_HEADS, UHCScenario.RANDOM_DROPS, UHCScenario.MOB_EGGS),
+    MAN_HUNT("Man Hunt", Material.EYE_OF_ENDER, UHCScenario.NETHER, UHCScenario.DRAGON_RUSH, UHCScenario.CENTER_SPAWN),
     ;
 
     private final String name;

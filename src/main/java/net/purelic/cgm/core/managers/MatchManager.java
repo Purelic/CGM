@@ -190,9 +190,7 @@ public class MatchManager {
             Bukkit.getOnlinePlayers().forEach(player -> player.performCommand("match"));
         }
 
-        if (currentMap != null && currentGameMode != null) {
-            Commons.callEvent(new MatchCycleEvent(currentMap, currentGameMode));
-        }
+        Commons.callEvent(new MatchCycleEvent(currentMap, currentGameMode));
     }
 
     public static int getRound() {

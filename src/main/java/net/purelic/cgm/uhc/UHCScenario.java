@@ -1,7 +1,6 @@
 package net.purelic.cgm.uhc;
 
-import net.purelic.cgm.uhc.scenarios.CutCleanScenario;
-import net.purelic.cgm.uhc.scenarios.GoldenHeadScenario;
+import net.purelic.cgm.uhc.scenarios.*;
 import net.purelic.commons.modules.Module;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.ChatColor;
@@ -11,8 +10,19 @@ import org.bukkit.inventory.ItemStack;
 
 public enum UHCScenario {
 
-    CUT_CLEAN(CutCleanScenario.class, "Cut Clean", Material.COOKED_BEEF, "Ore and animal drops are smelted.", "Apple rates are 5%.", "Flint rates are 50%."),
+    CUT_CLEAN(CutCleanScenario.class, "Cut Clean", Material.COOKED_BEEF, "Ore and animal drops are smelted.", "All trees drop apples.", "Apple rates are 3%.", "Flint rates are 50%."),
     GOLDEN_HEADS(GoldenHeadScenario.class, "Golden Heads", Material.SKULL_ITEM, "Crafted with player heads instead of apples.", "Heals 4 hearts instead of 2."),
+    BOWLESS(BowlessScenario.class, "Bowless", Material.BOW, "You can't craft bows."),
+    RODLESS(RodlessScenario.class, "Rodless", Material.FISHING_ROD, "You can't craft rods."),
+    FIRELESS(FirelessScenario.class, "Fireless", Material.FLINT_AND_STEEL, "You can't take fire damage."),
+    HORSELESS(HorselessScenario.class, "Horseless", Material.SADDLE, "You can't tame horses."),
+    RANDOM_DROPS(RandomDropsScenario.class, "Random Drops", Material.NOTE_BLOCK, "Every block drops a randomized item."),
+    FLOWER_POWER(FlowerPowerScenario.class, "Flower Power", Material.RED_ROSE, "Flowers drop random items."),
+    MOB_EGGS(MobEggsScenario.class, "Mob Eggs", Material.EGG, "A random mob will spawn where an egg lands.", "Chickens have a 5% egg drop rate."),
+    NETHER(NetherScenario.class, "Nether", Material.NETHERRACK, "Allows travel to the nether."),
+    DRAGON_RUSH(DragonRushScenario.class, "Dragon Rush", Material.DRAGON_EGG, "First to kill the dragon wins!", "End portal spawns at 0 0."),
+    CENTER_SPAWN(CenterSpawnScenario.class, "Center Spawn", Material.BED, "Player start and respawn at 0 0.", "Players will respawn at their bed if set."),
+    NINE_SLOT(NineSlotsScenario.class, "Nine Slot", Material.CHEST, "You can only store items in your hotbar.")
     ;
 
     private final Module module;

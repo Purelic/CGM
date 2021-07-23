@@ -15,7 +15,7 @@ public enum GameType {
     SURVIVAL_GAMES("Survival Games", "Find gear and eliminate the other players!", null),
     INFECTION("Infection", "Infect the survivors!", null),
     UHC("Ultra Hardcore", "Survive till the end!", null),
-    // SPEED_RUN("Speed Run", "Beat the game as fast as possible!"),
+    DESTROY("Destroy", "Destroy the enemy monument!", null),
     ;
 
     private final String name;
