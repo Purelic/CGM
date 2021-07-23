@@ -29,8 +29,10 @@ import java.lang.reflect.Field;
 public class WorldSettingModule implements Listener {
 
     public WorldSettingModule() {
-        this.replaceOceanBiomes();
-        this.generateDimensions(true);
+        if (CGM.getPlaylist().isUHC()) {
+            this.replaceOceanBiomes();
+            this.generateDimensions(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
