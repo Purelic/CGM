@@ -2,7 +2,6 @@ package net.purelic.cgm.voting;
 
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
-import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.match.MatchStateChangeEvent;
 import net.purelic.cgm.events.match.SpectatorJoinEvent;
 import net.purelic.commons.modules.Module;
@@ -70,12 +69,9 @@ public class VotingModule implements Module {
     }
 
     @EventHandler
-    public void onMatchCycle(MatchCycleEvent event) {
-        TaskUtils.cancelIfRunning(this.votingManager.getCountdown());
-    }
-
-    @EventHandler
     public void onMatchStateChange(MatchStateChangeEvent event) {
+        TaskUtils.cancelIfRunning(this.votingManager.getCountdown());
+
         if (event.getNewState() == MatchState.VOTING) {
             CGM.getVotingManager().startVoting(event.getSeconds(), event.isForced());
         }

@@ -44,7 +44,7 @@ public class ParticipantRespawn implements Listener {
 
         player.setPlayerListName(Commons.getProfile(player).getFlairs() + team.getColor() + NickUtils.getRealName(player));
 
-        if ((NumberSetting.LIVES_PER_ROUND.value() > 0 && participant.isQueued()) || TaskUtils.isRunning(RoundCountdown.getCountdown())) {
+        if ((NumberSetting.LIVES_PER_ROUND.value() > 0 && participant.isQueued() && !CGM.getPlaylist().isUHC()) || TaskUtils.isRunning(RoundCountdown.getCountdown())) {
             CommandUtils.sendAlertMessage(player, "You will join at the beginning of the next round");
             participant.setLives(-1);
             participant.setDead(true);
@@ -112,6 +112,8 @@ public class ParticipantRespawn implements Listener {
                     int duration = EnumSetting.GAME_TYPE.is(GameType.UHC) && event.isRoundStart() ? 600 : 60;
                     player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration, 200));
                 }
+
+                player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20, 200));
             }
         }.runTask(CGM.get());
     }

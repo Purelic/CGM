@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
+import net.purelic.cgm.core.gamemodes.constants.TeamSize;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
@@ -36,9 +37,10 @@ public enum MatchTeam {
     GRAY("Gray", ChatColor.GRAY, 1, 2),
     WHITE("White", ChatColor.WHITE, 1, 3),
 
-//    TEAM_1("Team 1", ChatColor.BLUE, -1, -1),
-//    TEAM_2("Team 2", ChatColor.BLUE, -1, -1),
-//    TEAM_3("Team 3", ChatColor.BLUE, -1, -1),
+//    TEAM_1("T1", ChatColor.BLUE, -1, -1),
+//    TEAM_2("T2", ChatColor.BLUE, -1, -1),
+//    TEAM_3("T3", ChatColor.BLUE, -1, -1),
+//    TEAM_4("T4", ChatColor.BLUE, -1, -1),
     ;
 
     private final String defaultName;
@@ -232,6 +234,7 @@ public enum MatchTeam {
 
     // needs to filter out teams eliminated
     public static MatchTeam getSmallestTeam(TeamType teamType, boolean forced) {
+        boolean doubles = EnumSetting.TEAM_SIZE.is(TeamSize.DOUBLES) || MatchManager.getParticipants().size() > 2;
         MatchTeam smallest = null;
         int players = 0;
 
@@ -239,7 +242,10 @@ public enum MatchTeam {
             if (EnumSetting.GAME_TYPE.is(GameType.BED_WARS) && BedUtils.isBedDestroyed(team)) continue;
 
             if (!team.isFull() || forced) {
+                if (doubles) return team;
+
                 int playing = team.playing();
+
                 if (smallest == null) {
                     smallest = team;
                     players = playing;

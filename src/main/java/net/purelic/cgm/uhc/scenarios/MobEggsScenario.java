@@ -65,9 +65,9 @@ public class MobEggsScenario implements Module {
             return;
         }
 
-        int num = this.random.nextInt(20) + 1;
+        int num = this.random.nextInt(4) + 1;
 
-        if (num == 1) { // 5%
+        if (num == 1) { // 25%
             event.getDrops().add(new ItemStack(Material.EGG));
         }
     }

@@ -4,8 +4,11 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
+import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.match.RoundStartEvent;
+import net.purelic.cgm.scoreboards.ScoreboardTimer;
+import net.purelic.cgm.utils.TimeUtils;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.entity.Entity;
@@ -17,20 +20,22 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class GracePeriodModule implements DynamicModule {
 
-    private boolean active = false;
+    private static final ScoreboardTimer TIMER = ScoreboardTimer.GRACE;
+    private static boolean active = false;
     private BukkitRunnable gracePeriodTask;
-    private int seconds;
+    private static int seconds = -1;
 
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
-        this.active = true;
+        active = true;
         this.scheduleGracePeriodTask();
     }
 
     @EventHandler
     public void onRoundEnd(RoundEndEvent event) {
-        this.active = false;
+        active = false;
         TaskUtils.cancelIfRunning(this.gracePeriodTask);
+        seconds = -1;
     }
 
     private void scheduleGracePeriodTask() {
@@ -44,15 +49,19 @@ public class GracePeriodModule implements DynamicModule {
                 }
 
                 seconds--;
+                String score = ChatColor.LIGHT_PURPLE + "Grace: " + TimeUtils.getFormattedTime(seconds);
+                int slot = ScoreboardManager.getMatchScoreboard().getTimerSlot(TIMER);
+                ScoreboardManager.setScore(slot, score);
 
                 if (seconds == 0) {
                     ChatUtils.sendMessageAll(
                         new ComponentBuilder("\n")
-                            .append(" GRACE PERIOD » ").color(ChatColor.YELLOW).bold(true)
+                            .append(" GRACE PERIOD » ").color(ChatColor.LIGHT_PURPLE).bold(true)
                             .append("Grace period has now ended!").reset()
                             .append("\n").reset()
                     );
 
+                    ScoreboardManager.getMatchScoreboard().removeTimer(ScoreboardTimer.GRACE);
                     active = false;
                     this.cancel();
                 }
@@ -60,19 +69,19 @@ public class GracePeriodModule implements DynamicModule {
         };
 
         int minutes = NumberSetting.GRACE_PERIOD.value();
-        this.seconds = minutes * 60;
+        seconds = minutes * 60;
 
         TaskUtils.runTimerAsync(this.gracePeriodTask, 20L);
     }
 
-    @EventHandler
+    @Override
     public boolean isValid() {
         return NumberSetting.GRACE_PERIOD.value() > 0;
     }
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!this.active) return;
+        if (!active) return;
 
         Entity damager = event.getDamager();
         Entity entity = event.getEntity();
@@ -89,6 +98,14 @@ public class GracePeriodModule implements DynamicModule {
                 event.setCancelled(true);
             }
         }
+    }
+
+    public static boolean isActive() {
+        return active;
+    }
+
+    public static int getSeconds() {
+        return seconds;
     }
 
 }

@@ -4,7 +4,6 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
@@ -13,17 +12,20 @@ import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.listeners.modules.NoSleepingModule;
 import net.purelic.cgm.uhc.UHCScenario;
 import net.purelic.commons.Commons;
-import net.purelic.commons.utils.TaskUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class SpawnUtils {
+
+    private static final Random RANDOM = new Random();
 
     public static void teleportObsSpawn(Player player) {
         if (player.getVehicle() != null) {
@@ -36,9 +38,23 @@ public class SpawnUtils {
             player.setFlying(true);
             player.setSneaking(false);
             player.setSprinting(false);
-            currentMap.getYaml().getObsSpawn().teleport(player, currentMap.getWorld());
-            if (currentMap.getYaml().hasNightVision())
+
+            Location obs = currentMap.getYaml().getObsSpawn().getLocation(currentMap.getWorld());
+            Block block = obs.getBlock();
+
+            if (block.getType() != Material.AIR) {
+                while (block.getType() != Material.AIR) {
+                    block = block.getLocation().clone().add(0, 1, 0).getBlock();
+                }
+
+                player.teleport(block.getLocation());
+            } else {
+                player.teleport(obs);
+            }
+
+            if (currentMap.getYaml().hasNightVision()) {
                 PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
+            }
         } else {
             player.teleport(Commons.getLobby().getSpawnLocation());
         }
@@ -77,25 +93,26 @@ public class SpawnUtils {
 
     public static void spread(Collection<Participant> participants) {
         CustomMap current = MatchManager.getCurrentMap();
-        Location center = current.getYaml().getObsSpawn().getLocation(MatchManager.getCurrentMap().getWorld());
-        int x = center.getBlockX();
-        int z = center.getBlockZ();
-        int min = 50;
-        int max = (int) (current.getWorld().getWorldBorder().getSize() / 2) - 10;
-        TeamType teamType = EnumSetting.TEAM_TYPE.get();
-        boolean teams = teamType != TeamType.SOLO;
-
-        StringBuilder playersArg = new StringBuilder();
-        for (Participant participant : participants) playersArg.append(" ").append(participant.getPlayer().getName());
+        int border = (int) (current.getWorld().getWorldBorder().getSize() / 2) - 10;
 
         if (UHCScenario.CENTER_SPAWN.isEnabled()) {
-            max = 10;
-            min = 0;
+            border = 10;
         }
 
-        String command = "spreadplayers " + x + " " + z + " " + min + " " + max + " " + (teams ? "true" : "false") + playersArg;
+        for (MatchTeam team : MatchTeam.values()) {
+            int x = RANDOM.nextInt(border * 2) - border;
+            int z = RANDOM.nextInt(border * 2) - border;
 
-        TaskUtils.run(() -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command));
+            for (Player player : team.getPlayers()) {
+                Participant participant = MatchManager.getParticipant(player);
+                if (participants.contains(participant)) {
+                    player.teleport(MatchManager.getCurrentMap()
+                        .getWorld()
+                        .getHighestBlockAt(x, z)
+                        .getLocation().clone().add(0.5, 1, 0.5));
+                }
+            }
+        }
     }
 
     private static void teleportRandom(Player player, List<SpawnPoint> spawnPoints, boolean initialSpawn) {

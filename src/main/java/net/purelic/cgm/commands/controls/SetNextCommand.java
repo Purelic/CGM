@@ -41,7 +41,7 @@ public class SetNextCommand implements CustomCommand {
                 Optional<String> gameModeArg = c.getOptional("game mode");
 
                 if (!mapArg.isPresent()) {
-                    if (CGM.getPlaylist().isUHC()) MapsCommand.openMapsBook(player, "/setnext \"UHC\"");
+                    if (CGM.getPlaylist().isUHC()) GameModesCommand.openGameModesBook(player, "/setnext \"UHC\" \"%GM%\"", new ArrayList<>(CGM.getPlaylist().getRepo().get(CGM.getPlaylist().getMap("UHC"))));
                     else MapsCommand.openMapsBook(player, "/setnext \"%MAP%\"");
                 } else if (!gameModeArg.isPresent()) {
                     CustomMap map = CGM.getPlaylist().getMap(mapArg.get());
@@ -96,7 +96,7 @@ public class SetNextCommand implements CustomCommand {
                         }
 
                         MatchManager.setNext(map, gameMode);
-                        if (!uhc) CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
+                        if (!uhc && !MatchState.isState(MatchState.WAITING, MatchState.VOTING)) CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
                     } else {
                         CommandUtils.sendErrorMessage(player, map.getName() + " does not support " + gameMode.getName() + "!");
                     }

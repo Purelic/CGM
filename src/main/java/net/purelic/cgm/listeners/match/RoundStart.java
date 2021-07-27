@@ -12,6 +12,7 @@ import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
@@ -69,7 +70,7 @@ public class RoundStart implements Listener {
             if (MatchManager.getRound() > 1) {
                 for (Participant participant : MatchManager.getParticipants()) {
                     participant.resetLives();
-                    participant.setQueued(false);
+                    participant.setState(ParticipantState.ALIVE);
                     Commons.callEvent(new ParticipantRespawnEvent(participant, true));
                 }
             }

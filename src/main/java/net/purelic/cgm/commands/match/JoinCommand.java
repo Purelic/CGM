@@ -15,6 +15,7 @@ import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.events.match.MatchJoinEvent;
 import net.purelic.cgm.events.match.MatchQuitEvent;
+import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.cgm.utils.BedUtils;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
@@ -54,7 +55,8 @@ public class JoinCommand implements CustomCommand {
                 if (MatchUtils.isElimination()
                     && MatchState.isState(MatchState.STARTED)
                     && MatchManager.getRound() == NumberSetting.ROUNDS.value() // last round
-                    && !EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
+                    && !EnumSetting.GAME_TYPE.is(GameType.BED_WARS)
+                    && !GracePeriodModule.isActive()) {
                     CommandUtils.sendErrorMessage(player, "It's too late to join this elimination match!");
                     return;
                 }

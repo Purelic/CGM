@@ -250,7 +250,7 @@ public class Participant {
     }
 
     public boolean isQueued() {
-        return this.queued;
+        return this.isState(ParticipantState.QUEUED);
     }
 
     public void setQueued(boolean queued) {

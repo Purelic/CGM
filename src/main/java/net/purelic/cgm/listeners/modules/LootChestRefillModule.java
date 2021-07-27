@@ -8,13 +8,13 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.LootType;
-import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.chest.LootChest;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.match.RoundStartEvent;
+import net.purelic.cgm.scoreboards.ScoreboardTimer;
 import net.purelic.cgm.utils.TimeUtils;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
@@ -24,11 +24,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class LootChestRefillModule implements Listener {
 
+    private static final ScoreboardTimer TIMER = ScoreboardTimer.REFILL;
     private BukkitRunnable refillTask;
-    private TeamType teamType;
     private int minutes;
-    private int seconds;
-    private int teams;
+    private static int seconds = -1;
 
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
@@ -42,6 +41,7 @@ public class LootChestRefillModule implements Listener {
     @EventHandler
     public void onRoundEnd(RoundEndEvent event) {
         TaskUtils.cancelIfRunning(this.refillTask);
+        seconds = -1;
     }
 
     private void scheduleRefillTask() {
@@ -55,14 +55,15 @@ public class LootChestRefillModule implements Listener {
 
                 seconds--;
 
-                ScoreboardManager.setScore(teamType == TeamType.SOLO ? 0 : teams + 1, "Refill in " + TimeUtils.getFormattedTime(seconds));
+                int slot = ScoreboardManager.getMatchScoreboard().getTimerSlot(TIMER);
+                ScoreboardManager.setScore(slot, ChatColor.GOLD + "Refill: " + TimeUtils.getFormattedTime(seconds));
 
                 if (seconds <= 0) {
                     MatchManager.getCurrentMap().getYaml().getLootChests().forEach(LootChest::refill);
 
                     ChatUtils.sendMessageAll(
                         new ComponentBuilder("\n")
-                            .append(" CHESTS REFILLED » ").color(ChatColor.YELLOW).bold(true)
+                            .append(" CHESTS REFILLED » ").color(ChatColor.GOLD).bold(true)
                             .append("All chests have been refilled!").reset()
                             .append("\n").reset()
                     );
@@ -71,26 +72,20 @@ public class LootChestRefillModule implements Listener {
 
                     if (MatchCountdown.getSeconds() <= seconds) {
                         this.cancel();
-
-                        ScoreboardManager.resetScore(teamType == TeamType.SOLO ? 0 : teams + 1);
-                        ScoreboardManager.resetScore(teamType == TeamType.SOLO ? 1 : teams);
+                        ScoreboardManager.getMatchScoreboard().removeTimer(TIMER);
                     }
                 }
             }
         };
 
         this.minutes = NumberSetting.REFILL_EVENT.value();
-        this.seconds = minutes * 60;
-        this.teamType = EnumSetting.TEAM_TYPE.get();
-        this.teams = this.teamType.getTeams().size();
-
-        if (this.teamType == TeamType.SOLO) {
-            ScoreboardManager.setScore(1, "");
-        } else {
-            ScoreboardManager.setScore(this.teams, "");
-        }
+        seconds = minutes * 60;
 
         this.refillTask.runTaskTimerAsynchronously(CGM.get(), 0L, 20L);
+    }
+
+    public static int getSeconds() {
+        return seconds;
     }
 
 }

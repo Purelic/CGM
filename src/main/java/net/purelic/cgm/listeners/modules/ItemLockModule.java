@@ -1,5 +1,6 @@
 package net.purelic.cgm.listeners.modules;
 
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
@@ -30,8 +31,10 @@ public class ItemLockModule implements Listener {
 
         ItemStack item = event.getItemDrop().getItemStack();
 
-        if (this.isLocked(item) || new ItemCrafter(item).hasTag("kit")) {
+        if (this.isLocked(item)) {
             event.setCancelled(true);
+        } else if (new ItemCrafter(item).hasTag("kit") && !CGM.getPlaylist().isUHC()) {
+            event.getItemDrop().remove();
         }
     }
 

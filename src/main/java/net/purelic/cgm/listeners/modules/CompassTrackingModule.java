@@ -114,7 +114,11 @@ public class CompassTrackingModule implements Listener {
 
     public static String getNoDisplayMessage() {
         if (EnumSetting.PLAYER_COMPASS_TYPE.is(CompassTrackingType.PLAYER)) {
-            return "" + ChatColor.RED + ChatColor.BOLD + "Tracking Closest Player";
+            if (GracePeriodModule.isActive()) {
+                return "" + ChatColor.RED + ChatColor.BOLD + "Disabled During Grace Period";
+            } else {
+                return "" + ChatColor.RED + ChatColor.BOLD + "Tracking Closest Player";
+            }
         } else if (EnumSetting.PLAYER_COMPASS_TYPE.is(CompassTrackingType.OBJECTIVE)) {
             GameType gameType = EnumSetting.GAME_TYPE.get();
 
@@ -133,6 +137,10 @@ public class CompassTrackingModule implements Listener {
     public static String getPlayerTrackingMessage(Player tracker, Player target) {
         if (EnumSetting.GAME_TYPE.is(GameType.BED_WARS) && !BedUtils.canUseTracker(tracker)) {
             return "" + ChatColor.RED + ChatColor.BOLD + "Beds Not Broken Yet";
+        }
+
+        if (GracePeriodModule.isActive()) {
+            return "" + ChatColor.RED + ChatColor.BOLD + "Disabled During Grace Period";
         }
 
         if (target == null) return "" + ChatColor.RED + ChatColor.BOLD + "No Target Found";

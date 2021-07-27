@@ -33,10 +33,8 @@ public class MatchJoin implements Listener {
             MatchManager.addParticipant(player, false, event.isForced());
         }
 
-        if (!event.isFirstJoin()) {
-            // Players rejoining that previously had scores will require a scoreboard update
-            ScoreboardManager.updateSoloBoard();
-        }
+        // update solo scoreboards (could display previous scores or # of alive players)
+        ScoreboardManager.updateSoloBoard();
     }
 
     public static void setAddParticipants(boolean addParticipants) {

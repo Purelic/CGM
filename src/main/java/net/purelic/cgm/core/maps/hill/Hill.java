@@ -261,6 +261,8 @@ public class Hill extends Objective<HillModifiers> implements Listener {
     }
 
     private boolean isInsideCircle(Location location, boolean player, float percent) {
+        // block physic events in other worlds can trigger this
+        if (location.getWorld() != this.getCenter().getWorld()) return false;
         return this.getCenter().distance(location) <= (this.radius + (player ? 1.0 : 0.5)) * percent;
     }
 

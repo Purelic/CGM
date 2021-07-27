@@ -8,10 +8,12 @@ import net.purelic.cgm.core.constants.JoinState;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.*;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.Round;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.uhc.runnables.UHCLoader;
@@ -78,8 +80,12 @@ public class MatchManager {
             new ComponentBuilder(map.getName()).color(ChatColor.YELLOW).create()[0]
         );
 
+        if (gameMode.getGameType() == GameType.UHC) {
+            CommandUtils.broadcastAlertMessage("The match will cycle automatically once the UHC world is ready!");
+        }
+
         if (nextMap != null) {
-            MapUtils.deleteWorld(nextMap.getWorld());
+            MapUtils.deleteWorld(nextMap.getNextWorld());
         }
 
         setNextGameMode(gameMode);
@@ -155,6 +161,7 @@ public class MatchManager {
             }
 
             nextMap.loadObjectives();
+            ScoreboardManager.initMatchScoreboard();
 
             final String mapName = nextMap.getName();
             final String gmName = nextGameMode.getName();
@@ -226,7 +233,7 @@ public class MatchManager {
         PARTICIPANTS.put(player, participant);
 
         if (!forced && participant.getLives() > 0 && TaskUtils.isRunning(MatchCountdown.getCountdown())) {
-            participant.setQueued(true);
+            participant.setState(ParticipantState.QUEUED);
         }
 
         if (MatchStatsModule.hasStats(player)) TabManager.updateStats(participant);

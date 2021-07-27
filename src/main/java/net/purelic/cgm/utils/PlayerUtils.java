@@ -10,6 +10,7 @@ import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;
@@ -282,6 +283,9 @@ public class PlayerUtils {
     public static Player getClosestEnemy(Player tracker) {
         Player target = null;
         double dist = Double.MAX_VALUE;
+
+        // Don't allow tracking players during grace period
+        if (GracePeriodModule.isActive()) return null;
 
         for (Participant participant : MatchManager.getParticipants()) {
             Player player = participant.getPlayer();

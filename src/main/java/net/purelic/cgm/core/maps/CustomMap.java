@@ -101,12 +101,12 @@ public class CustomMap {
                 totalHills = hills.size();
             }
 
-            int startingRow = teamType == TeamType.SOLO ? 0 : teams.size() + 1;
+            int startingRow = 0;
 
             if (ToggleSetting.PERMANENT_HILLS.isEnabled()) {
                 startingRow = -1;
             } else {
-                ScoreboardManager.setScore(teamType == TeamType.SOLO ? startingRow + 1 : startingRow - 1, "");
+                // ScoreboardManager.setScore(teamType == TeamType.SOLO ? startingRow + 1 : startingRow - 1, "");
             }
 
             if (neutralHills) {
@@ -161,10 +161,12 @@ public class CustomMap {
         int hillOffset = (int) this.getLoadedHills().stream().filter(hill -> hill.getScoreboardRow() != -1).count();
         hillOffset = hillOffset == 0 ? 0 : hillOffset + 1;
 
-        int startingRow = (teamType == TeamType.SOLO ? 0 : teams.size() + 1) + hillOffset;
+        int startingRow = hillOffset;
 
-        if (hillOffset > 0) ScoreboardManager.setScore(startingRow - 1, ""); // blank line between hills and flags
-        ScoreboardManager.setScore(teamType == TeamType.SOLO ? (movingFlag ? startingRow + 1 : totalFlags) : startingRow - 1, "");
+        if (hillOffset > 0) {
+            ScoreboardManager.setScore(hillOffset - 1, ""); // blank line between hills and flags
+        }
+        // ScoreboardManager.setScore(teamType == TeamType.SOLO ? (movingFlag ? startingRow + 1 : totalFlags) : startingRow - 1, "");
 
         if (neutralFlags) {
             for (int i = 0; i < Math.min(totalFlags, flags.size()); i++) {

@@ -7,7 +7,10 @@ import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
 import net.purelic.cgm.voting.VotingSettings;
 import net.purelic.commons.Commons;
-import net.purelic.commons.utils.*;
+import net.purelic.commons.utils.DatabaseUtils;
+import net.purelic.commons.utils.Fetcher;
+import net.purelic.commons.utils.MapUtils;
+import net.purelic.commons.utils.ServerUtils;
 import shaded.com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import javax.annotation.Nullable;
@@ -126,16 +129,8 @@ public class Playlist {
         this.downloadGameModes(Fetcher.PURELIC_UUID);
         if (Commons.hasOwner()) this.downloadGameModes(Commons.getOwnerId());
 
-        if (this.isUHC()) {
-            MapUtils.downloadPublicMap("Lobby");
-            String name = MapUtils.downloadPublicMap("UHC");
-            MapYaml yaml = new MapYaml(MapUtils.getMapYaml(name));
-            CustomMap map = new CustomMap(name, yaml);
-            this.loadMap(map);
-        } else {
-            this.downloadMaps();
-            if (Commons.hasOwner()) this.downloadPlayerMaps(Commons.getOwnerId());
-        }
+        this.downloadMaps();
+        if (Commons.hasOwner()) this.downloadPlayerMaps(Commons.getOwnerId());
     }
 
     private void downloadGameModes(UUID uuid) {
@@ -175,7 +170,15 @@ public class Playlist {
             rawPlaylist.put(mapName, gameModes);
         }
 
-        String[] publicMaps = MapUtils.downloadPublicMaps();
+        String[] publicMaps;
+
+        if (this.isUHC()) {
+            MapUtils.downloadPublicMap("Lobby");
+            String name = MapUtils.downloadUHCMap();
+            publicMaps = new String[]{name};
+        } else {
+            publicMaps = MapUtils.downloadPublicMaps();
+        }
 
         for (String mapName : publicMaps) {
             // ignore reserved maps (e.g. lobbies)
@@ -188,7 +191,7 @@ public class Playlist {
 
             // create the custom map
             MapYaml mapYaml = new MapYaml(mapData);
-            CustomMap map = new CustomMap(mapName, mapYaml);
+            CustomMap map = new CustomMap(this.isUHC() ? "UHC" : mapName, mapYaml);
 
             // get the playlist game modes for this map (if there are any)
             List<String> gameModes = rawPlaylist.getOrDefault(mapName, new ArrayList<>());

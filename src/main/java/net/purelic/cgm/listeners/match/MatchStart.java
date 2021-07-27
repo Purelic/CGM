@@ -124,6 +124,7 @@ public class MatchStart implements Listener {
         // DatabaseUtils.updateStatus(ServerStatus.STARTED, MatchManager.getCurrentMap().getName(), MatchManager.getCurrentGameMode().getName());
     }
 
+    // TODO is there any way to get this data from spring instead?
     public static void updateParties() {
         Map<String, Set<Player>> parties = new HashMap<>();
 
@@ -141,6 +142,9 @@ public class MatchStart implements Listener {
     }
 
     private static List<Set<Player>> orderParties(List<Set<Player>> parties) {
+        // If match is cycled back to lobby before this runs, stop updating parties
+        if (MatchManager.getCurrentGameMode() == null) return new ArrayList<>();
+
         int maxTeamSize = MatchUtils.getMaxTeamPlayers();
         List<Set<Player>> highPriority = new ArrayList<>();
         List<Set<Player>> lowPriority = new ArrayList<>();

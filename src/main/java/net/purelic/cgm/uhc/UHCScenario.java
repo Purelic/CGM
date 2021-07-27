@@ -16,13 +16,13 @@ public enum UHCScenario {
     RODLESS(RodlessScenario.class, "Rodless", Material.FISHING_ROD, "You can't craft rods."),
     FIRELESS(FirelessScenario.class, "Fireless", Material.FLINT_AND_STEEL, "You can't take fire damage."),
     HORSELESS(HorselessScenario.class, "Horseless", Material.SADDLE, "You can't tame horses."),
-    RANDOM_DROPS(RandomDropsScenario.class, "Random Drops", Material.NOTE_BLOCK, "Every block drops a randomized item."),
-    FLOWER_POWER(FlowerPowerScenario.class, "Flower Power", Material.RED_ROSE, "Flowers drop random items."),
-    MOB_EGGS(MobEggsScenario.class, "Mob Eggs", Material.EGG, "A random mob will spawn where an egg lands.", "Chickens have a 5% egg drop rate."),
+    RANDOM_DROPS(RandomDropsScenario.class, "Random Drops", Material.NOTE_BLOCK, "Every block drops a randomized item.", "Drop loot tables reset every 5 minutes.", "Logs and stone will always drop."),
+    FLOWER_POWER(FlowerPowerScenario.class, "Flower Power", Material.RED_ROSE, "Flowers drop items for brewing."),
+    MOB_EGGS(MobEggsScenario.class, "Mob Eggs", Material.EGG, "A random mob will spawn where an egg lands.", "Chickens have a 25% egg drop rate."),
     NETHER(NetherScenario.class, "Nether", Material.NETHERRACK, "Allows travel to the nether."),
     DRAGON_RUSH(DragonRushScenario.class, "Dragon Rush", Material.DRAGON_EGG, "First to kill the dragon wins!", "End portal spawns at 0 0."),
     CENTER_SPAWN(CenterSpawnScenario.class, "Center Spawn", Material.BED, "Player start and respawn at 0 0.", "Players will respawn at their bed if set."),
-    NINE_SLOT(NineSlotsScenario.class, "Nine Slot", Material.CHEST, "You can only store items in your hotbar.")
+    NINE_SLOT(NineSlotsScenario.class, "Nine Slot", Material.CHEST, "You can only store items in your hotbar."),
     ;
 
     private final Module module;

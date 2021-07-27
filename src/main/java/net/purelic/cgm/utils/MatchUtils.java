@@ -16,6 +16,9 @@ import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ServerUtils;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MatchUtils {
 
     private static final TextComponent DEFAULT_HEADER = new TextComponent(ChatColor.BOLD + "PuRelic Network");
@@ -103,15 +106,19 @@ public class MatchUtils {
         return getAlive(team) == 0;
     }
 
-    public static int getAlive(MatchTeam team) {
-        int alive = 0;
+    public static List<Player> getAlivePlayers(MatchTeam team) {
+        List<Player> alive = new ArrayList<>();
 
         for (Player player : team.getPlayers()) {
             Participant participant = MatchManager.getParticipant(player);
-            if (!participant.isEliminated() && !participant.isQueued()) alive++;
+            if (participant != null && !participant.isEliminated() && !participant.isQueued()) alive.add(player);
         }
 
         return alive;
+    }
+
+    public static int getAlive(MatchTeam team) {
+        return getAlivePlayers(team).size();
     }
 
     public static int getMaxPlayers(CustomGameMode gameMode) {

@@ -6,10 +6,7 @@ import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
-import net.purelic.cgm.core.gamemodes.constants.ArmorType;
-import net.purelic.cgm.core.gamemodes.constants.BowType;
-import net.purelic.cgm.core.gamemodes.constants.SwordType;
-import net.purelic.cgm.core.gamemodes.constants.TeamType;
+import net.purelic.cgm.core.gamemodes.constants.*;
 import net.purelic.cgm.listeners.modules.BlockProtectionModule;
 import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.PlayerUtils;
@@ -38,6 +35,9 @@ public class MatchKit implements Kit {
     private final ItemStack boots;
     private final ItemStack sword;
     private final ItemStack bow;
+    private final ItemStack pickaxe;
+    private final ItemStack axe;
+    private final ItemStack shovel;
     private final ItemStack shears;
     private final ItemStack compass;
     private final List<ItemStack> items;
@@ -51,6 +51,9 @@ public class MatchKit implements Kit {
         this.boots = this.getBoots();
         this.sword = this.getSword();
         this.bow = this.getBow();
+        this.pickaxe = this.getTool("PICKAXE", ToolType.valueOf(gameMode.getEnumSetting(EnumSetting.PLAYER_PICKAXE_TYPE)), gameMode.getNumberSetting(NumberSetting.PLAYER_PICKAXE_EFFICIENCY), gameMode.getToggleSetting(ToggleSetting.PLAYER_PICKAXE_LOCKED));
+        this.axe = this.getTool("AXE", ToolType.valueOf(gameMode.getEnumSetting(EnumSetting.PLAYER_AXE_TYPE)), gameMode.getNumberSetting(NumberSetting.PLAYER_AXE_EFFICIENCY), gameMode.getToggleSetting(ToggleSetting.PLAYER_AXE_LOCKED));
+        this.shovel = this.getTool("SPADE", ToolType.valueOf(gameMode.getEnumSetting(EnumSetting.PLAYER_SHOVEL_TYPE)), gameMode.getNumberSetting(NumberSetting.PLAYER_SHOVEL_EFFICIENCY), gameMode.getToggleSetting(ToggleSetting.PLAYER_SHOVEL_LOCKED));
         this.shears = this.getShears();
         this.compass = this.getCompass();
         this.items = this.getItems();
@@ -68,13 +71,24 @@ public class MatchKit implements Kit {
         int swordSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_SWORD, 1));
         int bowSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_BOW, 2));
         int shearsSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_SHEARS, 3));
-        int woolSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_WOOL, 9));
+        int pickaxeSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_PICKAXE, 4));
+        int axeSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_AXE, 5));
+        int shovelSlot = 5;
+        int blocksSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_WOOL, 9));
 
         inventory.setArmorContents(this.getArmor(rgb));
         this.addItem(inventory, swordSlot, this.sword);
         this.addItem(inventory, bowSlot, this.bow);
         this.addItem(inventory, shearsSlot, this.shears);
-        this.addItem(inventory, woolSlot, this.getWool(color));
+        this.addItem(inventory, pickaxeSlot, this.pickaxe);
+        this.addItem(inventory, axeSlot, this.axe);
+        this.addItem(inventory, shovelSlot, this.shovel);
+
+        for (ItemStack stack : this.getBlocks(color)) {
+            this.addItem(inventory, blocksSlot, stack);
+            blocksSlot += 9;
+        }
+
         for (ItemStack item : this.items) inventory.addItem(item);
         if (this.compass != null) inventory.addItem(this.compass);
     }
@@ -395,6 +409,18 @@ public class MatchKit implements Kit {
         }
     }
 
+    private ItemStack getTool(String tool, ToolType toolType, int efficiency, boolean locked) {
+        if (toolType == ToolType.NONE) return null;
+        ItemCrafter itemCrafter = new ItemCrafter(Material.valueOf(toolType.name() + "_" + tool))
+            .addTag("kit")
+            .setUnbreakable();
+
+        if (efficiency > 0) itemCrafter.enchant(Enchantment.DIG_SPEED, efficiency);
+        if (locked) itemCrafter.addTag("locked");
+
+        return itemCrafter.craft();
+    }
+
     private List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
 
@@ -402,12 +428,14 @@ public class MatchKit implements Kit {
         int gapples = 0;
         int emeralds = 0;
         int pearls = 0;
+        int food = 0;
 
         if (this.kitType == KitType.DEFAULT) {
             arrows = this.gameMode.getNumberSetting(NumberSetting.PLAYER_ARROWS);
             gapples = this.gameMode.getNumberSetting(NumberSetting.PLAYER_GAPPLES);
             emeralds = this.gameMode.getNumberSetting(NumberSetting.PLAYER_EMERALDS);
             pearls = this.gameMode.getNumberSetting(NumberSetting.PLAYER_PEARLS);
+            food = this.gameMode.getNumberSetting(NumberSetting.PLAYER_FOOD);
         } else if (this.kitType == KitType.INFECTED) {
             arrows = this.gameMode.getNumberSetting(NumberSetting.INFECTED_ARROWS);
             gapples = this.gameMode.getNumberSetting(NumberSetting.INFECTED_GAPPLES);
@@ -420,22 +448,54 @@ public class MatchKit implements Kit {
         if (emeralds > 0) items.add(new ItemStack(Material.EMERALD, emeralds));
         if (pearls > 0) items.add(new ItemStack(Material.ENDER_PEARL, pearls));
 
+        if (food > 0) {
+            Material foodType = Material.valueOf(this.gameMode.getEnumSetting(EnumSetting.PLAYER_FOOD_TYPE));
+            if (foodType != Material.AIR) items.add(new ItemStack(foodType, food));
+        }
+
         return items;
     }
 
-    private ItemStack getWool(ChatColor color) {
-        int wool = 0;
+    private List<ItemStack> getBlocks(ChatColor color) {
+        Material blockType = Material.AIR;
+        int blocks = 0;
 
         if (this.kitType == KitType.DEFAULT) {
-            wool = this.gameMode.getNumberSetting(NumberSetting.PLAYER_WOOL);
+            blockType = Material.valueOf(this.gameMode.getEnumSetting(EnumSetting.PLAYER_BLOCK_TYPE));
+            blocks = this.gameMode.getNumberSetting(NumberSetting.PLAYER_BLOCKS);
         } else if (this.kitType == KitType.INFECTED) {
-            wool = this.gameMode.getNumberSetting(NumberSetting.INFECTED_WOOL);
+            blockType = Material.valueOf(this.gameMode.getEnumSetting(EnumSetting.INFECTED_BLOCK_TYPE));
+            blocks = this.gameMode.getNumberSetting(NumberSetting.INFECTED_BLOCKS);
         }
 
-        if (wool > 0 && BlockProtectionModule.canPlaceBlocks()) {
-            return new ItemStack(Material.WOOL, wool, ColorConverter.getDyeColor(color).getData());
+        if (blocks > 0 && blockType != Material.AIR && BlockProtectionModule.canPlaceBlocks()) {
+            List<ItemStack> stacks = new ArrayList<>();
+            int numStacks = blocks % 64 == 0 ? blocks / 64 : (blocks / 64) + 1;
+
+            for (int i = 0; i < numStacks; i++) {
+                boolean dye = blockType == Material.WOOL || blockType == Material.STAINED_CLAY
+                    || blockType == Material.STAINED_GLASS_PANE || blockType == Material.STAINED_GLASS;
+
+                if (blocks <= 64) {
+                    if (dye) {
+                        stacks.add(new ItemStack(blockType, blocks, ColorConverter.getDyeColor(color).getData()));
+                    } else {
+                        stacks.add(new ItemStack(blockType, blocks));
+                    }
+                } else {
+                    if (dye) {
+                        stacks.add(new ItemStack(blockType, 64, ColorConverter.getDyeColor(color).getData()));
+                    } else {
+                        stacks.add(new ItemStack(blockType, 64));
+                    }
+
+                    blocks -= 64;
+                }
+            }
+
+            return stacks;
         } else {
-            return null;
+            return new ArrayList<>();
         }
     }
 

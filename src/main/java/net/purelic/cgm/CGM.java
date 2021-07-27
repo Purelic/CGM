@@ -56,6 +56,15 @@ import java.util.function.Function;
 
 public class CGM extends JavaPlugin {
 
+    // dont cycle automatically until map is loaded
+    // alert in chat about automatic cycling when uhc is sn
+    // cycle anyways if voting is going
+    // update scoreboard
+    // grace period (and dont let compass tracking)
+    // new spawn kit items
+    // DOCUMENT use bed spawn if there is one
+    // uhc playlist not getting added properly
+
     private static CGM plugin;
     private static boolean ready;
 
@@ -238,6 +247,7 @@ public class CGM extends JavaPlugin {
         // Dynamic Modules
         new DynamicModuleModule().register();
         DynamicModuleModule.add(new UHCModule());
+        DynamicModuleModule.add(new GracePeriodModule());
     }
 
     public void registerListener(Listener listener) {

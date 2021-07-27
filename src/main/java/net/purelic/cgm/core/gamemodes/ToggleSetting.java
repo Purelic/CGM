@@ -64,8 +64,9 @@ public enum ToggleSetting implements GameSetting {
     INFECTED_COMPASS_DISPLAY(GameSettingType.INFECTED_COMPASS, false),
     INFECTED_COMPASS_SPAWN_WITH(GameSettingType.INFECTED_COMPASS, true),
 
-    PLAYER_PICKAXE_LOCKED(GameSettingType.PLAYER_TOOLS, true),
-    PLAYER_AXE_LOCKED(GameSettingType.PLAYER_TOOLS, true),
+    PLAYER_PICKAXE_LOCKED(GameSettingType.PLAYER_PICKAXE, true),
+    PLAYER_AXE_LOCKED(GameSettingType.PLAYER_AXE, true),
+    PLAYER_SHOVEL_LOCKED(GameSettingType.PLAYER_SHOVEL, true),
 
     PLAYER_NATURAL_REGEN(GameSettingType.PLAYER_HEALTH, true),
     PLAYER_IMMUNE_TO_MELEE(GameSettingType.PLAYER_HEALTH, false),
