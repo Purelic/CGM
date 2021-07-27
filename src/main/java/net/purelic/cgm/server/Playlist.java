@@ -130,7 +130,7 @@ public class Playlist {
         if (Commons.hasOwner()) this.downloadGameModes(Commons.getOwnerId());
 
         this.downloadMaps();
-        if (Commons.hasOwner()) this.downloadPlayerMaps(Commons.getOwnerId());
+        if (Commons.hasOwner() && !this.isUHC()) this.downloadPlayerMaps(Commons.getOwnerId());
     }
 
     private void downloadGameModes(UUID uuid) {
