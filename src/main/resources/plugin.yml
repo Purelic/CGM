@@ -1,4 +1,4 @@
 name: CGM
 version: 2.0
 main: net.purelic.cgm.CGM
-depend: [Commons]
+depend: [ Commons ]

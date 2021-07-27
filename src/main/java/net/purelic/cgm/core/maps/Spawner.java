@@ -94,7 +94,7 @@ public class Spawner implements Listener {
         else if (this.material == Material.EMERALD) return ChatColor.GREEN;
         else if (this.material == Material.TNT) return ChatColor.RED;
         else if (this.material == Material.SKULL_ITEM) return ChatColor.AQUA;
-        // else if (this.material == Material.FIREWORK_CHARGE) return ChatColor.GOLD;
+            // else if (this.material == Material.FIREWORK_CHARGE) return ChatColor.GOLD;
         else return ChatColor.WHITE;
     }
 
@@ -153,7 +153,8 @@ public class Spawner implements Listener {
                     spawnItem();
                     this.cancel();
                 } else {
-                    if (stand != null)  stand.setCustomName(color + "" + countdown + "s" + (amount == 1 ? "" : " (x" + amount + ")"));
+                    if (stand != null)
+                        stand.setCustomName(color + "" + countdown + "s" + (amount == 1 ? "" : " (x" + amount + ")"));
                     countdown--;
                 }
             }
@@ -186,7 +187,8 @@ public class Spawner implements Listener {
     public void stop(boolean destroy) {
         if (TaskUtils.isRunning(this.runnable)) {
             this.runnable.cancel();
-            if (this.stand != null) this.stand.setCustomName(this.color + "" + this.delay + "s" + (this.amount == 1 ? "" : " (x" + this.amount + ")"));
+            if (this.stand != null)
+                this.stand.setCustomName(this.color + "" + this.delay + "s" + (this.amount == 1 ? "" : " (x" + this.amount + ")"));
         }
 
         if (destroy) this.destroy();
@@ -197,7 +199,7 @@ public class Spawner implements Listener {
         if (this.stand != null) stand.remove();
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onMatchStart(MatchStartEvent event) {
         this.active = event.getMap().getWorld() == this.world;
     }
@@ -210,7 +212,7 @@ public class Spawner implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onRoundStart(RoundStartEvent event) {
         if (this.active) {
             this.totalSpawned = 0;
@@ -249,7 +251,7 @@ public class Spawner implements Listener {
     }
 
     // Handles entities being exploded and not restarting the spawn timer
-    @EventHandler (ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntityType() != EntityType.DROPPED_ITEM) return;
 
@@ -274,15 +276,15 @@ public class Spawner implements Listener {
         // get team mates within 2 blocks of the player that picked up the item and split
         Location playerLoc = player.getLocation();
         MatchTeam.getTeam(player).getPlayers()
-                .stream().filter(team -> team.getLocation().distance(playerLoc) <= 2.0D)
-                .forEach(team -> {
-                    if (team != player) {
-                        Participant participant = MatchManager.getParticipant(team);
-                        if (!participant.isDead() && !participant.isEliminated()) {
-                            team.getInventory().addItem(item);
-                        }
+            .stream().filter(team -> team.getLocation().distance(playerLoc) <= 2.0D)
+            .forEach(team -> {
+                if (team != player) {
+                    Participant participant = MatchManager.getParticipant(team);
+                    if (!participant.isDead() && !participant.isEliminated()) {
+                        team.getInventory().addItem(item);
                     }
-                });
+                }
+            });
     }
 
 }

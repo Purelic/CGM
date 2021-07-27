@@ -127,7 +127,7 @@ public class MatchCountdown extends BukkitRunnable {
                 seconds = seconds == 0 ? interval : seconds;
 
                 if (elapsed % interval == 0 && elapsed > 0) {
-                    ChatUtils.broadcastActionBar("Heads collected!",true);
+                    ChatUtils.broadcastActionBar("Heads collected!", true);
                     MatchManager.getParticipants().forEach(HeadModule::scoreHeads);
                 } else if (seconds <= 20) {
                     ChatUtils.broadcastActionBar(

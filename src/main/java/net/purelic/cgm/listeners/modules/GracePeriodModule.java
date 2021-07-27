@@ -86,7 +86,7 @@ public class GracePeriodModule implements DynamicModule {
         Entity damager = event.getDamager();
         Entity entity = event.getEntity();
 
-        if (!(entity instanceof  Player)) return;
+        if (!(entity instanceof Player)) return;
 
         if (damager instanceof Player) {
             event.setCancelled(true);

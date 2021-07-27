@@ -125,15 +125,14 @@ public enum ToggleSetting implements GameSetting {
     LEAVES_DECAY(GameSettingType.WORLD, false),
     DAYLIGHT_CYCLE(GameSettingType.WORLD, false),
     INSTANT_TNT(GameSettingType.WORLD, true),
-    RESET_BLOCKS(GameSettingType.WORLD, false);
-    ;
+    RESET_BLOCKS(GameSettingType.WORLD, false);;
 
     private final GameSettingType settingType;
     private final String key;
     private final boolean defaultValue;
     private boolean value;
 
-    ToggleSetting(GameSettingType settingType,boolean defaultValue) {
+    ToggleSetting(GameSettingType settingType, boolean defaultValue) {
         this.settingType = settingType;
         this.key = this.name().toLowerCase();
         this.defaultValue = defaultValue;

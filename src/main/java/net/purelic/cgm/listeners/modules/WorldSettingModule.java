@@ -82,7 +82,8 @@ public class WorldSettingModule implements Listener {
                 biomes[BiomeBase.OCEAN.id] = BiomeBase.PLAINS;
                 biomesField.set(null, biomes);
             }
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -123,7 +124,7 @@ public class WorldSettingModule implements Listener {
                 }
             }
 
-            TaskUtils.run(() ->  new WorldCreator(name).environment(env).createWorld());
+            TaskUtils.run(() -> new WorldCreator(name).environment(env).createWorld());
         });
     }
 

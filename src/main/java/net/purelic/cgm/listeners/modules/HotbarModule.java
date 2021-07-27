@@ -49,8 +49,8 @@ public class HotbarModule implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Item item = event.getItemDrop();
         if (item != null
-                && item.getItemStack() != null
-                && new ItemCrafter(item.getItemStack()).hasTag("hotbar_menu_item")) {
+            && item.getItemStack() != null
+            && new ItemCrafter(item.getItemStack()).hasTag("hotbar_menu_item")) {
             event.setCancelled(true);
         }
     }

@@ -32,7 +32,7 @@ public class EnderPearlModule implements Listener {
         ItemStack inHand = player.getItemInHand();
 
         if (inHand == null
-                || inHand.getType() != Material.ENDER_PEARL) return;
+            || inHand.getType() != Material.ENDER_PEARL) return;
 
         if (this.cooldowns.containsKey(player)) {
             double timeLeft = (this.cooldowns.get(player) + this.cooldownTime * 1000L) - System.currentTimeMillis();
@@ -49,7 +49,7 @@ public class EnderPearlModule implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) {
         if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL
-                || !EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) return;
+            || !EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) return;
 
         MatchTeam playerTeam = MatchTeam.getTeam(event.getPlayer());
         TeamType teamType = EnumSetting.TEAM_TYPE.get();

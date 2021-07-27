@@ -125,13 +125,13 @@ public class PlayerUtils {
             }
         } else if (bothPlaying) {
             // Hide the other player if they're respawning, otherwise show them
-            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
+            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING)) {
                 hidePlayer(player, other);
             } else {
                 showPlayer(player, other);
             }
 
-            if (MatchManager.getParticipant(player).isState(ParticipantState.RESPAWNING))  {
+            if (MatchManager.getParticipant(player).isState(ParticipantState.RESPAWNING)) {
                 hidePlayer(other, player);
             } else {
                 showPlayer(other, player);
@@ -140,7 +140,7 @@ public class PlayerUtils {
             hidePlayer(other, player);
 
             // Hide the other player if they're respawning, otherwise show them
-            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
+            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING)) {
                 hidePlayer(player, other);
             } else {
                 showPlayer(player, other);
@@ -204,7 +204,7 @@ public class PlayerUtils {
 
     private static void clearInventory(Inventory inventory) {
         List<ItemStack> remove = new ArrayList<>();
-        
+
         for (ItemStack item : inventory.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 remove.add(item);
@@ -249,9 +249,11 @@ public class PlayerUtils {
         addPermanentEffect(player, PotionEffectType.FAST_DIGGING, NumberSetting.PLAYER_HASTE.value() - 1);
         addPermanentEffect(player, PotionEffectType.INCREASE_DAMAGE, NumberSetting.PLAYER_STRENGTH.value() - 1);
         if (ToggleSetting.PLAYER_INVISIBILITY.isEnabled()) addPermanentEffect(player, PotionEffectType.INVISIBILITY);
-        if (ToggleSetting.PLAYER_FIRE_RESISTANCE.isEnabled()) addPermanentEffect(player, PotionEffectType.FIRE_RESISTANCE);
+        if (ToggleSetting.PLAYER_FIRE_RESISTANCE.isEnabled())
+            addPermanentEffect(player, PotionEffectType.FIRE_RESISTANCE);
         if (ToggleSetting.PLAYER_BLINDNESS.isEnabled()) addPermanentEffect(player, PotionEffectType.BLINDNESS);
-        if (MatchManager.getCurrentMap() != null && MatchManager.getCurrentMap().getYaml().hasNightVision()) PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
+        if (MatchManager.getCurrentMap() != null && MatchManager.getCurrentMap().getYaml().hasNightVision())
+            PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
     }
 
     public static void logRespawnLocation(Player player) {
@@ -291,10 +293,10 @@ public class PlayerUtils {
             Player player = participant.getPlayer();
 
             if (MatchTeam.isSameTeam(player, tracker)
-                    || player == tracker
-                    || participant.isDead()
-                    || participant.isEliminated()
-                    || participant.getPlayer().getWorld() != player.getWorld()) {
+                || player == tracker
+                || participant.isDead()
+                || participant.isEliminated()
+                || participant.getPlayer().getWorld() != player.getWorld()) {
                 continue;
             }
 

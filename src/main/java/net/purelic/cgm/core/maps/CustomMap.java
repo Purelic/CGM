@@ -70,8 +70,8 @@ public class CustomMap {
 
         if (EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
             this.world.getEntities().stream()
-                    .filter(entity -> entity.getType() == EntityType.VILLAGER)
-                    .forEach(villager -> EntityUtils.setAi(villager, false));
+                .filter(entity -> entity.getType() == EntityType.VILLAGER)
+                .forEach(villager -> EntityUtils.setAi(villager, false));
         }
     }
 
@@ -81,9 +81,9 @@ public class CustomMap {
         GameType gameType = EnumSetting.GAME_TYPE.get();
 
         if (gameType == GameType.KING_OF_THE_HILL
-                || (gameType == GameType.HEAD_HUNTER && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())
-                || (gameType == GameType.CAPTURE_THE_FLAG && ToggleSetting.FLAG_GOALS.isEnabled())
-                || (gameType == GameType.DEATHMATCH && ToggleSetting.DEATHMATCH_SCOREBOXES.isEnabled())) {
+            || (gameType == GameType.HEAD_HUNTER && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())
+            || (gameType == GameType.CAPTURE_THE_FLAG && ToggleSetting.FLAG_GOALS.isEnabled())
+            || (gameType == GameType.DEATHMATCH && ToggleSetting.DEATHMATCH_SCOREBOXES.isEnabled())) {
             boolean neutralHills = ToggleSetting.NEUTRAL_HILLS.isEnabled();
             TeamType teamType = EnumSetting.TEAM_TYPE.get();
             List<MatchTeam> teams = teamType.getTeams();
@@ -140,7 +140,7 @@ public class CustomMap {
     private void loadFlags() {
         GameType gameType = EnumSetting.GAME_TYPE.get();
 
-        if (gameType!= GameType.CAPTURE_THE_FLAG) return;
+        if (gameType != GameType.CAPTURE_THE_FLAG) return;
 
         boolean neutralFlags = ToggleSetting.NEUTRAL_FLAGS.isEnabled();
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
@@ -150,7 +150,7 @@ public class CustomMap {
 
         // filter on flags valid for this game mode
         List<Flag> flags = this.yaml.getFlags().stream().filter(flag ->
-                (neutralFlags ? flag.isNeutral() : !flag.isNeutral() && teams.contains(flag.getOwner()))
+            (neutralFlags ? flag.isNeutral() : !flag.isNeutral() && teams.contains(flag.getOwner()))
         ).collect(Collectors.toList());
 
         // if total flags = 0, load all flags
@@ -200,14 +200,14 @@ public class CustomMap {
 
         GameType gameType = EnumSetting.GAME_TYPE.get();
 
-        if (gameType!= GameType.BED_WARS) return;
+        if (gameType != GameType.BED_WARS) return;
 
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         List<MatchTeam> teams = teamType.getTeams();
 
         // filter on beds valid for this game mode
         List<Bed> beds = this.yaml.getBeds().stream().filter(bed ->
-                (teams.contains(bed.getOwner()))
+            (teams.contains(bed.getOwner()))
         ).collect(Collectors.toList());
 
         for (MatchTeam team : teams) {
@@ -277,8 +277,8 @@ public class CustomMap {
             Vector coords = hill.getCoords();
 
             if (coords.getBlockX() == spawnerX
-                    && coords.getBlockY() == spawnerY
-                    && coords.getBlockZ() == spawnerZ) return true;
+                && coords.getBlockY() == spawnerY
+                && coords.getBlockZ() == spawnerZ) return true;
         }
 
         return false;
@@ -306,7 +306,7 @@ public class CustomMap {
 
     private boolean supportsSquads() {
         return this.supportsMultiTeam() && !this.yaml.getAquaSpawns().isEmpty() && !this.yaml.getPinkSpawns().isEmpty()
-                && !this.yaml.getWhiteSpawns().isEmpty() && !this.yaml.getGraySpawns().isEmpty();
+            && !this.yaml.getWhiteSpawns().isEmpty() && !this.yaml.getGraySpawns().isEmpty();
     }
 
     private boolean supportsHills(CustomGameMode gameMode, GameType gameType) {

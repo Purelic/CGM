@@ -1,7 +1,6 @@
 package net.purelic.cgm.listeners.bed;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
@@ -25,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.github.paperspigot.Title;
 
 import java.util.List;
 
@@ -88,21 +86,21 @@ public class BedBreak implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onRoundStart(RoundStartEvent event) {
         BedUtils.getBeds().stream()
-                .filter(bed -> bed.getOwner().getPlayers().size() == 0)
-                .forEach(bed -> Commons.callEvent(new BedBreakEvent(bed, false)));
+            .filter(bed -> bed.getOwner().getPlayers().size() == 0)
+            .forEach(bed -> Commons.callEvent(new BedBreakEvent(bed, false)));
     }
 
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMatchQuit(MatchQuitEvent event) {
         if (!MatchState.isState(MatchState.STARTED)) return;
 
         BedUtils.getBeds().stream()
-                .filter(bed -> !bed.isDestroyed())
-                .filter(bed -> bed.getOwner().getPlayers().size() == 0)
-                .forEach(bed -> Commons.callEvent(new BedBreakEvent(bed, false)));
+            .filter(bed -> !bed.isDestroyed())
+            .filter(bed -> bed.getOwner().getPlayers().size() == 0)
+            .forEach(bed -> Commons.callEvent(new BedBreakEvent(bed, false)));
     }
 
 }

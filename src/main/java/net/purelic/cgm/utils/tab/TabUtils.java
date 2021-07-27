@@ -110,52 +110,68 @@ public class TabUtils {
                 switch (teamType) {
                     case SOLO:
                     case MULTI_TEAM:
-                    case TEAMS: return totalTeams;
-                    case SQUADS: return totalTeams / 2;
+                    case TEAMS:
+                        return totalTeams;
+                    case SQUADS:
+                        return totalTeams / 2;
                 }
             case DOUBLES:
                 switch (teamType) {
                     case SOLO:
                     case TEAMS:
-                    case MULTI_TEAM: return totalTeams;
-                    case SQUADS: return totalTeams / 2;
+                    case MULTI_TEAM:
+                        return totalTeams;
+                    case SQUADS:
+                        return totalTeams / 2;
                 }
             case TRIOS:
                 switch (teamType) {
                     case SOLO:
                     case TEAMS:
-                    case MULTI_TEAM: return totalTeams;
-                    case SQUADS: return totalTeams / 2;
+                    case MULTI_TEAM:
+                        return totalTeams;
+                    case SQUADS:
+                        return totalTeams / 2;
                 }
             case MINI:
                 switch (teamType) {
                     case SOLO:
                     case TEAMS:
-                    case MULTI_TEAM: return totalTeams;
-                    case SQUADS: return totalTeams / 2;
+                    case MULTI_TEAM:
+                        return totalTeams;
+                    case SQUADS:
+                        return totalTeams / 2;
                 }
             case NORMAL:
                 switch (teamType) {
                     case SOLO:
-                    case TEAMS: return totalTeams;
+                    case TEAMS:
+                        return totalTeams;
                     case MULTI_TEAM:
-                    case SQUADS: return totalTeams / 2;
+                    case SQUADS:
+                        return totalTeams / 2;
                 }
             case BIG:
                 switch (teamType) {
                     case SOLO:
-                    case TEAMS: return 1;
-                    case MULTI_TEAM: return 2;
-                    case SQUADS: return 3;
+                    case TEAMS:
+                        return 1;
+                    case MULTI_TEAM:
+                        return 2;
+                    case SQUADS:
+                        return 3;
                 }
             case MEGA:
                 switch (teamType) {
                     case SOLO:
                     case TEAMS:
-                    case MULTI_TEAM: return 1;
-                    case SQUADS: return 2;
+                    case MULTI_TEAM:
+                        return 1;
+                    case SQUADS:
+                        return 2;
                 }
-            default: return totalTeams;
+            default:
+                return totalTeams;
         }
     }
 
@@ -205,6 +221,7 @@ public class TabUtils {
     }
 
     public static class TabComparator implements Comparator<Player> {
+
         public int compare(Player p1, Player p2) {
             boolean p1Alive = true;
             boolean p2Alive = true;
@@ -246,6 +263,7 @@ public class TabUtils {
             // Lastly, sort alphabetically (case insensitive)
             return p1.getName().toLowerCase().compareTo(p2.getName().toLowerCase());
         }
+
     }
 
 }

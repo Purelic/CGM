@@ -145,7 +145,7 @@ public class ParticipantDeath implements Listener {
         PlayerUtils.logDeathLocation(player);
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onMatchQuit(MatchQuitEvent event) {
         if (!MatchState.isState(MatchState.STARTED)) return;
         Player player = event.getPlayer();
@@ -285,13 +285,13 @@ public class ParticipantDeath implements Listener {
 
         String assistMessage = assists < 1 ? "" : " assisted by " + assists + " other" + (assists == 1 ? "" : "s");
         whiteMessage += ChatColor.WHITE + assistMessage;
-        grayMessage  += ChatColor.GRAY  + assistMessage;
+        grayMessage += ChatColor.GRAY + assistMessage;
 
         whiteMessage += !combatLog ? "" : " (combat log)";
-        grayMessage  += !combatLog ? "" : " (combat log)";
+        grayMessage += !combatLog ? "" : " (combat log)";
 
         whiteMessage += !eliminated ? "" : "" + ChatColor.RED + ChatColor.BOLD + " ELIMINATED";
-        grayMessage  += !eliminated ? "" : "" + ChatColor.RED + ChatColor.BOLD + " ELIMINATED";
+        grayMessage += !eliminated ? "" : "" + ChatColor.RED + ChatColor.BOLD + " ELIMINATED";
 
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online == player) {
@@ -313,7 +313,7 @@ public class ParticipantDeath implements Listener {
         seconds = Math.min(seconds, NumberSetting.RESPAWN_MAX_TIME.value());
 
         if (ShopManager.hasUpgrade(player, TeamUpgrade.QUICK_RESPAWN_II)) {
-            seconds  *= 0.70; // 30% faster
+            seconds *= 0.70; // 30% faster
         } else if (ShopManager.hasUpgrade(player, TeamUpgrade.QUICK_RESPAWN_II)) {
             seconds *= 0.85; // 15% faster
         }

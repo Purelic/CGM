@@ -44,8 +44,8 @@ public class BridgeEggModule implements Listener {
         ItemStack inHand = player.getItemInHand();
 
         if (inHand == null
-                || inHand.getType() != Material.EGG
-                || !inHand.hasItemMeta()) return;
+            || inHand.getType() != Material.EGG
+            || !inHand.hasItemMeta()) return;
 
         if (this.cooldowns.containsKey(player)) {
             double timeLeft = (this.cooldowns.get(player) + this.cooldownTime * 1000L) - System.currentTimeMillis();
@@ -115,8 +115,8 @@ public class BridgeEggModule implements Listener {
             private void setBlock(Location location) {
                 Block block = location.getBlock();
                 if (block.getType() != Material.AIR
-                        || !BlockProtectionModule.withinBuildLimits(block)
-                        || BlockProtectionModule.isSpawnProtected(block)) return;
+                    || !BlockProtectionModule.withinBuildLimits(block)
+                    || BlockProtectionModule.isSpawnProtected(block)) return;
                 block.setType(this.material);
                 block.setData(this.data);
                 BlockProtectionModule.addBreakableBlock(block);

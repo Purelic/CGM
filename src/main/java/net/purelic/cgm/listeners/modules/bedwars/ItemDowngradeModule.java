@@ -31,14 +31,14 @@ public class ItemDowngradeModule implements Listener {
     private final Map<UUID, Map<ItemStack, Integer>> items = new HashMap<>();
     private final Map<UUID, ArmorType> armor = new HashMap<>();
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onParticipantDeath(ParticipantDeathEvent event) {
         if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) return;
         Participant participant = event.getParticipant();
         this.downgradeItems(participant);
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onMatchQuit(MatchQuitEvent event) {
         if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) return;
         Participant participant = event.getParticipant();
@@ -71,7 +71,7 @@ public class ItemDowngradeModule implements Listener {
         if (type != ArmorType.LEATHER) this.armor.put(uuid, type);
     }
 
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onParticipantRespawn(ParticipantRespawnEvent event) {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
@@ -81,8 +81,8 @@ public class ItemDowngradeModule implements Listener {
 
             this.items.get(uuid).forEach((item, slot) -> {
                 if (inventory.getItem(slot) != null
-                        && inventory.getItem(slot).getType().name().contains("_SWORD")
-                        && item.getType().name().contains("_SWORD")) {
+                    && inventory.getItem(slot).getType().name().contains("_SWORD")
+                    && item.getType().name().contains("_SWORD")) {
                     inventory.setItem(slot, item);
                 } else if (inventory.getItem(slot) == null) {
                     inventory.setItem(slot, item);
@@ -101,11 +101,11 @@ public class ItemDowngradeModule implements Listener {
             PlayerInventory inventory = player.getInventory();
             ItemStack[] currentArmor = inventory.getArmorContents();
 
-            ItemStack[] newArmor = new ItemStack[] {
-                    new ItemCrafter(type.getBoots()).setTag("locked", "true").setUnbreakable().craft(),
-                    new ItemCrafter(type.getLeggings()).setTag("locked", "true").setUnbreakable().craft(),
-                    currentArmor[2], // chestplate
-                    currentArmor[3], // helmet
+            ItemStack[] newArmor = new ItemStack[]{
+                new ItemCrafter(type.getBoots()).setTag("locked", "true").setUnbreakable().craft(),
+                new ItemCrafter(type.getLeggings()).setTag("locked", "true").setUnbreakable().craft(),
+                currentArmor[2], // chestplate
+                currentArmor[3], // helmet
             };
 
             inventory.setArmorContents(newArmor);
@@ -115,7 +115,7 @@ public class ItemDowngradeModule implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onMatchStart(MatchStartEvent event) {
         this.items.clear();
         this.armor.clear();

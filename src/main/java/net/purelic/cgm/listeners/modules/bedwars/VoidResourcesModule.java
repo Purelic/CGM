@@ -16,10 +16,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class VoidResourcesModule implements Listener {
 
-    @EventHandler (priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)
-                || !this.isResource(event.getItemDrop())) return;
+            || !this.isResource(event.getItemDrop())) return;
 
         Player player = event.getPlayer();
 
@@ -52,9 +52,9 @@ public class VoidResourcesModule implements Listener {
         Material material = itemStack.getType();
 
         return material == Material.IRON_INGOT
-                || material == Material.GOLD_INGOT
-                || material == Material.DIAMOND
-                || material == Material.EMERALD;
+            || material == Material.GOLD_INGOT
+            || material == Material.DIAMOND
+            || material == Material.EMERALD;
     }
 
     private boolean isFalling(Player player) {

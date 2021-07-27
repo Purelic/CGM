@@ -83,7 +83,7 @@ public class DamageManger {
 
         for (DamageTick tick : ticks) {
             messages.add(DamageManger.PUNCTUATION_COLOR + " - " + DamageManger.ACCENT_COLOR + ChatColor.BOLD + df.format(tick.getDamage()) + " DMG" +
-                    DamageManger.PUNCTUATION_COLOR + ": " + tick.getSingleLineSummary() + DamageManger.PUNCTUATION_COLOR + " (" + tick.timeDiff() + ")");
+                DamageManger.PUNCTUATION_COLOR + ": " + tick.getSingleLineSummary() + DamageManger.PUNCTUATION_COLOR + " (" + tick.timeDiff() + ")");
         }
 
         return messages;
@@ -123,8 +123,8 @@ public class DamageManger {
 
     public static List<DamageTick> getLoggedTicks(UUID uuid) {
         return getDamageTicks().containsKey(uuid) ?
-                cleanup(getDamageTicks().get(uuid)) :
-                new ArrayList<>();
+            cleanup(getDamageTicks().get(uuid)) :
+            new ArrayList<>();
     }
 
     public static DamageTick getLastTick(Player player) {
@@ -159,9 +159,9 @@ public class DamageManger {
 
     public static boolean samePlace(Location loc1, Location loc2) {
         return loc1.getWorld().getName().equals(loc2.getWorld().getName()) &&
-                loc1.getBlockX() == loc2.getBlockX() &&
-                loc1.getBlockY() == loc2.getBlockY() &&
-                loc1.getBlockZ() == loc2.getBlockZ();
+            loc1.getBlockX() == loc2.getBlockX() &&
+            loc1.getBlockY() == loc2.getBlockY() &&
+            loc1.getBlockZ() == loc2.getBlockZ();
     }
 
 }

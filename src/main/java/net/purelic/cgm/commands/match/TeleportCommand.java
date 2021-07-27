@@ -17,28 +17,28 @@ public class TeleportCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("tp", "teleport")
-                .senderType(Player.class)
-                .argument(PlayerArgument.of("player"))
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    Player target = c.get("player");
+            .senderType(Player.class)
+            .argument(PlayerArgument.of("player"))
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                Player target = c.get("player");
 
-                    if (!(MatchState.isActive() || MatchState.isState(MatchState.ENDED))) {
+                if (!(MatchState.isActive() || MatchState.isState(MatchState.ENDED))) {
+                    CommandUtils.sendErrorMessage(player, "You cannot teleport to other players right now!");
+                    return;
+                }
+
+                if (MatchManager.isPlaying(player)) {
+                    Participant participant = MatchManager.getParticipant(player);
+
+                    if (!participant.isState(ParticipantState.ELIMINATED, ParticipantState.QUEUED) && !CommandUtils.isOp(player)) {
                         CommandUtils.sendErrorMessage(player, "You cannot teleport to other players right now!");
                         return;
                     }
+                }
 
-                    if (MatchManager.isPlaying(player)) {
-                       Participant participant = MatchManager.getParticipant(player);
-
-                       if (!participant.isState(ParticipantState.ELIMINATED, ParticipantState.QUEUED) && !CommandUtils.isOp(player)) {
-                           CommandUtils.sendErrorMessage(player, "You cannot teleport to other players right now!");
-                           return;
-                       }
-                    }
-
-                    player.teleport(target);
-                });
+                player.teleport(target);
+            });
     }
 
 }

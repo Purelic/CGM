@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TabManager {
-    
+
     private static final TextComponent DEFAULT_FOOTER = new TextComponent(ChatColor.GRAY + "purelic.net");
     private static final Map<Player, TabList> TAB_LISTS = new HashMap<>();
     private static int time = 0;
@@ -106,7 +106,7 @@ public class TabManager {
 
     public static TextComponent getHeader() {
         StringBuilder header = new StringBuilder(ChatColor.BOLD + ServerUtils.getName());
-        if (Commons.hasOwner())  header.append("'s Server");
+        if (Commons.hasOwner()) header.append("'s Server");
 
         CustomGameMode gameMode = MatchManager.getCurrentGameMode();
         CustomMap map = MatchManager.getCurrentMap();

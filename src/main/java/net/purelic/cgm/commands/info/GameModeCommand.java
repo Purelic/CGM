@@ -30,43 +30,43 @@ public class GameModeCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("gm")
-                .senderType(Player.class)
-                .argument(StringArgument.of("game mode", StringArgument.StringMode.GREEDY))
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    String gmArg = c.get("game mode");
+            .senderType(Player.class)
+            .argument(StringArgument.of("game mode", StringArgument.StringMode.GREEDY))
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                String gmArg = c.get("game mode");
 
-                    CustomGameMode gameMode = CGM.getPlaylist().getGameMode(gmArg);
+                CustomGameMode gameMode = CGM.getPlaylist().getGameMode(gmArg);
 
-                    if (gameMode == null) {
-                        CommandUtils.sendErrorMessage(player, "Could not find game mode \"" + gmArg + "\"!");
-                        return;
-                    }
+                if (gameMode == null) {
+                    CommandUtils.sendErrorMessage(player, "Could not find game mode \"" + gmArg + "\"!");
+                    return;
+                }
 
-                    BookUtil.PageBuilder pageBuilder = new BookUtil.PageBuilder()
-                        .add(new ComponentBuilder("⬅ Back")
-                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gamemodes").italic(true).color(ChatColor.GRAY).create()))
-                            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gamemodes"))
-                            .bold(true)
-                            .create()).newLine().newLine()
-                        .add("Name: ")
-                        .add(gameMode.getName()).newLine()
-                        .add("Alias: ")
-                        .add(gameMode.getAlias()).newLine().newLine();
+                BookUtil.PageBuilder pageBuilder = new BookUtil.PageBuilder()
+                    .add(new ComponentBuilder("⬅ Back")
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/gamemodes").italic(true).color(ChatColor.GRAY).create()))
+                        .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/gamemodes"))
+                        .bold(true)
+                        .create()).newLine().newLine()
+                    .add("Name: ")
+                    .add(gameMode.getName()).newLine()
+                    .add("Alias: ")
+                    .add(gameMode.getAlias()).newLine().newLine();
 
-                    String name = Fetcher.getNameOf(gameMode.getAuthor());
-                    Player author = Bukkit.getPlayer(name);
+                String name = Fetcher.getNameOf(gameMode.getAuthor());
+                Player author = Bukkit.getPlayer(name);
 
-                    if (author != null) pageBuilder.add("Author:").newLine().add(Fetcher.getFancyName(player));
-                    else pageBuilder.add("Author:").newLine().add(ChatColor.DARK_AQUA + name);
+                if (author != null) pageBuilder.add("Author:").newLine().add(Fetcher.getFancyName(player));
+                else pageBuilder.add("Author:").newLine().add(ChatColor.DARK_AQUA + name);
 
-                    pageBuilder.newLine().newLine()
-                        .add("Description:").newLine()
-                        .add(gameMode.getDescription());
+                pageBuilder.newLine().newLine()
+                    .add("Description:").newLine()
+                    .add(gameMode.getDescription());
 
-                    ItemStack book = BookUtil.writtenBook().pages(pageBuilder.build()).build();
-                    BookUtil.openPlayer(player, book);
-                });
+                ItemStack book = BookUtil.writtenBook().pages(pageBuilder.build()).build();
+                BookUtil.openPlayer(player, book);
+            });
     }
 
 }

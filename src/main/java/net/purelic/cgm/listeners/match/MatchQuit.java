@@ -11,8 +11,8 @@ import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
 import net.purelic.cgm.utils.MatchUtils;
-import net.purelic.commons.utils.CommandUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.CommandUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,10 +37,10 @@ public class MatchQuit implements Listener {
         if (assists.size() > 0) {
             // Combat log
             Commons.callEvent(new PlayerDeathEvent(
-                    player,
-                    Arrays.stream(player.getInventory().getContents().clone()).filter(Objects::nonNull).collect(Collectors.toList()),
-                    player.getTotalExperience(),
-                    "combat log"));
+                player,
+                Arrays.stream(player.getInventory().getContents().clone()).filter(Objects::nonNull).collect(Collectors.toList()),
+                player.getTotalExperience(),
+                "combat log"));
         } else if (MatchUtils.isElimination() && MatchUtils.getAlive(team) <= 1) {
             Commons.callEvent(new MatchTeamEliminateEvent(team));
         }

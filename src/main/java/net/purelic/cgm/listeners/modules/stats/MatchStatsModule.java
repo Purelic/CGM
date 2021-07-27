@@ -21,13 +21,13 @@ public class MatchStatsModule implements Listener {
     private static final List<MatchStats> STATS = new ArrayList<>();
     private static MatchStats current = null;
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onMatchStart(MatchStartEvent event) {
         if (current == null) current = new MatchStats(event.getMap(), event.getGameMode());
         TabManager.updateStatsAll();
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onMatchEnd(MatchEndEvent event) {
         if (event.isForced()) {
             current = null;

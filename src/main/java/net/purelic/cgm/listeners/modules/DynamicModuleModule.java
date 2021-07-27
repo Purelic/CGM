@@ -13,7 +13,7 @@ public class DynamicModuleModule implements Module {
 
     private static final List<DynamicModule> MODULES = new ArrayList<>();
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onMatchStart(MatchStartEvent event) {
         for (DynamicModule module : MODULES) {
             if (module.isValid()) {
@@ -22,7 +22,7 @@ public class DynamicModuleModule implements Module {
         }
     }
 
-    @EventHandler (priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onMatchEnd(MatchEndEvent event) {
         for (DynamicModule module : MODULES) {
             module.unregister();

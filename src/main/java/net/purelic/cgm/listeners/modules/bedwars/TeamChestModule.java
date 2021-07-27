@@ -40,8 +40,8 @@ public class TeamChestModule implements Listener {
 
         Block block = event.getClickedBlock();
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK
-                || block == null
-                || block.getType() != Material.CHEST) return;
+            || block == null
+            || block.getType() != Material.CHEST) return;
 
         Chest chest = (Chest) block.getState();
         Inventory inventory = chest.getInventory();

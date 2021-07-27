@@ -1,11 +1,8 @@
 package net.purelic.cgm.utils;
 
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.gamemodes.EnumSetting;
-import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.hill.Hill;
-import net.purelic.cgm.core.match.Participant;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

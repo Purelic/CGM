@@ -24,7 +24,7 @@ public class PlayerTracker extends BukkitRunnable {
             Player target = PlayerUtils.getClosestEnemy(player);
 
             if (target == null
-                    || (EnumSetting.GAME_TYPE.is(GameType.BED_WARS) && !BedUtils.canUseTracker(player))) {
+                || (EnumSetting.GAME_TYPE.is(GameType.BED_WARS) && !BedUtils.canUseTracker(player))) {
                 player.setCompassTarget(player.getLocation());
             } else {
                 player.setCompassTarget(target.getLocation());

@@ -32,4 +32,5 @@ public class TimeUtils {
         else if (percent <= 0.25D) return ChatColor.YELLOW;
         else return ChatColor.WHITE;
     }
+
 }

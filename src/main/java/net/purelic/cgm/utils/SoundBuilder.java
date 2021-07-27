@@ -147,7 +147,8 @@ public class SoundBuilder {
         private final float pitch;
 
         Key() {
-            this.pitch = (float) Math.pow(2, (this.ordinal() - 12D) / 12);;
+            this.pitch = (float) Math.pow(2, (this.ordinal() - 12D) / 12);
+            ;
         }
 
         public float getPitch() {

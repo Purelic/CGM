@@ -43,26 +43,24 @@ public class MonsterDamageTick extends DamageTick {
         return entity;
     }
 
-    protected String getMessageTemplate(){
-        if (isRanged()){
+    protected String getMessageTemplate() {
+        if (isRanged()) {
             DecimalFormat df = new DecimalFormat("#.#");
-            return DamageManger.BASE_COLOR + "Shot by " + DamageManger.ACCENT_COLOR + "{ATTACKER}" + DamageManger.BASE_COLOR + " from "+
-                    DamageManger.ACCENT_COLOR + df.format(getDistance()) + "m " + DamageManger.BASE_COLOR + "away";
-        }
-        else{
-            return DamageManger.BASE_COLOR + "Attacked by " + DamageManger.ACCENT_COLOR +  "{ATTACKER}";
+            return DamageManger.BASE_COLOR + "Shot by " + DamageManger.ACCENT_COLOR + "{ATTACKER}" + DamageManger.BASE_COLOR + " from " +
+                DamageManger.ACCENT_COLOR + df.format(getDistance()) + "m " + DamageManger.BASE_COLOR + "away";
+        } else {
+            return DamageManger.BASE_COLOR + "Attacked by " + DamageManger.ACCENT_COLOR + "{ATTACKER}";
 
         }
     }
 
-    protected String getDeathMessageTemplate(Player player){
-        if (isRanged()){
+    protected String getDeathMessageTemplate(Player player) {
+        if (isRanged()) {
             DecimalFormat df = new DecimalFormat("#.#");
-            return DamageManger.ACCENT_COLOR + NickUtils.getDisplayName(player) + DamageManger.BASE_COLOR + " was killed by " + DamageManger.ACCENT_COLOR + "{KILLER}" + DamageManger.BASE_COLOR + " from "+
-                    DamageManger.ACCENT_COLOR + df.format(getDistance()) + "m " + DamageManger.BASE_COLOR + "away";
-        }
-        else{
-            return DamageManger.ACCENT_COLOR + NickUtils.getDisplayName(player) + DamageManger.BASE_COLOR + " was killed by " + DamageManger.ACCENT_COLOR +  "{KILLER}";
+            return DamageManger.ACCENT_COLOR + NickUtils.getDisplayName(player) + DamageManger.BASE_COLOR + " was killed by " + DamageManger.ACCENT_COLOR + "{KILLER}" + DamageManger.BASE_COLOR + " from " +
+                DamageManger.ACCENT_COLOR + df.format(getDistance()) + "m " + DamageManger.BASE_COLOR + "away";
+        } else {
+            return DamageManger.ACCENT_COLOR + NickUtils.getDisplayName(player) + DamageManger.BASE_COLOR + " was killed by " + DamageManger.ACCENT_COLOR + "{KILLER}";
 
         }
     }
@@ -82,4 +80,5 @@ public class MonsterDamageTick extends DamageTick {
     public String getSingleLineSummary() {
         return getMessageTemplate().replace("{ATTACKER}", DamageManger.getEntityName(getEntity()));
     }
+
 }

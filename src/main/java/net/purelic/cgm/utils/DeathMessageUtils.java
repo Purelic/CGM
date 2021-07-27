@@ -22,13 +22,18 @@ public class DeathMessageUtils {
                 return NickUtils.getDisplayName(player) + chatColor + " forgot how to swim" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
             case ENTITY_ATTACK:
                 Entity entity = ((EntityDamageByEntityEvent) player.getLastDamageCause()).getDamager();
-                if (entity instanceof Wolf && ((Wolf) entity).getOwner() != null) return NickUtils.getDisplayName(player) + chatColor + " was slain by " + NickUtils.getDisplayName((Player) ((Wolf) entity).getOwner()) + chatColor + "'s wolf";
-                else if (!(entity instanceof Player) && killer != null) return NickUtils.getDisplayName(player) + chatColor + " was slain by " + getMonster(entity) + chatColor + " whilst fighting " + NickUtils.getDisplayName(killer);
-                else if (entity instanceof Player) return NickUtils.getDisplayName(player) + chatColor + " was killed" + (killer != null ? " by " + NickUtils.getDisplayName(killer) : "");
+                if (entity instanceof Wolf && ((Wolf) entity).getOwner() != null)
+                    return NickUtils.getDisplayName(player) + chatColor + " was slain by " + NickUtils.getDisplayName((Player) ((Wolf) entity).getOwner()) + chatColor + "'s wolf";
+                else if (!(entity instanceof Player) && killer != null)
+                    return NickUtils.getDisplayName(player) + chatColor + " was slain by " + getMonster(entity) + chatColor + " whilst fighting " + NickUtils.getDisplayName(killer);
+                else if (entity instanceof Player)
+                    return NickUtils.getDisplayName(player) + chatColor + " was killed" + (killer != null ? " by " + NickUtils.getDisplayName(killer) : "");
                 else return NickUtils.getDisplayName(player) + chatColor + " was slain by " + getMonster(entity);
             case FALL:
-                if (killer != null) return NickUtils.getDisplayName(player) + chatColor + " knocked off a high place (" + (int) (player.getFallDistance() + 0.5D) + " blocks) by " + NickUtils.getDisplayName(killer);
-                else return NickUtils.getDisplayName(player) + chatColor + " fell" + " (" + (int) (player.getFallDistance() + 0.5D) + " blocks) " + "off a high place";
+                if (killer != null)
+                    return NickUtils.getDisplayName(player) + chatColor + " knocked off a high place (" + (int) (player.getFallDistance() + 0.5D) + " blocks) by " + NickUtils.getDisplayName(killer);
+                else
+                    return NickUtils.getDisplayName(player) + chatColor + " fell" + " (" + (int) (player.getFallDistance() + 0.5D) + " blocks) " + "off a high place";
             case FALLING_BLOCK:
                 return NickUtils.getDisplayName(player) + chatColor + " was crushed to death" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
             case FIRE:
@@ -46,8 +51,10 @@ public class DeathMessageUtils {
                 if (proj.getShooter() instanceof Player) {
                     killer = (Player) proj.getShooter();
                     int dist = (int) (player.getLocation().distance(killer.getLocation()) + 0.5D);
-                    if (proj instanceof Fireball) return NickUtils.getDisplayName(player) + chatColor + " was fireballed (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + NickUtils.getDisplayName(killer);
-                    else return NickUtils.getDisplayName(player) + chatColor + " was shot (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + NickUtils.getDisplayName(killer);
+                    if (proj instanceof Fireball)
+                        return NickUtils.getDisplayName(player) + chatColor + " was fireballed (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + NickUtils.getDisplayName(killer);
+                    else
+                        return NickUtils.getDisplayName(player) + chatColor + " was shot (" + dist + " block" + (dist == 1 ? "" : "s") + ") by " + NickUtils.getDisplayName(killer);
                 }
                 Entity mob = (Entity) proj.getShooter();
                 int dist = (int) (player.getLocation().distance(mob.getLocation()) + 0.5D);
@@ -57,10 +64,12 @@ public class DeathMessageUtils {
             case SUFFOCATION:
                 return NickUtils.getDisplayName(player) + chatColor + " got stuck in the geometry" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
             case THORNS:
-                if (killer != null) return NickUtils.getDisplayName(player) + chatColor + " was killed by " + NickUtils.getDisplayName(killer) + chatColor + "'s thorns";
+                if (killer != null)
+                    return NickUtils.getDisplayName(player) + chatColor + " was killed by " + NickUtils.getDisplayName(killer) + chatColor + "'s thorns";
                 else return NickUtils.getDisplayName(player) + chatColor + " was thorn'd to death";
             case VOID:
-                if (killer != null) return NickUtils.getDisplayName(player) + chatColor + " was voided by " + NickUtils.getDisplayName(killer);
+                if (killer != null)
+                    return NickUtils.getDisplayName(player) + chatColor + " was voided by " + NickUtils.getDisplayName(killer);
                 else return NickUtils.getDisplayName(player) + chatColor + " fell out of the world";
             case WITHER:
                 return NickUtils.getDisplayName(player) + chatColor + " withered away" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
@@ -85,12 +94,15 @@ public class DeathMessageUtils {
                 return chatColor + "Drowned" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
             case ENTITY_ATTACK:
                 Entity entity = ((EntityDamageByEntityEvent) player.getLastDamageCause()).getDamager();
-                if (entity instanceof Wolf && ((Wolf) entity).getOwner() != null) return chatColor + "Slain by " + NickUtils.getDisplayName((Player) ((Wolf) entity).getOwner()) + chatColor + "'s wolf";
-                else if (!(entity instanceof Player) && killer != null) return chatColor + "Slain by " + getMonster(entity) + chatColor + " whilst fighting " + NickUtils.getDisplayName(killer);
+                if (entity instanceof Wolf && ((Wolf) entity).getOwner() != null)
+                    return chatColor + "Slain by " + NickUtils.getDisplayName((Player) ((Wolf) entity).getOwner()) + chatColor + "'s wolf";
+                else if (!(entity instanceof Player) && killer != null)
+                    return chatColor + "Slain by " + getMonster(entity) + chatColor + " whilst fighting " + NickUtils.getDisplayName(killer);
                 else if (entity instanceof Player) return chatColor + "Killed by " + NickUtils.getDisplayName(killer);
                 else return chatColor + "Killed by " + getMonster(entity);
             case FALL:
-                if (killer != null) return chatColor + "Knocked off a high place by " + NickUtils.getDisplayName(killer);
+                if (killer != null)
+                    return chatColor + "Knocked off a high place by " + NickUtils.getDisplayName(killer);
                 else return chatColor + "Fell off a high place";
             case FALLING_BLOCK:
                 return chatColor + "Crushed to death" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
@@ -108,7 +120,8 @@ public class DeathMessageUtils {
                 Projectile proj = (Projectile) ((EntityDamageByEntityEvent) player.getLastDamageCause()).getDamager();
                 if (proj.getShooter() instanceof Player) {
                     killer = (Player) proj.getShooter();
-                    if (proj instanceof Fireball) return chatColor + "Fireballed by " + NickUtils.getDisplayName(killer);
+                    if (proj instanceof Fireball)
+                        return chatColor + "Fireballed by " + NickUtils.getDisplayName(killer);
                     else return chatColor + "Shot by " + NickUtils.getDisplayName(killer);
                 }
                 Entity mob = (Entity) proj.getShooter();
@@ -118,7 +131,8 @@ public class DeathMessageUtils {
             case SUFFOCATION:
                 return chatColor + "Suffocated" + ((killer != null) ? (" whilst fighting " + NickUtils.getDisplayName(killer)) : "");
             case THORNS:
-                if (killer != null) return chatColor + "Killed by " + NickUtils.getDisplayName(killer) + chatColor + "'s thorns.";
+                if (killer != null)
+                    return chatColor + "Killed by " + NickUtils.getDisplayName(killer) + chatColor + "'s thorns.";
                 else return chatColor + "Thorn'd to death";
             case VOID:
                 if (killer != null) return chatColor + "Voided by " + NickUtils.getDisplayName(killer);

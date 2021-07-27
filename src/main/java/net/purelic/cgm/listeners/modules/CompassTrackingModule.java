@@ -67,7 +67,7 @@ public class CompassTrackingModule implements Listener {
         Player player = event.getPlayer();
 
         if (!ToggleSetting.PLAYER_COMPASS_ENABLED.isEnabled()
-                || !isHoldingCompass(player)) return;
+            || !isHoldingCompass(player)) return;
 
         String trackingMessage = "";
 
@@ -151,16 +151,16 @@ public class CompassTrackingModule implements Listener {
             String distValue = (new DecimalFormat("#.#").format(dist));
 
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + NickUtils.getDisplayName(target) +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    distValue + (distValue.contains(".") ? "" : ".0");
+                ChatColor.RESET + NickUtils.getDisplayName(target) +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                distValue + (distValue.contains(".") ? "" : ".0");
         } else {
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + NickUtils.getDisplayName(target) +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    "< 5 Blocks";
+                ChatColor.RESET + NickUtils.getDisplayName(target) +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                "< 5 Blocks";
         }
     }
 
@@ -170,8 +170,8 @@ public class CompassTrackingModule implements Listener {
         Location flagLoc = FlagUtils.getCurrentFlagLocation(flag);
 
         String display = flag.hasCarrier()
-                ? NickUtils.getDisplayName(flag.getCarrier().getPlayer())
-                : flag.getTitle();
+            ? NickUtils.getDisplayName(flag.getCarrier().getPlayer())
+            : flag.getTitle();
 
         return getObjectiveTrackingMessage(tracker, display, flagLoc);
     }
@@ -193,16 +193,16 @@ public class CompassTrackingModule implements Listener {
             String distValue = (new DecimalFormat("#.#").format(dist));
 
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + display +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    distValue + (distValue.contains(".") ? "" : ".0");
+                ChatColor.RESET + display +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                distValue + (distValue.contains(".") ? "" : ".0");
         } else {
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + display +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    "< 1 Block";
+                ChatColor.RESET + display +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                "< 1 Block";
         }
     }
 

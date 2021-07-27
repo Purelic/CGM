@@ -13,13 +13,13 @@ public class SoundCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("sfx")
-                .senderType(Player.class)
-                .argument(EnumArgument.of(SoundUtils.SFX.class, "sound"))
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    SoundUtils.SFX sfx = c.get("sound");
-                    sfx.play(player);
-                });
+            .senderType(Player.class)
+            .argument(EnumArgument.of(SoundUtils.SFX.class, "sound"))
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                SoundUtils.SFX sfx = c.get("sound");
+                sfx.play(player);
+            });
     }
 
 }

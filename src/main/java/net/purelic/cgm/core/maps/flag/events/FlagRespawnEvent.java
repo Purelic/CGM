@@ -33,11 +33,11 @@ public class FlagRespawnEvent extends FlagEvent implements Broadcastable {
         int seconds = this.flag.willRespawnAtHome() ? NumberSetting.FLAG_RESPAWN_DELAY.value() : NumberSetting.FLAG_VOIDED_DELAY.value();
         String time = (seconds == 1 ? " second" : " seconds");
         return new ComponentBuilder(
-                FlagEvent.BROADCAST_PREFIX +
-                    this.flag.getColoredName() +
-                    " will respawn in " +
-                    ChatColor.AQUA + seconds +
-                    ChatColor.RESET + time + "!").create();
+            FlagEvent.BROADCAST_PREFIX +
+                this.flag.getColoredName() +
+                " will respawn in " +
+                ChatColor.AQUA + seconds +
+                ChatColor.RESET + time + "!").create();
     }
 
 }

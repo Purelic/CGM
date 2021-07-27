@@ -2,8 +2,8 @@ package net.purelic.cgm.core.maps.flag.runnables;
 
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.maps.flag.constants.FlagState;
 import net.purelic.cgm.core.maps.flag.Flag;
+import net.purelic.cgm.core.maps.flag.constants.FlagState;
 import net.purelic.cgm.core.match.Participant;
 import org.bukkit.scheduler.BukkitRunnable;
 

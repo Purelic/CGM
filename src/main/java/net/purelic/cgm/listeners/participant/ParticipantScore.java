@@ -1,12 +1,12 @@
 package net.purelic.cgm.listeners.participant;
 
 import net.purelic.cgm.CGM;
-import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.ScoreboardManager;
+import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.participant.ParticipantScoreEvent;
 import net.purelic.cgm.utils.MatchUtils;

@@ -43,12 +43,11 @@ public class KillAssist implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if ((o instanceof KillAssist)){
-            KillAssist assist = (KillAssist)o;
-            if (assist.getPercentage() > getPercentage()){
+        if ((o instanceof KillAssist)) {
+            KillAssist assist = (KillAssist) o;
+            if (assist.getPercentage() > getPercentage()) {
                 return -1;
-            }
-            else if (assist.getPercentage() < getPercentage()){
+            } else if (assist.getPercentage() < getPercentage()) {
                 return 1;
             }
         }

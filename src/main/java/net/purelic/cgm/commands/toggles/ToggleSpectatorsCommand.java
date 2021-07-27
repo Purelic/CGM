@@ -24,35 +24,35 @@ public class ToggleSpectatorsCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("toggle")
-                .literal("spectators", "specs")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    UUID uuid = player.getUniqueId();
+            .literal("spectators", "specs")
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                UUID uuid = player.getUniqueId();
 
-                    if (hidingSpectators.remove(uuid)) {
-                        PlayerUtils.updateVisibility(player);
-                        CommandUtils.sendSuccessMessage(player, "You will now see spectators and eliminated players!");
-                    } else {
-                        hidingSpectators.add(uuid);
-                        PlayerUtils.updateVisibility(player);
-                        CommandUtils.sendSuccessMessage(player, "You are now hiding spectators and eliminated players!");
+                if (hidingSpectators.remove(uuid)) {
+                    PlayerUtils.updateVisibility(player);
+                    CommandUtils.sendSuccessMessage(player, "You will now see spectators and eliminated players!");
+                } else {
+                    hidingSpectators.add(uuid);
+                    PlayerUtils.updateVisibility(player);
+                    CommandUtils.sendSuccessMessage(player, "You are now hiding spectators and eliminated players!");
+                }
+
+                for (ItemStack item : player.getInventory().getContents()) {
+                    if (item == null) continue;
+
+                    if (new ItemCrafter(item).hasTag("toggle_spectators")) {
+                        boolean hiding = hideSpectators(player);
+                        item.setType(hiding ? Material.REDSTONE : Material.GLOWSTONE_DUST);
+                        ItemMeta meta = item.getItemMeta();
+                        meta.setDisplayName("" + ChatColor.RESET + ChatColor.BOLD +
+                            (hiding ? "Hiding" : "Showing") + " Spectators" + ChatColor.RESET + ChatColor.GRAY + " (R-Click)");
+                        item.setItemMeta(meta);
+                        break;
                     }
-
-                    for (ItemStack item : player.getInventory().getContents()) {
-                        if (item == null) continue;
-
-                        if (new ItemCrafter(item).hasTag("toggle_spectators")) {
-                            boolean hiding = hideSpectators(player);
-                            item.setType(hiding ? Material.REDSTONE : Material.GLOWSTONE_DUST);
-                            ItemMeta meta = item.getItemMeta();
-                            meta.setDisplayName("" + ChatColor.RESET + ChatColor.BOLD +
-                                (hiding ? "Hiding" : "Showing") + " Spectators" + ChatColor.RESET + ChatColor.GRAY + " (R-Click)");
-                            item.setItemMeta(meta);
-                            break;
-                        }
-                    }
-                });
+                }
+            });
     }
 
     public static boolean hideSpectators(Player player) {

@@ -53,7 +53,7 @@ public class VotingModule implements Module {
     }
 
     // run this listener after others since joining specs will clear your inventory
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onSpectatorJoin(SpectatorJoinEvent event) {
         if (MatchState.isState(MatchState.VOTING)) {
             this.votingManager.getKit().apply(event.getPlayer());

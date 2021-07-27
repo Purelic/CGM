@@ -35,7 +35,7 @@ public class TeamUpgradePurchase implements Listener {
         else TeamUpgrade.applyUpgrades(team);
 
         if ((upgrade == TeamUpgrade.TRAP_I || upgrade == TeamUpgrade.TRAP_II)
-                && EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
+            && EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
             Commons.callEvent(new TrapPurchaseEvent(player, upgrade));
         }
     }
@@ -45,7 +45,7 @@ public class TeamUpgradePurchase implements Listener {
         TeamUpgrade.applyUpgrades(event.getPlayer());
     }
 
-    @EventHandler (priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     private void onParticipantRespawn(ParticipantRespawnEvent event) {
         new BukkitRunnable() {
             @Override
@@ -55,7 +55,7 @@ public class TeamUpgradePurchase implements Listener {
         }.runTask(CGM.get());
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     private void onMatchStartEvent(MatchStartEvent event) {
         ShopManager.clearUpgrades();
     }

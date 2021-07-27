@@ -27,50 +27,50 @@ public class ReRollCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("reroll", "rr")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    MatchTeam team = MatchTeam.getTeam(player);
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                MatchTeam team = MatchTeam.getTeam(player);
 
-                    if (!ServerUtils.isRanked()) {
-                        CommandUtils.sendErrorMessage(player, "This command is only available on ranked servers!");
+                if (!ServerUtils.isRanked()) {
+                    CommandUtils.sendErrorMessage(player, "This command is only available on ranked servers!");
+                    return;
+                }
+
+                if (!MatchState.isState(MatchState.STARTING)) {
+                    CommandUtils.sendErrorMessage(player, "You can't use this command right now!");
+                    return;
+                }
+
+                if (!LeagueManager.isPlaying(player)) {
+                    CommandUtils.sendErrorMessage(player, "Spectators can't use this command!");
+                    return;
+                }
+
+                if (TaskUtils.isRunning(StartCountdown.getCountdown()) && StartCountdown.getSeconds() <= 10) {
+                    CommandUtils.sendErrorMessage(player, "It's too late to vote for a re-roll!");
+                    return;
+                }
+
+                if (ReRollCommand.VOTED.contains(team)) {
+                    CommandUtils.sendErrorMessage(player, "Your team can only vote to re-roll the map once!");
+                    return;
+                }
+
+                ReRollCommand.VOTED.add(team);
+                Bukkit.broadcastMessage(team.getColoredName() + " has voted to re-roll the map and game mode! " + ChatColor.GRAY + "(/reroll)");
+
+                TeamType teamType = EnumSetting.TEAM_TYPE.get();
+
+                for (MatchTeam matchTeam : teamType.getTeams()) {
+                    if (!VOTED.contains(matchTeam)) {
                         return;
                     }
+                }
 
-                    if (!MatchState.isState(MatchState.STARTING)) {
-                        CommandUtils.sendErrorMessage(player, "You can't use this command right now!");
-                        return;
-                    }
-
-                    if (!LeagueManager.isPlaying(player)) {
-                        CommandUtils.sendErrorMessage(player, "Spectators can't use this command!");
-                        return;
-                    }
-
-                    if (TaskUtils.isRunning(StartCountdown.getCountdown()) && StartCountdown.getSeconds() <= 10) {
-                        CommandUtils.sendErrorMessage(player, "It's too late to vote for a re-roll!");
-                        return;
-                    }
-
-                    if (ReRollCommand.VOTED.contains(team)) {
-                        CommandUtils.sendErrorMessage(player, "Your team can only vote to re-roll the map once!");
-                        return;
-                    }
-
-                    ReRollCommand.VOTED.add(team);
-                    Bukkit.broadcastMessage(team.getColoredName() + " has voted to re-roll the map and game mode! " + ChatColor.GRAY + "(/reroll)");
-
-                    TeamType teamType = EnumSetting.TEAM_TYPE.get();
-
-                    for (MatchTeam matchTeam : teamType.getTeams()) {
-                        if (!VOTED.contains(matchTeam)) {
-                            return;
-                        }
-                    }
-
-                    CommandUtils.broadcastAlertMessage("All teams voted to re-roll! Cycling to a new match...");
-                    LeagueManager.cycleRandom();
-                });
+                CommandUtils.broadcastAlertMessage("All teams voted to re-roll! Cycling to a new match...");
+                LeagueManager.cycleRandom();
+            });
     }
 
 }

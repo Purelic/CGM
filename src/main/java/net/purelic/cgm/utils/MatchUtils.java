@@ -48,16 +48,17 @@ public class MatchUtils {
             }
 
             return new TextComponent(
-                    ChatColor.BOLD + ServerUtils.getName() + "\n" +
+                ChatColor.BOLD + ServerUtils.getName() + "\n" +
                     gameMode.getColoredName() + " on " + map.getColoredName() +
-                            "\n" + MatchUtils.getObjectiveString());
+                    "\n" + MatchUtils.getObjectiveString());
         } else {
-            if (map == null || gameMode == null) return new TextComponent(ChatColor.BOLD + ServerUtils.getName() + "'s Server");
+            if (map == null || gameMode == null)
+                return new TextComponent(ChatColor.BOLD + ServerUtils.getName() + "'s Server");
 
             return new TextComponent(
-                    ChatColor.BOLD + ServerUtils.getName() + "'s Server\n" +
+                ChatColor.BOLD + ServerUtils.getName() + "'s Server\n" +
                     gameMode.getColoredName() + " on " + map.getColoredName());
-                    // + "\n" + MatchUtils.getObjectiveString());
+            // + "\n" + MatchUtils.getObjectiveString());
         }
     }
 
@@ -79,7 +80,7 @@ public class MatchUtils {
         if (gameMode == null) return DEFAULT_FOOTER;
 
         return new TextComponent(
-                (NumberSetting.ROUNDS.value() == 1 ? "" : getRoundsString() + "\n") +
+            (NumberSetting.ROUNDS.value() == 1 ? "" : getRoundsString() + "\n") +
                 getTimeString());
     }
 
@@ -93,13 +94,13 @@ public class MatchUtils {
 
     public static String getEliminationType() {
         return EnumSetting.TEAM_TYPE.is(TeamType.SOLO) ?
-                "Other Players" : EnumSetting.TEAM_TYPE.is(TeamType.TEAMS) ? "Enemy Team" : "Enemy Teams";
+            "Other Players" : EnumSetting.TEAM_TYPE.is(TeamType.TEAMS) ? "Enemy Team" : "Enemy Teams";
     }
 
     public static String getObjectiveString() {
         int points = NumberSetting.SCORE_LIMIT.value();
         return MatchUtils.isElimination() ? ChatColor.RED + "Eliminate" + ChatColor.RESET + " " + MatchUtils.getEliminationType()
-                : ChatColor.AQUA + "" + points + ChatColor.RESET + " Point" + (points == 1 ? "" : "s") + " to Win";
+            : ChatColor.AQUA + "" + points + ChatColor.RESET + " Point" + (points == 1 ? "" : "s") + " to Win";
     }
 
     public static boolean isTeamEliminated(MatchTeam team) {
@@ -133,8 +134,8 @@ public class MatchUtils {
 
     public static int getMaxTeamPlayers(CustomGameMode gameMode) {
         return TeamSize.maxPlayers(
-                TeamSize.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_SIZE)),
-                TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE)));
+            TeamSize.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_SIZE)),
+            TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE)));
     }
 
     public static boolean isMatchActive() {

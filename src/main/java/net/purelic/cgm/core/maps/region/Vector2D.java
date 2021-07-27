@@ -51,7 +51,7 @@ public class Vector2D {
     }
 
     public int getBlockX() {
-        return (int)Math.round(this.x);
+        return (int) Math.round(this.x);
     }
 
     public Vector2D setX(double x) {
@@ -59,7 +59,7 @@ public class Vector2D {
     }
 
     public Vector2D setX(int x) {
-        return new Vector2D((double)x, this.z);
+        return new Vector2D((double) x, this.z);
     }
 
     public double getZ() {
@@ -67,7 +67,7 @@ public class Vector2D {
     }
 
     public int getBlockZ() {
-        return (int)Math.round(this.z);
+        return (int) Math.round(this.z);
     }
 
     public Vector2D setZ(double z) {
@@ -75,7 +75,7 @@ public class Vector2D {
     }
 
     public Vector2D setZ(int z) {
-        return new Vector2D(this.x, (double)z);
+        return new Vector2D(this.x, (double) z);
     }
 
     public Vector2D add(Vector2D other) {
@@ -87,7 +87,7 @@ public class Vector2D {
     }
 
     public Vector2D add(int x, int z) {
-        return new Vector2D(this.x + (double)x, this.z + (double)z);
+        return new Vector2D(this.x + (double) x, this.z + (double) z);
     }
 
     public Vector2D add(Vector2D... others) {
@@ -115,7 +115,7 @@ public class Vector2D {
     }
 
     public Vector2D subtract(int x, int z) {
-        return new Vector2D(this.x - (double)x, this.z - (double)z);
+        return new Vector2D(this.x - (double) x, this.z - (double) z);
     }
 
     public Vector2D subtract(Vector2D... others) {
@@ -124,7 +124,7 @@ public class Vector2D {
         Vector2D[] var6 = others;
         int var7 = others.length;
 
-        for(int var8 = 0; var8 < var7; ++var8) {
+        for (int var8 = 0; var8 < var7; ++var8) {
             Vector2D other = var6[var8];
             newX -= other.x;
             newZ -= other.z;
@@ -142,7 +142,7 @@ public class Vector2D {
     }
 
     public Vector2D multiply(int x, int z) {
-        return new Vector2D(this.x * (double)x, this.z * (double)z);
+        return new Vector2D(this.x * (double) x, this.z * (double) z);
     }
 
     public Vector2D multiply(Vector2D... others) {
@@ -151,7 +151,7 @@ public class Vector2D {
         Vector2D[] var6 = others;
         int var7 = others.length;
 
-        for(int var8 = 0; var8 < var7; ++var8) {
+        for (int var8 = 0; var8 < var7; ++var8) {
             Vector2D other = var6[var8];
             newX *= other.x;
             newZ *= other.z;
@@ -165,11 +165,11 @@ public class Vector2D {
     }
 
     public Vector2D multiply(float n) {
-        return new Vector2D(this.x * (double)n, this.z * (double)n);
+        return new Vector2D(this.x * (double) n, this.z * (double) n);
     }
 
     public Vector2D multiply(int n) {
-        return new Vector2D(this.x * (double)n, this.z * (double)n);
+        return new Vector2D(this.x * (double) n, this.z * (double) n);
     }
 
     public Vector2D divide(Vector vector) {
@@ -185,11 +185,11 @@ public class Vector2D {
     }
 
     public Vector2D divide(int x, int z) {
-        return new Vector2D(this.x / (double)x, this.z / (double)z);
+        return new Vector2D(this.x / (double) x, this.z / (double) z);
     }
 
     public Vector2D divide(int n) {
-        return new Vector2D(this.x / (double)n, this.z / (double)n);
+        return new Vector2D(this.x / (double) n, this.z / (double) n);
     }
 
     public Vector2D divide(double n) {
@@ -197,7 +197,7 @@ public class Vector2D {
     }
 
     public Vector2D divide(float n) {
-        return new Vector2D(this.x / (double)n, this.z / (double)n);
+        return new Vector2D(this.x / (double) n, this.z / (double) n);
     }
 
     public double length() {
@@ -297,7 +297,7 @@ public class Vector2D {
         if (!(obj instanceof Vector2D)) {
             return false;
         } else {
-            Vector2D other = (Vector2D)obj;
+            Vector2D other = (Vector2D) obj;
             return other.x == this.x && other.z == this.z;
         }
     }

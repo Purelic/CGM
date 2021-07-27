@@ -12,11 +12,11 @@ public class HotbarCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("hotbar")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    HotbarModule.openHotbarMenu(player);
-                });
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                HotbarModule.openHotbarMenu(player);
+            });
     }
 
 }

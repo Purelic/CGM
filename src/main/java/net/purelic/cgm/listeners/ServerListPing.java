@@ -12,9 +12,9 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class ServerListPing implements Listener {
 
     private final String header = ChatColor.AQUA + "" + ChatColor.STRIKETHROUGH +
-            "               " + ChatColor.WHITE + ChatColor.BOLD + " PuRelic" +
-            ChatColor.RESET + ChatColor.GRAY + " [1.7-1.16] " +
-            ChatColor.AQUA + ChatColor.STRIKETHROUGH + "               \n" + ChatColor.RESET;
+        "               " + ChatColor.WHITE + ChatColor.BOLD + " PuRelic" +
+        ChatColor.RESET + ChatColor.GRAY + " [1.7-1.16] " +
+        ChatColor.AQUA + ChatColor.STRIKETHROUGH + "               \n" + ChatColor.RESET;
 
 //    private final String header = ChatColor.WHITE + "" + ChatColor.BOLD +
 //            "PuRelic Network " + ChatColor.RESET + ChatColor.GRAY + "[1.7 - 1.16]\n";

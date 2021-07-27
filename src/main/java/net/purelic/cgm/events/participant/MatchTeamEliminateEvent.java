@@ -39,12 +39,13 @@ public class MatchTeamEliminateEvent extends Event implements Broadcastable {
     @Override
     public BaseComponent[] getBroadcastMessage() {
         return new ComponentBuilder(" TEAM ELIMINATED » ")
-                .color(ChatColor.RED)
-                .bold(true)
-                .append(this.team.getName())
-                .color(this.team.getColor())
-                .append(" has been eliminated!")
-                .reset()
-                .create();
+            .color(ChatColor.RED)
+            .bold(true)
+            .append(this.team.getName())
+            .color(this.team.getColor())
+            .append(" has been eliminated!")
+            .reset()
+            .create();
     }
+
 }

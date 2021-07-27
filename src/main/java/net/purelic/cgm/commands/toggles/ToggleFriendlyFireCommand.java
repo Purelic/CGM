@@ -17,14 +17,14 @@ public class ToggleFriendlyFireCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("toggle")
-                .literal("friendly_fire", "ff")
-                .senderType(Player.class)
-                .permission(Permission.isMapDev(true))
-                .handler(c -> {
-                    friendlyFire = !friendlyFire;
-                    ScoreboardManager.setFriendlyFire(ToggleSetting.FRIENDLY_FIRE.isEnabled() || ToggleFriendlyFireCommand.friendlyFire);
-                    CommandUtils.broadcastAlertMessage("Friendly Fire is now " + TogglesCommand.getStatus(friendlyFire));
-                });
+            .literal("friendly_fire", "ff")
+            .senderType(Player.class)
+            .permission(Permission.isMapDev(true))
+            .handler(c -> {
+                friendlyFire = !friendlyFire;
+                ScoreboardManager.setFriendlyFire(ToggleSetting.FRIENDLY_FIRE.isEnabled() || ToggleFriendlyFireCommand.friendlyFire);
+                CommandUtils.broadcastAlertMessage("Friendly Fire is now " + TogglesCommand.getStatus(friendlyFire));
+            });
     }
 
 }

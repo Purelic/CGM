@@ -11,7 +11,10 @@ import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -64,14 +67,14 @@ public class ItemLockModule implements Listener {
 
         // shift click outside their own inventory
         if (shiftClick
-                && clicked == event.getWhoClicked().getInventory()
-                && this.isLocked(event.getCurrentItem())
-                && top.getType() != InventoryType.CRAFTING) {
+            && clicked == event.getWhoClicked().getInventory()
+            && this.isLocked(event.getCurrentItem())
+            && top.getType() != InventoryType.CRAFTING) {
             event.setCancelled(true);
         }
 
         if (clicked != event.getWhoClicked().getInventory()
-                && this.isLocked(event.getCursor())) {
+            && this.isLocked(event.getCursor())) {
             event.setCancelled(true);
         }
 

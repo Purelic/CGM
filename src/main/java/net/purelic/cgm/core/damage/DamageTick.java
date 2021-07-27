@@ -24,12 +24,11 @@ public abstract class DamageTick implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if ((o instanceof DamageTick)){
-            DamageTick t = (DamageTick)o;
-            if (t.getTimestamp() > getTimestamp()){
+        if ((o instanceof DamageTick)) {
+            DamageTick t = (DamageTick) o;
+            if (t.getTimestamp() > getTimestamp()) {
                 return -1;
-            }
-            else if (t.getTimestamp() < getTimestamp()){
+            } else if (t.getTimestamp() < getTimestamp()) {
                 return 1;
             }
         }
@@ -42,14 +41,13 @@ public abstract class DamageTick implements Comparable {
 
     public abstract String getSingleLineSummary();
 
-    public String timeDiff(){
+    public String timeDiff() {
         long now = System.currentTimeMillis();
         long then = getTimestamp();
-        long diff = now-then;
-        if (diff < 1500){
+        long diff = now - then;
+        if (diff < 1500) {
             return "just now";
-        }
-        else{
+        } else {
             diff = diff / 1000;
             return diff + "s prior";
         }
@@ -78,4 +76,5 @@ public abstract class DamageTick implements Comparable {
     public long getTimestamp() {
         return timestamp;
     }
+
 }

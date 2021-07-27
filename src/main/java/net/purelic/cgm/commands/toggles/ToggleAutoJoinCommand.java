@@ -15,13 +15,13 @@ public class ToggleAutoJoinCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("toggle")
-                .literal("autojoin", "aj")
-                .senderType(Player.class)
-                .permission(Permission.isMapDev(true))
-                .handler(c -> {
-                    autoJoin = !autoJoin;
-                    CommandUtils.broadcastAlertMessage("Auto-Join is now " + TogglesCommand.getStatus(autoJoin));
-                });
+            .literal("autojoin", "aj")
+            .senderType(Player.class)
+            .permission(Permission.isMapDev(true))
+            .handler(c -> {
+                autoJoin = !autoJoin;
+                CommandUtils.broadcastAlertMessage("Auto-Join is now " + TogglesCommand.getStatus(autoJoin));
+            });
     }
 
 }

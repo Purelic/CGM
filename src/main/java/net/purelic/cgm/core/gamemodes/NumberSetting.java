@@ -117,7 +117,7 @@ public enum NumberSetting implements GameSetting {
     PLAYER_SPEED(GameSettingType.PLAYER_EFFECTS, 0),
     PLAYER_JUMP_BOOST(GameSettingType.PLAYER_EFFECTS, 0),
     PLAYER_HASTE(GameSettingType.PLAYER_EFFECTS, 0),
-    PLAYER_STRENGTH(GameSettingType.PLAYER_EFFECTS,0),
+    PLAYER_STRENGTH(GameSettingType.PLAYER_EFFECTS, 0),
 
     LIVES_PER_ROUND(GameSettingType.RESPAWN, 0),
     RESPAWN_TIME(GameSettingType.RESPAWN, 5),

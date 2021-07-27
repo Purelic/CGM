@@ -210,11 +210,13 @@ public class LeagueManager {
         profile.setRating(newRating);
 
         if (player != null && player.isOnline()) {
-            new RewardBuilder(player, points, "ELO","League " + (win ? "Win" : "Loss"), true).reward();
+            new RewardBuilder(player, points, "ELO", "League " + (win ? "Win" : "Loss"), true).reward();
             Rank newRank = profile.getLeagueRank();
             if (newRank != rank) {
-                if (newRating < rating) player.sendMessage("" + ChatColor.RED + ChatColor.BOLD + " DEMOTED " + ChatColor.RESET + ChatColor.GRAY + "» " + ChatColor.RESET + "You've been demoted from " + rank.getFlair() + ChatColor.RESET + " " + rank.getName(false) + " to " + newRank.getFlair() + ChatColor.RESET + " " + newRank.getName(false) + "!");
-                else player.sendMessage("" + ChatColor.GREEN + ChatColor.BOLD + " PROMOTED " + ChatColor.RESET + ChatColor.GRAY + "» " + ChatColor.RESET + "You've been promoted from " + rank.getFlair() + ChatColor.RESET + " " + rank.getName(false) + " to " + newRank.getFlair() + ChatColor.RESET + " " + newRank.getName(false) + "!");
+                if (newRating < rating)
+                    player.sendMessage("" + ChatColor.RED + ChatColor.BOLD + " DEMOTED " + ChatColor.RESET + ChatColor.GRAY + "» " + ChatColor.RESET + "You've been demoted from " + rank.getFlair() + ChatColor.RESET + " " + rank.getName(false) + " to " + newRank.getFlair() + ChatColor.RESET + " " + newRank.getName(false) + "!");
+                else
+                    player.sendMessage("" + ChatColor.GREEN + ChatColor.BOLD + " PROMOTED " + ChatColor.RESET + ChatColor.GRAY + "» " + ChatColor.RESET + "You've been promoted from " + rank.getFlair() + ChatColor.RESET + " " + rank.getName(false) + " to " + newRank.getFlair() + ChatColor.RESET + " " + newRank.getName(false) + "!");
             }
         }
 

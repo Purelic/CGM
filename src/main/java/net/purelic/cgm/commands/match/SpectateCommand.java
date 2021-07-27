@@ -17,18 +17,18 @@ public class SpectateCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("spectate", "spec")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
 
-                    if (SpectateCommand.SPECTATORS.contains(player)) {
-                        SpectateCommand.SPECTATORS.remove(player);
-                        CommandUtils.sendSuccessMessage(player, "You will now auto-join matches when they start!");
-                    } else {
-                        SpectateCommand.SPECTATORS.add(player);
-                        CommandUtils.sendSuccessMessage(player, "You will no longer auto-join matches when they start!");
-                    }
-                });
+                if (SpectateCommand.SPECTATORS.contains(player)) {
+                    SpectateCommand.SPECTATORS.remove(player);
+                    CommandUtils.sendSuccessMessage(player, "You will now auto-join matches when they start!");
+                } else {
+                    SpectateCommand.SPECTATORS.add(player);
+                    CommandUtils.sendSuccessMessage(player, "You will no longer auto-join matches when they start!");
+                }
+            });
     }
 
 }

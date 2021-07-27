@@ -25,46 +25,46 @@ public class NoSpectatorsCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("nospectators")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    MatchTeam team = MatchTeam.getTeam(player);
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                MatchTeam team = MatchTeam.getTeam(player);
 
-                    if (!ServerUtils.isRanked()) {
-                        CommandUtils.sendErrorMessage(player, "This command is only available on ranked servers!");
+                if (!ServerUtils.isRanked()) {
+                    CommandUtils.sendErrorMessage(player, "This command is only available on ranked servers!");
+                    return;
+                }
+
+                if (!LeagueManager.isPlaying(player)) {
+                    CommandUtils.sendErrorMessage(player, "Spectators can't use this command!");
+                    return;
+                }
+
+                if (VOTED.contains(team)) {
+                    CommandUtils.sendErrorMessage(player, "Your team can only vote to kick spectators once!");
+                    return;
+                }
+
+                VOTED.add(team);
+                Bukkit.broadcastMessage(team.getColoredName() + " has voted to kick spectators for this match! " + ChatColor.GRAY + "(/nospectators)");
+
+                TeamType teamType = EnumSetting.TEAM_TYPE.get();
+
+                for (MatchTeam matchTeam : teamType.getTeams()) {
+                    if (!VOTED.contains(matchTeam)) {
                         return;
                     }
+                }
 
-                    if (!LeagueManager.isPlaying(player)) {
-                        CommandUtils.sendErrorMessage(player, "Spectators can't use this command!");
-                        return;
+                CommandUtils.broadcastAlertMessage("All teams voted to kick spectators! Removing spectators and turning on whitelist...");
+                ServerUtils.setWhitelisted(true);
+                LeagueManager.getPlayers().keySet().forEach(uuid -> Bukkit.getOfflinePlayer(uuid).setWhitelisted(true));
+                Bukkit.getOnlinePlayers().forEach(pl -> {
+                    if (!pl.isWhitelisted() && !Commons.getProfile(pl).isStaff()) {
+                        pl.kickPlayer("This server is now whitelisted!");
                     }
-
-                    if (VOTED.contains(team)) {
-                        CommandUtils.sendErrorMessage(player, "Your team can only vote to kick spectators once!");
-                        return;
-                    }
-
-                    VOTED.add(team);
-                    Bukkit.broadcastMessage(team.getColoredName() + " has voted to kick spectators for this match! " + ChatColor.GRAY + "(/nospectators)");
-
-                    TeamType teamType = EnumSetting.TEAM_TYPE.get();
-
-                    for (MatchTeam matchTeam : teamType.getTeams()) {
-                        if (!VOTED.contains(matchTeam)) {
-                            return;
-                        }
-                    }
-
-                    CommandUtils.broadcastAlertMessage("All teams voted to kick spectators! Removing spectators and turning on whitelist...");
-                    ServerUtils.setWhitelisted(true);
-                    LeagueManager.getPlayers().keySet().forEach(uuid -> Bukkit.getOfflinePlayer(uuid).setWhitelisted(true));
-                    Bukkit.getOnlinePlayers().forEach(pl -> {
-                        if (!pl.isWhitelisted() && !Commons.getProfile(pl).isStaff()) {
-                            pl.kickPlayer("This server is now whitelisted!");
-                        }
-                    });
                 });
+            });
     }
 
 }

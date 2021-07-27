@@ -397,8 +397,8 @@ public class MatchKit implements Kit {
             && this.gameMode.getToggleSetting(ToggleSetting.PLAYER_COMPASS_SPAWN_WITH))
             ||
             (this.kitType == KitType.INFECTED
-            && this.gameMode.getToggleSetting(ToggleSetting.INFECTED_COMPASS_ENABLED))
-            && this.gameMode.getToggleSetting(ToggleSetting.INFECTED_COMPASS_SPAWN_WITH)) {
+                && this.gameMode.getToggleSetting(ToggleSetting.INFECTED_COMPASS_ENABLED))
+                && this.gameMode.getToggleSetting(ToggleSetting.INFECTED_COMPASS_SPAWN_WITH)) {
             return new ItemCrafter(Material.COMPASS)
                 .name(ChatColor.BOLD + "Tracker" + ChatColor.RESET + ChatColor.GRAY + " (R-Click)")
                 .addTag("locked")

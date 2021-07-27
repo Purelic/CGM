@@ -20,7 +20,7 @@ public class EnderChestModule implements Listener {
         // Bukkit.getOnlinePlayers().forEach(player -> player.getEnderChest().clear());
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onParticipantEliminate(ParticipantEliminateEvent event) {
         if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) return;
 

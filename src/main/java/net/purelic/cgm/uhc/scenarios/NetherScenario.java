@@ -57,17 +57,17 @@ public class NetherScenario implements Module {
         }
     }
 
-    public Method getMethod(Class<?> c, String name, Class<?>... argTypes) throws ReflectiveOperationException{
+    public Method getMethod(Class<?> c, String name, Class<?>... argTypes) throws ReflectiveOperationException {
 
-        for (Method method : c.getMethods()){
-            if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), argTypes)){
+        for (Method method : c.getMethods()) {
+            if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), argTypes)) {
                 method.setAccessible(true);
                 return method;
             }
         }
 
-        for (Method method : c.getDeclaredMethods()){
-            if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), argTypes)){
+        for (Method method : c.getDeclaredMethods()) {
+            if (method.getName().equals(name) && Arrays.equals(method.getParameterTypes(), argTypes)) {
                 method.setAccessible(true);
                 return method;
             }

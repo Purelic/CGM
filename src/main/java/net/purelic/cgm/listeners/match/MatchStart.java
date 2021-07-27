@@ -57,7 +57,7 @@ public class MatchStart implements Listener {
                 for (Set<Player> party : parties) {
                     if (party.size() > maxTeamSize || party.size() > 4) {
                         party.forEach(player ->
-                                    CommandUtils.sendAlertMessage(player, "Your party is too big for this match - shuffling your party..."));
+                            CommandUtils.sendAlertMessage(player, "Your party is too big for this match - shuffling your party..."));
                         continue;
                     }
 
@@ -76,9 +76,9 @@ public class MatchStart implements Listener {
                 }
 
                 parties.forEach(party -> party.stream()
-                        .filter(player -> MatchTeam.getTeam(player) == MatchTeam.OBS && !shuffled.contains(player))
-                        .forEach(player ->
-                                CommandUtils.sendAlertMessage(player, "Too many parties already joined this match - shuffling your party...")));
+                    .filter(player -> MatchTeam.getTeam(player) == MatchTeam.OBS && !shuffled.contains(player))
+                    .forEach(player ->
+                        CommandUtils.sendAlertMessage(player, "Too many parties already joined this match - shuffling your party...")));
             }
         }
 

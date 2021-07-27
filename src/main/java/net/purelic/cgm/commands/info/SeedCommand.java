@@ -15,15 +15,15 @@ public class SeedCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("seed")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player sender = (Player) c.getSender();
+            .senderType(Player.class)
+            .handler(c -> {
+                Player sender = (Player) c.getSender();
 
-                    new ComponentBuilder("Seed: ").color(ChatColor.GREEN)
-                        .append(sender.getWorld().getSeed() + "").color(ChatColor.WHITE).underlined(true)
-                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to Copy").create()))
-                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, sender.getWorld().getSeed() + ""));
-                });
+                new ComponentBuilder("Seed: ").color(ChatColor.GREEN)
+                    .append(sender.getWorld().getSeed() + "").color(ChatColor.WHITE).underlined(true)
+                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to Copy").create()))
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, sender.getWorld().getSeed() + ""));
+            });
     }
 
 }

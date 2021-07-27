@@ -13,7 +13,7 @@ public class NoBottleModule implements Listener {
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-       final Player player = event.getPlayer();
+        final Player player = event.getPlayer();
 
         if (event.getItem().getType() == Material.POTION) {
             new BukkitRunnable() {

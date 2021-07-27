@@ -24,39 +24,42 @@ public class MatchCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("match", "howtoplay", "wtfisthisgame")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
 
-                    if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
-                        CustomMap map = MatchManager.getCurrentMap();
-                        CustomGameMode gameMode = MatchManager.getCurrentGameMode();
-                        boolean rounds = NumberSetting.ROUNDS.value() > 1;
-                        int lives = NumberSetting.LIVES_PER_ROUND.value();
-                        boolean regen = ToggleSetting.PLAYER_NATURAL_REGEN.isEnabled();
+                if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
+                    CustomMap map = MatchManager.getCurrentMap();
+                    CustomGameMode gameMode = MatchManager.getCurrentGameMode();
+                    boolean rounds = NumberSetting.ROUNDS.value() > 1;
+                    int lives = NumberSetting.LIVES_PER_ROUND.value();
+                    boolean regen = ToggleSetting.PLAYER_NATURAL_REGEN.isEnabled();
 
-                        List<UUID> authorIds = map.getYaml().getAuthors();
-                        String authors = Fetcher.getBasicName(authorIds.get(0));
+                    List<UUID> authorIds = map.getYaml().getAuthors();
+                    String authors = Fetcher.getBasicName(authorIds.get(0));
 
-                        if (authorIds.size() == 2) {
-                            authors += " and " + Fetcher.getBasicName(authorIds.get(1));
-                        } else if (authorIds.size() > 2) {
-                            authors += " and " + authorIds.size() + " others";
-                        }
-
-                        player.sendMessage("");
-                        player.sendMessage(ChatUtils.getHeader("Match #" + MatchManager.getMatches()));
-                        player.sendMessage(ChatColor.ITALIC + gameMode.getDescription());
-                        player.sendMessage("");
-                        if (!map.getName().equals("UHC")) player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Map: " + map.getColoredName() + " by " + authors);
-                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Game Mode: " + gameMode.getColoredNameWithAlias());
-                        if (lives > 0) player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Lives: " + ChatColor.AQUA + lives + (rounds ? ChatColor.WHITE + " per round" : ""));
-                        if (!regen) player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Natural Regen: " + ChatColor.AQUA + "Off");
-                        player.sendMessage("");
-                    } else {
-                        CommandUtils.sendErrorMessage(player, "You can't view the match info right now!");
+                    if (authorIds.size() == 2) {
+                        authors += " and " + Fetcher.getBasicName(authorIds.get(1));
+                    } else if (authorIds.size() > 2) {
+                        authors += " and " + authorIds.size() + " others";
                     }
-                });
+
+                    player.sendMessage("");
+                    player.sendMessage(ChatUtils.getHeader("Match #" + MatchManager.getMatches()));
+                    player.sendMessage(ChatColor.ITALIC + gameMode.getDescription());
+                    player.sendMessage("");
+                    if (!map.getName().equals("UHC"))
+                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Map: " + map.getColoredName() + " by " + authors);
+                    player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Game Mode: " + gameMode.getColoredNameWithAlias());
+                    if (lives > 0)
+                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Lives: " + ChatColor.AQUA + lives + (rounds ? ChatColor.WHITE + " per round" : ""));
+                    if (!regen)
+                        player.sendMessage(ChatColor.GRAY + " • " + ChatColor.WHITE + "Natural Regen: " + ChatColor.AQUA + "Off");
+                    player.sendMessage("");
+                } else {
+                    CommandUtils.sendErrorMessage(player, "You can't view the match info right now!");
+                }
+            });
     }
 
 }

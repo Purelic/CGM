@@ -7,7 +7,6 @@ import net.purelic.cgm.core.constants.WaypointVisibility;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.managers.ScoreboardManager;
-import net.purelic.cgm.core.maps.region.Area;
 import net.purelic.cgm.core.maps.Objective;
 import net.purelic.cgm.core.maps.Waypoint;
 import net.purelic.cgm.core.maps.flag.Flag;
@@ -17,6 +16,7 @@ import net.purelic.cgm.core.maps.hill.events.HillLostEvent;
 import net.purelic.cgm.core.maps.hill.events.HillReclaimedEvent;
 import net.purelic.cgm.core.maps.hill.runnables.HillCaptureCountdown;
 import net.purelic.cgm.core.maps.hill.runnables.HillChecker;
+import net.purelic.cgm.core.maps.region.Area;
 import net.purelic.cgm.core.runnables.MatchCountdown;
 import net.purelic.cgm.events.match.MatchEndEvent;
 import net.purelic.cgm.events.match.MatchQuitEvent;
@@ -28,7 +28,10 @@ import net.purelic.cgm.utils.FlagUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
-import org.bukkit.*;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -37,7 +40,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Hill extends Objective<HillModifiers> implements Listener {
 
@@ -466,12 +471,12 @@ public class Hill extends Objective<HillModifiers> implements Listener {
         if (this.isActive() || this.isLoaded()) this.destroy();
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onMatchQuit(MatchQuitEvent event) {
         this.exit(event.getPlayer());
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onParticipantDeath(ParticipantDeathEvent event) {
         this.exit(event.getParticipant().getPlayer());
     }

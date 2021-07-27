@@ -262,8 +262,8 @@ public enum MatchTeam {
     public boolean isStacked(TeamType teamType, MatchTeam currentTeam) {
         // Can't stack solo games, observers, or private server games
         if (teamType == TeamType.SOLO
-                || this == MatchTeam.OBS
-                || ServerUtils.isPrivate()) {
+            || this == MatchTeam.OBS
+            || ServerUtils.isPrivate()) {
             return false;
         }
 
@@ -329,14 +329,14 @@ public enum MatchTeam {
 
         if (roundsWon) {
             ordered.sort(Comparator.comparing(MatchTeam::getScore)
-                    .thenComparing(MatchTeam::getAlive)
-                    .thenComparing(MatchTeam::getEliminatedScore)
-                    .reversed());
+                .thenComparing(MatchTeam::getAlive)
+                .thenComparing(MatchTeam::getEliminatedScore)
+                .reversed());
         } else {
             ordered.sort(Comparator.comparing(MatchTeam::getRoundsWon)
-                    .thenComparing(MatchTeam::getAlive)
-                    .thenComparing(MatchTeam::getEliminatedScore)
-                    .reversed());
+                .thenComparing(MatchTeam::getAlive)
+                .thenComparing(MatchTeam::getEliminatedScore)
+                .reversed());
         }
 
         Map<MatchTeam, Integer> scores = new LinkedHashMap<>();

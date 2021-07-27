@@ -76,17 +76,17 @@ public class DamageTrackerModule implements Listener {
         }
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onRoundStart(RoundStartEvent event) {
         DamageManger.dumpAll();
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onRoundEnd(RoundEndEvent event) {
         DamageManger.dumpAll();
     }
 
-    @EventHandler (priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onMatchEnd(MatchEndEvent event) {
         DamageManger.dumpAll();
     }

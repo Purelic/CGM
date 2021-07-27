@@ -54,8 +54,8 @@ public class ShopItemPurchase implements Listener {
                 ItemStack child = item.getChild().getItemStack();
 
                 if (invItem != null
-                        && (invItem.equals(child)
-                            || invItem.getType() == child.getType())) {
+                    && (invItem.equals(child)
+                    || invItem.getType() == child.getType())) {
                     inventory.setItem(i, itemStack);
                     break;
                 }
@@ -130,7 +130,7 @@ public class ShopItemPurchase implements Listener {
     private void applyArmorType(PlayerInventory inventory, ArmorType armorType) {
         ItemStack[] currentArmor = inventory.getArmorContents();
 
-        ItemStack[] newArmor = new ItemStack[] {
+        ItemStack[] newArmor = new ItemStack[]{
             new ItemCrafter(armorType.getBoots()).setTag("locked", "true").setUnbreakable().craft(),
             new ItemCrafter(armorType.getLeggings()).setTag("locked", "true").setUnbreakable().craft(),
             currentArmor[2], // chestplate

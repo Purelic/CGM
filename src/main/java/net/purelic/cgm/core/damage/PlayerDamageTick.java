@@ -22,7 +22,7 @@ public class PlayerDamageTick extends MonsterDamageTick {
     }
 
     public Player getPlayer() {
-        return (Player)getEntity();
+        return (Player) getEntity();
     }
 
     @Override
