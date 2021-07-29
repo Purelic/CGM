@@ -62,11 +62,14 @@ public class WorldSettingModule implements Listener {
     @EventHandler
     public void onWorldInit(WorldInitEvent event) {
         World world = event.getWorld();
+        world.setAutoSave(false);
+
         if (world.getEnvironment() != World.Environment.NORMAL) {
             world.setSpawnLocation(0, 0, 0);
             world.setKeepSpawnInMemory(true);
-            world.setAutoSave(false);
             world.loadChunk(0, 0);
+        } else {
+            world.setKeepSpawnInMemory(false);
         }
     }
 
