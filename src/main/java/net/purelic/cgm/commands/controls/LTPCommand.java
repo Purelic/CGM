@@ -53,7 +53,7 @@ public class LTPCommand implements CustomCommand {
     }
 
     private void sendDiscordNotification(Player sender) {
-        DiscordWebhook webhook = new DiscordWebhook(this.webhook);
+        DiscordWebhook webhook = new DiscordWebhook(this.webhook, "Purelic");
         webhook.setContent("<@&830673260952944660>");
         webhook.addEmbed(new DiscordWebhook.EmbedObject()
             .setColor(Color.GREEN)
