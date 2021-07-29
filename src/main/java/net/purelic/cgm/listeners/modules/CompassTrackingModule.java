@@ -21,16 +21,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
 
-public class CompassTrackingModule implements Listener {
+public class CompassTrackingModule implements DynamicModule {
 
     private BukkitRunnable tracker;
+
+    @Override
+    public boolean isValid() {
+        return ToggleSetting.PLAYER_COMPASS_ENABLED.isEnabled();
+    }
 
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
@@ -61,6 +66,19 @@ public class CompassTrackingModule implements Listener {
     }
 
     @EventHandler
+    public void onCraftingPrepare(PrepareItemCraftEvent event) {
+        if (event.getRecipe().getResult().getType() == Material.COMPASS) {
+            CompassTrackingType type = EnumSetting.PLAYER_COMPASS_TYPE.get();
+
+            event.getInventory().setResult(new ItemCrafter(Material.COMPASS)
+                .name("" + org.bukkit.ChatColor.RESET + org.bukkit.ChatColor.BOLD + "Tracking Compass")
+                .lore("R-Click to track the closest " + (type == CompassTrackingType.PLAYER ? "enemy" : "objective") + "!")
+                .addTag("tracking_compass")
+                .craft());
+        }
+    }
+
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.getAction().name().contains("RIGHT_CLICK")) return;
 
@@ -69,7 +87,7 @@ public class CompassTrackingModule implements Listener {
         if (!ToggleSetting.PLAYER_COMPASS_ENABLED.isEnabled()
             || !isHoldingCompass(player)) return;
 
-        String trackingMessage = "";
+        String trackingMessage;
 
         if (ToggleSetting.PLAYER_COMPASS_DISPLAY.isEnabled()) {
             trackingMessage = getTrackingMessage(player);

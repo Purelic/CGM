@@ -202,7 +202,6 @@ public class CGM extends JavaPlugin {
         this.registerListener(new ArrowTrailModule());
         this.registerListener(new AutoLapisModule());
         this.registerListener(new BlockProtectionModule());
-        this.registerListener(new CompassTrackingModule());
         this.registerListener(new DamageTrackerModule());
         this.registerListener(new ExplosionModule());
         this.registerListener(new GappleSpawnModule());
@@ -248,6 +247,7 @@ public class CGM extends JavaPlugin {
         new DynamicModuleModule().register();
         DynamicModuleModule.add(new UHCModule());
         DynamicModuleModule.add(new GracePeriodModule());
+        DynamicModuleModule.add(new CompassTrackingModule());
     }
 
     public void registerListener(Listener listener) {
