@@ -194,7 +194,7 @@ public class Playlist {
             CustomMap map = new CustomMap(this.isUHC() ? "UHC" : mapName, mapYaml);
 
             // get the playlist game modes for this map (if there are any)
-            List<String> gameModes = rawPlaylist.getOrDefault(mapName, new ArrayList<>());
+            List<String> gameModes = rawPlaylist.getOrDefault(map.getName(), new ArrayList<>());
 
             for (CustomGameMode gameMode : this.gameModes.values()) {
                 this.addMap(map, gameMode, gameModes.contains(gameMode.getName()));
