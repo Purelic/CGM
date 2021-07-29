@@ -104,6 +104,12 @@ public class SpawnUtils {
             int z = RANDOM.nextInt(border * 2) - border;
 
             for (Player player : team.getPlayers()) {
+                // randomize x and y for every player if the team is SOLO/FFA
+                if (team == MatchTeam.SOLO) {
+                    x = RANDOM.nextInt(border * 2) - border;
+                    z = RANDOM.nextInt(border * 2) - border;
+                }
+
                 Participant participant = MatchManager.getParticipant(player);
                 if (participants.contains(participant)) {
                     player.teleport(MatchManager.getCurrentMap()
