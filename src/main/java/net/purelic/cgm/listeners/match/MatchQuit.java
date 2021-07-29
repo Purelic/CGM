@@ -7,6 +7,7 @@ import net.purelic.cgm.core.damage.DamageTick;
 import net.purelic.cgm.core.damage.KillAssist;
 import net.purelic.cgm.core.managers.DamageManger;
 import net.purelic.cgm.core.managers.ScoreboardManager;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
@@ -34,7 +35,7 @@ public class MatchQuit implements Listener {
         List<DamageTick> ticks = DamageManger.getLoggedTicks(player.getUniqueId());
         List<KillAssist> assists = DamageManger.getPossibleAssists(ticks);
 
-        if (assists.size() > 0) {
+        if (assists.size() > 0 && event.getParticipant().isState(ParticipantState.ALIVE)) {
             // Combat log
             Commons.callEvent(new PlayerDeathEvent(
                 player,
