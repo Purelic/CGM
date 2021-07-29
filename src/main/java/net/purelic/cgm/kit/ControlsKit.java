@@ -18,6 +18,7 @@ public class ControlsKit implements Kit {
         return new ItemCrafter(Material.ENCHANTED_BOOK)
             .name("" + ChatColor.RESET + ChatColor.BOLD + "Set Match" + ChatColor.RESET + ChatColor.GRAY + " (/setnext)")
             .command("setnext", false)
+            .addTag("locked")
             .craft();
     }
 
@@ -25,6 +26,7 @@ public class ControlsKit implements Kit {
         return new ItemCrafter(Material.PAPER)
             .name("" + ChatColor.RESET + ChatColor.BOLD + "Toggles" + ChatColor.RESET + ChatColor.GRAY + " (/toggles)")
             .command("toggles", false)
+            .addTag("locked")
             .craft();
     }
 
@@ -32,6 +34,7 @@ public class ControlsKit implements Kit {
         return new ItemCrafter(Material.GOLD_INGOT)
             .name("" + ChatColor.RESET + ChatColor.BOLD + "UHC Scenarios" + ChatColor.RESET + ChatColor.GRAY + " (/uhc)")
             .command("uhc", false)
+            .addTag("locked")
             .craft();
     }
 

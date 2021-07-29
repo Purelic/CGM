@@ -36,7 +36,7 @@ public class VotingKit implements Kit {
         String name = option.getGameMode().getColoredName() + (uhc ? "" : " on " + option.getMap().getColoredName());
         if (random) name = ChatColor.YELLOW + "Random";
         Material material = option.voted(player) ? this.votingManager.getSettings().getVotedItem() : this.votingManager.getSettings().getVoteItem();
-        return new ItemCrafter(material).name(name).setTag(this.nbtTag, option.getId()).craft();
+        return new ItemCrafter(material).name(name).setTag(this.nbtTag, option.getId()).addTag("locked").craft();
     }
 
     public void remove(Player player) {
