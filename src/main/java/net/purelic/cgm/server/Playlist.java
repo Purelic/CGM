@@ -174,7 +174,7 @@ public class Playlist {
 
         if (this.isUHC()) {
             MapUtils.downloadPublicMap("Lobby");
-            String name = MapUtils.downloadUHCMap();
+            String name = MapUtils.downloadPublicMap("UHC");
             publicMaps = new String[]{name};
         } else {
             publicMaps = MapUtils.downloadPublicMaps();
@@ -191,7 +191,7 @@ public class Playlist {
 
             // create the custom map
             MapYaml mapYaml = new MapYaml(mapData);
-            CustomMap map = new CustomMap(this.isUHC() ? "UHC" : mapName, mapYaml);
+            CustomMap map = new CustomMap(mapName, mapYaml);
 
             // get the playlist game modes for this map (if there are any)
             List<String> gameModes = rawPlaylist.getOrDefault(map.getName(), new ArrayList<>());
