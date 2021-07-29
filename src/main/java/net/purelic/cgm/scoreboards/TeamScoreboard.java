@@ -33,7 +33,8 @@ public class TeamScoreboard extends MatchScoreboard {
             } else {
                 if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
                     // if the match hasn't started don't show # alive
-                    if (MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) continue;
+                    if (teamType == TeamType.SOLO
+                        && MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) continue;
 
                     int alive = MatchUtils.getAlive(team);
                     String prefix = alive == 0 ? " " + ChatColor.RED + BedUtils.SYMBOL_TEAM_ELIMINATED : " " + alive;
@@ -60,6 +61,7 @@ public class TeamScoreboard extends MatchScoreboard {
         // remove extra/unused scoreboard rows
         ScoreboardManager.resetScores(size);
         this.size = size;
+        this.updateTimers();
     }
 
 }

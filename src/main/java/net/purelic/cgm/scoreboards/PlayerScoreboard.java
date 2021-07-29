@@ -96,6 +96,7 @@ public class PlayerScoreboard extends MatchScoreboard {
         // remove extra/unused scoreboard rows
         ScoreboardManager.resetScores(size);
         this.size = size;
+        this.updateTimers();
     }
 
 }

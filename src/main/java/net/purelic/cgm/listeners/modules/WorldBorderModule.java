@@ -110,8 +110,9 @@ public class WorldBorderModule implements Listener {
                 String score = ChatColor.DARK_AQUA + "Border: " + ChatColor.WHITE + "±" + border;
                 ScoreboardManager.setScore(ScoreboardManager.getMatchScoreboard().getTimerSlot(ScoreboardTimer.BORDER), score);
 
-                if (border == NumberSetting.WB_MIN_SIZE.value()) {
+                if (border <= NumberSetting.WB_MIN_SIZE.value()) {
                     this.cancel();
+                    ScoreboardManager.getMatchScoreboard().removeTimer(ScoreboardTimer.BORDER);
                 }
             }
         };
@@ -124,6 +125,7 @@ public class WorldBorderModule implements Listener {
                     return;
                 }
 
+                ScoreboardManager.getMatchScoreboard().addTimer(ScoreboardTimer.BORDER);
                 TaskUtils.runTimerAsync(updaterRunnable, 100L);
 
                 ChatUtils.sendMessageAll(

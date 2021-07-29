@@ -7,7 +7,10 @@ public class TimeUtils {
 
     public static String getFormattedTime(int time) {
         ChatColor color = getTimeColor(time);
+        return getFormattedTime(time, color);
+    }
 
+    public static String getFormattedTime(int time, ChatColor color) {
         int minutes = time / 60;
         int seconds = time % 60;
         String timeString = minutes + ":" + seconds;

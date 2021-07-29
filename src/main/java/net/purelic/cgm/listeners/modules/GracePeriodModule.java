@@ -49,7 +49,7 @@ public class GracePeriodModule implements DynamicModule {
                 }
 
                 seconds--;
-                String score = ChatColor.LIGHT_PURPLE + "Grace: " + TimeUtils.getFormattedTime(seconds);
+                String score = ChatColor.LIGHT_PURPLE + "Grace: " + TimeUtils.getFormattedTime(seconds, ChatColor.WHITE);
                 int slot = ScoreboardManager.getMatchScoreboard().getTimerSlot(TIMER);
                 ScoreboardManager.setScore(slot, score);
 

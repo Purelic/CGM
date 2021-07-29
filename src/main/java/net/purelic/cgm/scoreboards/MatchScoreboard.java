@@ -73,8 +73,16 @@ public abstract class MatchScoreboard {
         // set the scoreboard size
         this.size = 16 - this.slots;
 
+        TeamType teamType = EnumSetting.TEAM_TYPE.get();
+        if (teamType != TeamType.SOLO) {
+            this.size += teamType.getTeams().size();
+        }
+
         // add timer slots
         this.updateTimers();
+
+        // update the scoreboard
+        this.update();
 
         // reset unused rows
         ScoreboardManager.resetScores(this.size);
@@ -114,13 +122,16 @@ public abstract class MatchScoreboard {
         if (this.timers.size() >= 1) {
             // lose one player slot for a timer
             this.slots--;
+            this.size++;
         } else {
             // lose two player slots, one for a timer and one for a blank line between the sections
             this.slots -= 2;
+            this.size += 2;
         }
 
         this.timers.add(timer);
         this.updateTimers();
+        this.update();
     }
 
     public void removeTimer(ScoreboardTimer timer) {
@@ -131,12 +142,15 @@ public abstract class MatchScoreboard {
         if (this.timers.size() == 0) {
             // lose two timer slots, one for a timer and one for a blank line between the sections
             this.slots += 2;
+            this.size -= 2;
         } else {
             // lose one timer slot
             this.slots++;
+            this.size--;
         }
 
         this.updateTimers();
+        this.update();
     }
 
     public int getTimerSlot(ScoreboardTimer timer) {
@@ -144,8 +158,6 @@ public abstract class MatchScoreboard {
     }
 
     public void updateTimers() {
-        this.update();
-
         if (this.timers.size() > 0) {
             // blank row
             ScoreboardManager.setScore(this.size - this.timers.size() - 1, "");
@@ -159,14 +171,14 @@ public abstract class MatchScoreboard {
             if (this.timers.contains(ScoreboardTimer.GRACE)) {
                 int slot = ScoreboardManager.getMatchScoreboard().getTimerSlot(ScoreboardTimer.GRACE);
                 int seconds = GracePeriodModule.getSeconds() == -1 ? NumberSetting.GRACE_PERIOD.value() * 60 : GracePeriodModule.getSeconds();
-                String score = ChatColor.LIGHT_PURPLE + "Grace: " + TimeUtils.getFormattedTime(seconds);
+                String score = ChatColor.LIGHT_PURPLE + "Grace: " + TimeUtils.getFormattedTime(seconds, ChatColor.WHITE);
                 ScoreboardManager.setScore(slot, score);
             }
 
             if (this.timers.contains(ScoreboardTimer.REFILL)) {
                 int slot = ScoreboardManager.getMatchScoreboard().getTimerSlot(ScoreboardTimer.REFILL);
                 int seconds = LootChestRefillModule.getSeconds() == -1 ? NumberSetting.REFILL_EVENT.value() * 60 : LootChestRefillModule.getSeconds();
-                String score = ChatColor.GOLD + "Refill: " + TimeUtils.getFormattedTime(seconds);
+                String score = ChatColor.GOLD + "Refill: " + TimeUtils.getFormattedTime(seconds, ChatColor.WHITE);
                 ScoreboardManager.setScore(slot, score);
             }
         }

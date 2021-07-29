@@ -56,7 +56,7 @@ public class LootChestRefillModule implements Listener {
                 seconds--;
 
                 int slot = ScoreboardManager.getMatchScoreboard().getTimerSlot(TIMER);
-                ScoreboardManager.setScore(slot, ChatColor.GOLD + "Refill: " + TimeUtils.getFormattedTime(seconds));
+                ScoreboardManager.setScore(slot, ChatColor.GOLD + "Refill: " + TimeUtils.getFormattedTime(seconds, ChatColor.WHITE));
 
                 if (seconds <= 0) {
                     MatchManager.getCurrentMap().getYaml().getLootChests().forEach(LootChest::refill);
