@@ -11,6 +11,7 @@ import net.purelic.cgm.scoreboards.ScoreboardTimer;
 import net.purelic.cgm.utils.TimeUtils;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -57,9 +58,13 @@ public class GracePeriodModule implements DynamicModule {
                     ChatUtils.sendMessageAll(
                         new ComponentBuilder("\n")
                             .append(" GRACE PERIOD » ").color(ChatColor.LIGHT_PURPLE).bold(true)
-                            .append("Grace period has now ended!").reset()
+                            .append("Grace period has now ended! Everyone has been healed.").reset()
                             .append("\n").reset()
                     );
+
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.setHealth(player.getMaxHealth());
+                    }
 
                     ScoreboardManager.getMatchScoreboard().removeTimer(ScoreboardTimer.GRACE);
                     active = false;
