@@ -25,6 +25,7 @@ import net.purelic.cgm.events.participant.ParticipantAssistEvent;
 import net.purelic.cgm.events.participant.ParticipantDeathEvent;
 import net.purelic.cgm.events.participant.ParticipantEliminateEvent;
 import net.purelic.cgm.events.participant.ParticipantKillEvent;
+import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.*;
 import net.purelic.commons.Commons;
@@ -216,7 +217,7 @@ public class ParticipantDeath implements Listener {
                 continue;
             }
 
-            if (inVoid) {
+            if (inVoid || GracePeriodModule.isActive()) {
                 remove.add(item);
                 continue;
             }
