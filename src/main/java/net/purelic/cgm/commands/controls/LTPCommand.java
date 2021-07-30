@@ -49,6 +49,7 @@ public class LTPCommand implements CustomCommand {
 
                 this.lastUsed = System.currentTimeMillis();
                 this.sendDiscordNotification(player);
+                CommandUtils.sendSuccessMessage(player, "You alerted the \"Looking to Play\" role in Discord! (#alerts)");
             });
     }
 
