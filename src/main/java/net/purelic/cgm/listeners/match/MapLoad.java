@@ -21,7 +21,7 @@ public class MapLoad implements Listener {
         map.setNextWorld(world);
 
         // Auto-cycle if they're in the waiting game state
-        if (MatchState.isState(MatchState.WAITING, MatchState.VOTING)) TaskUtils.runLater(MatchManager::cycle, 20L);
+        if (MatchState.isState(MatchState.WAITING)) TaskUtils.runLater(MatchManager::cycle, 20L);
     }
 
 }
