@@ -23,6 +23,7 @@ public enum UHCScenario {
     DRAGON_RUSH(DragonRushScenario.class, "Dragon Rush", Material.DRAGON_EGG, "First to kill the dragon wins!", "End portal spawns at 0 0."),
     CENTER_SPAWN(CenterSpawnScenario.class, "Center Spawn", Material.BED, "Player start and respawn at 0 0.", "Players will respawn at their bed if set."),
     NINE_SLOT(NineSlotsScenario.class, "Nine Slot", Material.CHEST, "You can only store items in your hotbar."),
+    CYCLE_GRACE(CycleGraceScenario.class, "Cycle Grace", Material.GOLD_SWORD, "You can only PvP every 10 minutes."),
     ;
 
     private final Module module;
