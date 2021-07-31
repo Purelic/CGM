@@ -43,11 +43,12 @@ public class RegionModule implements Module {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+
+        if (this.ignoreEvent(player)) return;
+
         Location to = event.getTo().getBlock().getLocation();
         Location from = event.getFrom().getBlock().getLocation();
         MatchTeam team = MatchTeam.getTeam(player);
-
-        if (this.ignoreEvent(player)) return;
 
         for (Region region : this.regions) {
             boolean toInRegion = region.contains(to);
@@ -85,10 +86,12 @@ public class RegionModule implements Module {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+
+        if (this.ignoreEvent(player)) return;
+
         Location location = event.getBlock().getLocation().clone().add(0.5, 0, 0.5);
         MatchTeam team = MatchTeam.getTeam(player);
 
-        if (this.ignoreEvent(player)) return;
 
         for (Region region : this.regions) {
             if (!region.isOwner(team) && !region.canBreakBlocks() && region.contains(location)) {
@@ -102,10 +105,12 @@ public class RegionModule implements Module {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
+
+        if (this.ignoreEvent(player)) return;
+
         Block block = event.getBlock();
         MatchTeam team = MatchTeam.getTeam(player);
 
-        if (this.ignoreEvent(player)) return;
 
         for (Region region : this.regions) {
             if (!region.isOwner(team) && !region.canPlaceBlocks() && region.contains(block)) {
@@ -123,10 +128,11 @@ public class RegionModule implements Module {
         if (!(entity instanceof Player)) return;
 
         Player player = (Player) entity;
-        Location location = player.getLocation();
-        MatchTeam team = MatchTeam.getTeam(player);
 
         if (this.ignoreEvent(player)) return;
+
+        Location location = player.getLocation();
+        MatchTeam team = MatchTeam.getTeam(player);
 
         for (Region region : this.regions) {
             if (region.isOwner(team) && !region.canTakeDamage() && region.contains(location)) {

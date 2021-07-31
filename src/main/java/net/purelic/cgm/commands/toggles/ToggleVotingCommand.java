@@ -2,7 +2,6 @@ package net.purelic.cgm.commands.toggles;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
-import net.purelic.cgm.CGM;
 import net.purelic.cgm.voting.VotingManager;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;

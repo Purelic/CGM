@@ -3,12 +3,8 @@ package net.purelic.cgm.core.maps.hill.events;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.maps.flag.Flag;
-import net.purelic.cgm.core.maps.flag.events.FlagEvent;
 import net.purelic.cgm.core.maps.hill.Hill;
 import net.purelic.cgm.events.Broadcastable;
-import net.purelic.cgm.utils.SoundUtils;
-import net.purelic.commons.utils.NickUtils;
 import org.bukkit.event.HandlerList;
 
 public class HillCaptureEvent extends HillEvent implements Broadcastable {

@@ -39,8 +39,8 @@ public class EntityUtils {
             MathHelper.floor(location.getX() * 32.0D),
             MathHelper.floor(location.getY() * 32.0D),
             MathHelper.floor(location.getZ() * 32.0D),
-            (byte)((int)(location.getYaw() * 256.0F / 360.0F)),
-            (byte)((int)(location.getPitch() * 256.0F / 360.0F)),
+            (byte) ((int) (location.getYaw() * 256.0F / 360.0F)),
+            (byte) ((int) (location.getPitch() * 256.0F / 360.0F)),
             entity.isOnGround()
         );
         // PacketPlayOutEntityTeleport ppp = new PacketPlayOutEntityTeleport(((CraftEntity) entity).getHandle());
@@ -85,12 +85,12 @@ public class EntityUtils {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
-    public static int getDistanceFromGround(Entity entity){
+    public static int getDistanceFromGround(Entity entity) {
         Location location = entity.getLocation().clone();
         int y = location.getBlockY();
         int distance = 0;
 
-        for (int i = y; i >= 0; i--){
+        for (int i = y; i >= 0; i--) {
             location.setY(i);
             Block block = location.getBlock();
             if (block.isLiquid() || block.getType().isSolid()) break;

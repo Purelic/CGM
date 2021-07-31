@@ -40,7 +40,8 @@ public class VotingCountdown extends BukkitRunnable {
             this.cancel();
             VotingOption option = this.votingManager.getMostVotedOption();
             MatchManager.setNext(option);
-            TaskUtils.runTimer(new CycleCountdown(this.settings.getCycleDuration(), option));
+            if (!CGM.getPlaylist().isUHC())
+                TaskUtils.runTimer(new CycleCountdown(this.settings.getCycleDuration(), option));
             return;
         }
 

@@ -41,8 +41,8 @@ public class FireballModule implements Listener {
         ItemStack inHand = player.getItemInHand();
 
         if (inHand == null
-                || inHand.getType() != Material.FIREBALL
-                || !inHand.hasItemMeta()) return;
+            || inHand.getType() != Material.FIREBALL
+            || !inHand.hasItemMeta()) return;
 
         event.setCancelled(true);
 

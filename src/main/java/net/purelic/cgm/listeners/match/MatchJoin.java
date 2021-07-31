@@ -15,6 +15,8 @@ import org.bukkit.event.Listener;
 
 public class MatchJoin implements Listener {
 
+    private static boolean addParticipants = true;
+
     @EventHandler
     public void onMatchJoin(MatchJoinEvent event) {
         Player player = event.getPlayer();
@@ -27,14 +29,16 @@ public class MatchJoin implements Listener {
             MatchStatsModule.getStats(player);
         }
 
-        if (MatchState.isState(MatchState.STARTED)) {
+        if (MatchState.isState(MatchState.STARTED) && addParticipants) {
             MatchManager.addParticipant(player, false, event.isForced());
         }
 
-        if (!event.isFirstJoin()) {
-            // Players rejoining that previously had scores will require a scoreboard update
-            ScoreboardManager.updateSoloBoard();
-        }
+        // update solo scoreboards (could display previous scores or # of alive players)
+        ScoreboardManager.updateSoloBoard();
+    }
+
+    public static void setAddParticipants(boolean addParticipants) {
+        MatchJoin.addParticipants = addParticipants;
     }
 
 }

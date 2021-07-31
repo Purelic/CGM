@@ -6,6 +6,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.runnables.CycleCountdown;
+import net.purelic.cgm.uhc.runnables.ChunkLoader;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
@@ -25,6 +26,11 @@ public class CancelCommand implements CustomCommand {
             .permission(Permission.isMapDev(true))
             .handler(c -> {
                 Player player = (Player) c.getSender();
+
+                if (ChunkLoader.isActive()) {
+                    CommandUtils.sendErrorMessage(player, "You can't cancel UHC maps being pre-generated! Please wait until it's finished.");
+                    return;
+                }
 
                 if (MatchState.isState(MatchState.VOTING)) {
                     if (this.isCycleCountdownRunning()) {

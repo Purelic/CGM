@@ -6,6 +6,7 @@ public enum ToggleSetting implements GameSetting {
     DYNAMIC_REGEN(GameSettingType.KILL_REWARDS, false),
     TEAM_SWITCHING(GameSettingType.GENERAL, true),
     ATTACK_DEFENSE(GameSettingType.GENERAL, false),
+    HUNGER(GameSettingType.GENERAL, false),
 
     BLACKOUT_RESPAWN(GameSettingType.RESPAWN, false),
 
@@ -63,8 +64,9 @@ public enum ToggleSetting implements GameSetting {
     INFECTED_COMPASS_DISPLAY(GameSettingType.INFECTED_COMPASS, false),
     INFECTED_COMPASS_SPAWN_WITH(GameSettingType.INFECTED_COMPASS, true),
 
-    PLAYER_PICKAXE_LOCKED(GameSettingType.PLAYER_TOOLS, true),
-    PLAYER_AXE_LOCKED(GameSettingType.PLAYER_TOOLS, true),
+    PLAYER_PICKAXE_LOCKED(GameSettingType.PLAYER_PICKAXE, true),
+    PLAYER_AXE_LOCKED(GameSettingType.PLAYER_AXE, true),
+    PLAYER_SHOVEL_LOCKED(GameSettingType.PLAYER_SHOVEL, true),
 
     PLAYER_NATURAL_REGEN(GameSettingType.PLAYER_HEALTH, true),
     PLAYER_IMMUNE_TO_MELEE(GameSettingType.PLAYER_HEALTH, false),
@@ -123,15 +125,14 @@ public enum ToggleSetting implements GameSetting {
     LEAVES_DECAY(GameSettingType.WORLD, false),
     DAYLIGHT_CYCLE(GameSettingType.WORLD, false),
     INSTANT_TNT(GameSettingType.WORLD, true),
-    RESET_BLOCKS(GameSettingType.WORLD, false);
-    ;
+    RESET_BLOCKS(GameSettingType.WORLD, false);;
 
     private final GameSettingType settingType;
     private final String key;
     private final boolean defaultValue;
     private boolean value;
 
-    ToggleSetting(GameSettingType settingType,boolean defaultValue) {
+    ToggleSetting(GameSettingType settingType, boolean defaultValue) {
         this.settingType = settingType;
         this.key = this.name().toLowerCase();
         this.defaultValue = defaultValue;

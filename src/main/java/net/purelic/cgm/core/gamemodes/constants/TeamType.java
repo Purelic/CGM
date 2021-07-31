@@ -12,8 +12,8 @@ public enum TeamType {
 
     SOLO("Solo", 16, MatchTeam.SOLO),
     TEAMS("Teams", 8, MatchTeam.BLUE, MatchTeam.RED),
-    MULTI_TEAM("Multi-Team", 4, (MatchTeam[]) ArrayUtils.addAll(TEAMS.teams.toArray(), new MatchTeam[] { MatchTeam.GREEN, MatchTeam.YELLOW })),
-    SQUADS("Squads", 2, (MatchTeam[]) ArrayUtils.addAll(MULTI_TEAM.teams.toArray(), new MatchTeam[] { MatchTeam.AQUA, MatchTeam.PINK, MatchTeam.GRAY, MatchTeam.WHITE }));
+    MULTI_TEAM("Multi-Team", 4, (MatchTeam[]) ArrayUtils.addAll(TEAMS.teams.toArray(), new MatchTeam[]{MatchTeam.GREEN, MatchTeam.YELLOW})),
+    SQUADS("Squads", 2, (MatchTeam[]) ArrayUtils.addAll(MULTI_TEAM.teams.toArray(), new MatchTeam[]{MatchTeam.AQUA, MatchTeam.PINK, MatchTeam.GRAY, MatchTeam.WHITE}));
 
     private final String name;
     private final int size;

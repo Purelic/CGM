@@ -2,10 +2,12 @@ package net.purelic.cgm.voting;
 
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.kit.VotingKit;
 import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.uhc.runnables.ChunkLoader;
 import net.purelic.cgm.utils.SoundUtils;
 import net.purelic.commons.utils.ItemCrafter;
 import net.purelic.commons.utils.ServerUtils;
@@ -98,7 +100,8 @@ public class VotingManager {
             && Bukkit.getOnlinePlayers().size() >= this.settings.getMinPlayers()
             && !this.canceled
             && this.enabled
-            && !ServerUtils.isRanked();
+            && !ServerUtils.isRanked()
+            && !ChunkLoader.isActive();
     }
 
     public void startVoting(int seconds, boolean forced) {
@@ -189,8 +192,10 @@ public class VotingManager {
         int row = 0;
 
         for (VotingOption option : this.selected) {
+            boolean uhc = option.getGameMode().getGameType() == GameType.UHC;
             String votes = option.getVotes() + "  ";
-            String display = option.getMap().getColoredName() + ChatColor.GRAY + " (" + option.getGameMode().getAlias() + ")";
+            String display = uhc ? option.getGameMode().getColoredNameWithAlias()
+                : option.getMap().getColoredName() + ChatColor.GRAY + " (" + option.getGameMode().getAlias() + ")";
 
             // if random option is enabled and it's the last voting option
             if (this.settings.hasRandomOption() && row == this.selected.size() - 1) {

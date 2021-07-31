@@ -7,6 +7,7 @@ import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.runnables.CycleCountdown;
+import net.purelic.cgm.uhc.runnables.ChunkLoader;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.ChatUtils;
@@ -32,6 +33,11 @@ public class CycleCommand implements CustomCommand {
             .handler(c -> {
                 Player player = (Player) c.getSender();
 
+                if (ChunkLoader.isActive()) {
+                    CommandUtils.sendErrorMessage(player, "You can't cycle while UHC maps are being pre-generated!");
+                    return;
+                }
+
                 if (TaskUtils.isRunning(CycleCountdown.getCountdown())) {
                     CycleCountdown.setCountdown(0);
                 } else {
@@ -46,6 +52,9 @@ public class CycleCommand implements CustomCommand {
                             Fetcher.getFancyName(player),
                             new TextComponent(" force ended the match and cycled")
                         );
+                    } else if (MatchManager.getNextMap() != null && MatchManager.getNextMap().getNextWorld() == null) {
+                        CommandUtils.sendErrorMessage(player, "The next map hasn't fully loaded yet! Please try again in a moment.");
+                        return;
                     } else {
                         MatchManager.cycle();
                         CommandUtils.broadcastAlertMessage(

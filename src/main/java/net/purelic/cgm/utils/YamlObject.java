@@ -1,6 +1,5 @@
 package net.purelic.cgm.utils;
 
-import net.purelic.cgm.core.maps.region.RegionModifiers;
 import org.bukkit.util.Vector;
 
 import java.util.Map;

@@ -6,9 +6,11 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.commands.info.GameModesCommand;
 import net.purelic.cgm.commands.info.MapsCommand;
+import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
+import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -39,7 +41,9 @@ public class SetNextCommand implements CustomCommand {
                 Optional<String> gameModeArg = c.getOptional("game mode");
 
                 if (!mapArg.isPresent()) {
-                    MapsCommand.openMapsBook(player, "/setnext \"%MAP%\"");
+                    if (CGM.getPlaylist().isUHC())
+                        GameModesCommand.openGameModesBook(player, "/setnext \"UHC\" \"%GM%\"", new ArrayList<>(CGM.getPlaylist().getRepo().get(CGM.getPlaylist().getMap("UHC"))));
+                    else MapsCommand.openMapsBook(player, "/setnext \"%MAP%\"");
                 } else if (!gameModeArg.isPresent()) {
                     CustomMap map = CGM.getPlaylist().getMap(mapArg.get());
 
@@ -55,6 +59,17 @@ public class SetNextCommand implements CustomCommand {
 
                     if (map == null) {
                         CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapArg.get() + "\"!");
+                        return;
+                    }
+
+                    if (map.getName().equals("UHC") && !MatchState.isState(MatchState.WAITING)) {
+                        String error = "You can only set UHC matches while waiting in the lobby!";
+
+                        if (MatchState.isState(MatchState.VOTING)) {
+                            error = "You can't set UHC matches right now! Please cancel the voting countdowns first, then try again.";
+                        }
+
+                        CommandUtils.sendErrorMessage(player, error);
                         return;
                     }
 
@@ -74,8 +89,16 @@ public class SetNextCommand implements CustomCommand {
                             return;
                         }
 
+                        boolean uhc = map.getName().equals("UHC");
+
+                        if (uhc && !Commons.getProfile(player).isDonator(true)) {
+                            CommandUtils.sendErrorMessage(player, "Only Premium players can set UHC matches!");
+                            return;
+                        }
+
                         MatchManager.setNext(map, gameMode);
-                        CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
+                        if (!uhc && !MatchState.isState(MatchState.WAITING, MatchState.VOTING))
+                            CommandUtils.sendSuccessMessage(player, "You successfully set the next map! Use /cycle when you're ready to cycle to the map");
                     } else {
                         CommandUtils.sendErrorMessage(player, map.getName() + " does not support " + gameMode.getName() + "!");
                     }

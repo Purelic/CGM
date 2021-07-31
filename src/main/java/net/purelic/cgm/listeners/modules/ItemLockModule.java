@@ -1,14 +1,20 @@
 package net.purelic.cgm.listeners.modules;
 
+import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
+import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ShopManager;
+import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -19,15 +25,19 @@ public class ItemLockModule implements Listener {
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
 
-        if (!MatchState.isState(MatchState.STARTED) || MatchTeam.getTeam(player) == MatchTeam.OBS) {
+        if (!MatchState.isState(MatchState.STARTED)
+            || MatchTeam.getTeam(player) == MatchTeam.OBS
+            || (MatchManager.isPlaying(player) && !MatchManager.getParticipant(player).isState(ParticipantState.ALIVE))) {
             event.setCancelled(true);
             return;
         }
 
         ItemStack item = event.getItemDrop().getItemStack();
 
-        if (this.isLocked(item) || new ItemCrafter(item).hasTag("kit")) {
+        if (this.isLocked(item)) {
             event.setCancelled(true);
+        } else if (new ItemCrafter(item).hasTag("kit") && !CGM.getPlaylist().isUHC()) {
+            event.getItemDrop().remove();
         }
     }
 
@@ -57,14 +67,14 @@ public class ItemLockModule implements Listener {
 
         // shift click outside their own inventory
         if (shiftClick
-                && clicked == event.getWhoClicked().getInventory()
-                && this.isLocked(event.getCurrentItem())
-                && top.getType() != InventoryType.CRAFTING) {
+            && clicked == event.getWhoClicked().getInventory()
+            && this.isLocked(event.getCurrentItem())
+            && top.getType() != InventoryType.CRAFTING) {
             event.setCancelled(true);
         }
 
         if (clicked != event.getWhoClicked().getInventory()
-                && this.isLocked(event.getCursor())) {
+            && this.isLocked(event.getCursor())) {
             event.setCancelled(true);
         }
 

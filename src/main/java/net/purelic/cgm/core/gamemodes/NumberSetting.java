@@ -6,6 +6,7 @@ public enum NumberSetting implements GameSetting {
     ROUNDS(GameSettingType.GENERAL, 1),
     TIME_LIMIT(GameSettingType.GENERAL, 10),
     OVERTIME(GameSettingType.GENERAL, 30),
+    GRACE_PERIOD(GameSettingType.GENERAL, 0),
 
     DEATHMATCH_KILL_POINTS(GameSettingType.DEATHMATCH, 1),
     DEATHMATCH_DEATH_POINTS(GameSettingType.DEATHMATCH, 0),
@@ -89,13 +90,24 @@ public enum NumberSetting implements GameSetting {
     // PLAYER_FLINT_USES(GameSettingType.PLAYER_FLINT, 0),
     // PLAYER_ROD_USES(GameSettingType.PLAYER_ROD, 0),
 
-    PLAYER_WOOL(GameSettingType.PLAYER_ITEMS, 0),
+    PLAYER_PICKAXE_EFFICIENCY(GameSettingType.PLAYER_PICKAXE, 0),
+    PLAYER_PICKAXE_UNBREAKING(GameSettingType.PLAYER_PICKAXE, 0),
+
+    PLAYER_AXE_EFFICIENCY(GameSettingType.PLAYER_AXE, 0),
+    PLAYER_AXE_UNBREAKING(GameSettingType.PLAYER_AXE, 0),
+
+    PLAYER_SHOVEL_EFFICIENCY(GameSettingType.PLAYER_SHOVEL, 0),
+    PLAYER_SHOVEL_UNBREAKING(GameSettingType.PLAYER_SHOVEL, 0),
+
+
+    PLAYER_BLOCKS(GameSettingType.PLAYER_ITEMS, 0),
     PLAYER_ARROWS(GameSettingType.PLAYER_ITEMS, 8),
     PLAYER_GAPPLES(GameSettingType.PLAYER_ITEMS, 1),
     PLAYER_EMERALDS(GameSettingType.PLAYER_ITEMS, 0),
     PLAYER_PEARLS(GameSettingType.PLAYER_ITEMS, 0),
+    PLAYER_FOOD(GameSettingType.PLAYER_ITEMS, 0),
 
-    INFECTED_WOOL(GameSettingType.INFECTED_ITEMS, 0),
+    INFECTED_BLOCKS(GameSettingType.INFECTED_ITEMS, 0),
     INFECTED_ARROWS(GameSettingType.INFECTED_ITEMS, 0),
     INFECTED_GAPPLES(GameSettingType.INFECTED_ITEMS, 0),
     INFECTED_EMERALDS(GameSettingType.INFECTED_ITEMS, 0),
@@ -105,7 +117,7 @@ public enum NumberSetting implements GameSetting {
     PLAYER_SPEED(GameSettingType.PLAYER_EFFECTS, 0),
     PLAYER_JUMP_BOOST(GameSettingType.PLAYER_EFFECTS, 0),
     PLAYER_HASTE(GameSettingType.PLAYER_EFFECTS, 0),
-    PLAYER_STRENGTH(GameSettingType.PLAYER_EFFECTS,0),
+    PLAYER_STRENGTH(GameSettingType.PLAYER_EFFECTS, 0),
 
     LIVES_PER_ROUND(GameSettingType.RESPAWN, 0),
     RESPAWN_TIME(GameSettingType.RESPAWN, 5),

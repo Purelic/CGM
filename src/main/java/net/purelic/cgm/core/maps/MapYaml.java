@@ -183,42 +183,42 @@ public class MapYaml {
     private List<UUID> loadAuthors() {
         List<UUID> authors = new ArrayList<>();
         ((List<String>) this.yaml.getOrDefault("authors", new ArrayList<String>()))
-                .forEach(entry -> authors.add(UUID.fromString(entry)));
+            .forEach(entry -> authors.add(UUID.fromString(entry)));
         return authors;
     }
 
     private List<SpawnPoint> loadSpawns(String field, MatchTeam team) {
         List<SpawnPoint> spawns = new ArrayList<>();
         ((List<String>) this.spawns.getOrDefault(field, new ArrayList<String>()))
-                .forEach(entry -> spawns.add(new SpawnPoint(team, entry)));
+            .forEach(entry -> spawns.add(new SpawnPoint(team, entry)));
         return spawns;
     }
 
     private List<Hill> loadHills() {
         List<Hill> hills = new ArrayList<>();
         ((List<Map<String, Object>>) this.yaml.getOrDefault("hills", new ArrayList<Map<String, Object>>()))
-                .forEach(entry -> hills.add(new Hill(entry)));
+            .forEach(entry -> hills.add(new Hill(entry)));
         return hills;
     }
 
     private List<Flag> loadFlags() {
         List<Flag> flags = new ArrayList<>();
         ((List<Map<String, Object>>) this.yaml.getOrDefault("flags", new ArrayList<Map<String, Object>>()))
-                .forEach(entry -> flags.add(new Flag(entry)));
+            .forEach(entry -> flags.add(new Flag(entry)));
         return flags;
     }
 
     private List<Bed> loadBeds() {
         List<Bed> beds = new ArrayList<>();
         ((List<Map<String, Object>>) this.yaml.getOrDefault("beds", new ArrayList<Map<String, Object>>()))
-                .forEach(entry -> beds.add(new Bed(entry)));
+            .forEach(entry -> beds.add(new Bed(entry)));
         return beds;
     }
 
     private List<Spawner> loadSpawners() {
         List<Spawner> spawners = new ArrayList<>();
         ((List<Map<String, Object>>) this.yaml.getOrDefault("spawners", new ArrayList<Map<String, Object>>()))
-                .forEach(entry -> spawners.add(new Spawner(entry)));
+            .forEach(entry -> spawners.add(new Spawner(entry)));
         return spawners;
     }
 

@@ -56,8 +56,8 @@ public class Shop {
     private void updateItemColors(Player player) {
         DyeColor color = ColorConverter.getDyeColor(MatchTeam.getTeam(player));
         this.items.values().stream()
-                .filter(ShopItem::isColored)
-                .forEach(item -> item.setColor(color));
+            .filter(ShopItem::isColored)
+            .forEach(item -> item.setColor(color));
     }
 
     private Inventory getInventory(Player player) {
@@ -66,8 +66,8 @@ public class Shop {
         inventory.setItem(4, new ItemCrafter(Material.BLAZE_POWDER).name("Edit Hotbar Preferences").setTag("hotbar_menu_item", "open").craft());
 
         this.items.values().stream()
-                .filter(item -> !item.hasChild())
-                .forEach(item -> inventory.setItem(item.getSlot(), this.getParentItem(player, item).getItemStack(player)));
+            .filter(item -> !item.hasChild())
+            .forEach(item -> inventory.setItem(item.getSlot(), this.getParentItem(player, item).getItemStack(player)));
         TeamUpgrade.applyUpgrades(player, inventory);
         return inventory;
     }
@@ -111,7 +111,7 @@ public class Shop {
 
     private boolean inventoryContains(Inventory inventory, ItemStack itemStack) {
         return inventory.contains(itemStack) || Arrays.stream(inventory.getContents()).anyMatch(item ->
-                item != null && item.getType() == itemStack.getType() && this.hasSameEnchantments(itemStack, item));
+            item != null && item.getType() == itemStack.getType() && this.hasSameEnchantments(itemStack, item));
     }
 
     private boolean hasSameEnchantments(ItemStack item1, ItemStack item2) {
@@ -123,7 +123,7 @@ public class Shop {
             int level = entry.getValue();
 
             if (item2Enchantments.containsKey(enchantment)
-                    && item2Enchantments.get(enchantment) == level) continue;
+                && item2Enchantments.get(enchantment) == level) continue;
             return false;
         }
 

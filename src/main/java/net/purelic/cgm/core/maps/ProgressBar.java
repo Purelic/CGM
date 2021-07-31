@@ -29,9 +29,9 @@ public class ProgressBar {
         final String progress = DECIMAL_FORMAT.format(Math.min(percent, 1) * 100);
 
         this.bar = title + " " + BRACKET_COLOR + "[" + ChatColor.RESET +
-                StringUtils.repeat(COMPLETE_COLOR + PROGRESS_BAR_SYMBOL, progressBars) +
-                StringUtils.repeat(INCOMPLETE_COLOR + PROGRESS_BAR_SYMBOL, TOTAL_PROGRESS_BARS - progressBars) +
-                BRACKET_COLOR + "]" + PROGRESS_COLOR + " " + progress + (progress.contains(".") ? "" : ".0") + "%";
+            StringUtils.repeat(COMPLETE_COLOR + PROGRESS_BAR_SYMBOL, progressBars) +
+            StringUtils.repeat(INCOMPLETE_COLOR + PROGRESS_BAR_SYMBOL, TOTAL_PROGRESS_BARS - progressBars) +
+            BRACKET_COLOR + "]" + PROGRESS_COLOR + " " + progress + (progress.contains(".") ? "" : ".0") + "%";
         this.sound = sound;
         this.pitch = (1.5F * percent) + 0.5F;
     }

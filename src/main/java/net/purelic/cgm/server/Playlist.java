@@ -2,11 +2,15 @@ package net.purelic.cgm.server;
 
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.maps.MapYaml;
 import net.purelic.cgm.voting.VotingSettings;
 import net.purelic.commons.Commons;
-import net.purelic.commons.utils.*;
+import net.purelic.commons.utils.DatabaseUtils;
+import net.purelic.commons.utils.Fetcher;
+import net.purelic.commons.utils.MapUtils;
+import net.purelic.commons.utils.ServerUtils;
 import shaded.com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import javax.annotation.Nullable;
@@ -15,6 +19,7 @@ import java.util.*;
 @SuppressWarnings("unchecked")
 public class Playlist {
 
+    private final String name;
     private final Map<String, Object> yaml;
     private final VotingSettings votingSettings;
     private final Map<String, CustomMap> maps;
@@ -29,10 +34,11 @@ public class Playlist {
     }
 
     private Playlist(String name) {
-        this(MapUtils.downloadPlaylist(name));
+        this(name, MapUtils.downloadPlaylist(name));
     }
 
-    private Playlist(Map<String, Object> yaml) {
+    private Playlist(String name, Map<String, Object> yaml) {
+        this.name = name;
         this.yaml = yaml;
         this.votingSettings = new VotingSettings((Map<String, Object>) yaml.getOrDefault("settings", new HashMap<>()));
         this.maps = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -41,6 +47,10 @@ public class Playlist {
         this.repo = new HashMap<>();
         this.pool = new HashMap<>();
         this.download();
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public VotingSettings getVotingSettings() {
@@ -120,10 +130,11 @@ public class Playlist {
         if (Commons.hasOwner()) this.downloadGameModes(Commons.getOwnerId());
 
         this.downloadMaps();
-        if (Commons.hasOwner()) this.downloadPlayerMaps(Commons.getOwnerId());
+        if (Commons.hasOwner() && !this.isUHC()) this.downloadPlayerMaps(Commons.getOwnerId());
     }
 
     private void downloadGameModes(UUID uuid) {
+        // TODO only get uhc gms on uhc playlists
         DatabaseUtils.getGameModes(uuid).forEach(this::addGameMode);
     }
 
@@ -142,7 +153,8 @@ public class Playlist {
 
         if (!gameMode.isPublic()
             || this.gameModes.containsKey(name)
-            || this.gameModesByAlias.containsKey(alias)) return;
+            || this.gameModesByAlias.containsKey(alias)
+            || (this.isUHC() && gameMode.getGameType() != GameType.UHC)) return;
 
         this.gameModes.put(name, gameMode);
         this.gameModesByAlias.put(alias, name);
@@ -158,7 +170,15 @@ public class Playlist {
             rawPlaylist.put(mapName, gameModes);
         }
 
-        String[] publicMaps = MapUtils.downloadPublicMaps();
+        String[] publicMaps;
+
+        if (this.isUHC()) {
+            MapUtils.downloadPublicMap("Lobby");
+            String name = MapUtils.downloadPublicMap("UHC");
+            publicMaps = new String[]{name};
+        } else {
+            publicMaps = MapUtils.downloadPublicMaps();
+        }
 
         for (String mapName : publicMaps) {
             // ignore reserved maps (e.g. lobbies)
@@ -174,7 +194,7 @@ public class Playlist {
             CustomMap map = new CustomMap(mapName, mapYaml);
 
             // get the playlist game modes for this map (if there are any)
-            List<String> gameModes = rawPlaylist.getOrDefault(mapName, new ArrayList<>());
+            List<String> gameModes = rawPlaylist.getOrDefault(map.getName(), new ArrayList<>());
 
             for (CustomGameMode gameMode : this.gameModes.values()) {
                 this.addMap(map, gameMode, gameModes.contains(gameMode.getName()));
@@ -208,6 +228,10 @@ public class Playlist {
             CustomMap map = new CustomMap(mapName, yaml);
             this.loadMap(map);
         }
+    }
+
+    public boolean isUHC() {
+        return this.name.contains("UHC");
     }
 
 }

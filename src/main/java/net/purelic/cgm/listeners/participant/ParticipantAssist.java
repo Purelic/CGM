@@ -54,11 +54,11 @@ public class ParticipantAssist implements Listener {
         participant.getStats().addAssist();
 
         new RewardBuilder(
-                player,
-                scoreAssist ? assistPoints : 1,
-                scoreAssist ? "Point" : "Assist",
-                "Assisted Killing " + NickUtils.getDisplayName(killed) + ChatColor.GRAY + " (" + percent + "%)")
-                .reward(Sound.ORB_PICKUP);
+            player,
+            scoreAssist ? assistPoints : 1,
+            scoreAssist ? "Point" : "Assist",
+            "Assisted Killing " + NickUtils.getDisplayName(killed) + ChatColor.GRAY + " (" + percent + "%)")
+            .reward(Sound.ORB_PICKUP);
     }
 
 }

@@ -11,6 +11,7 @@ import net.purelic.cgm.commands.match.SpectateCommand;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.StartCountdown;
+import net.purelic.cgm.uhc.runnables.ChunkLoader;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
 import net.purelic.commons.utils.CommandUtils;
@@ -34,6 +35,11 @@ public class StartCommand implements CustomCommand {
                 Player player = (Player) c.getSender();
                 Optional<Integer> secondsArg = c.getOptional("seconds");
                 int seconds = secondsArg.map(integer -> Math.max(0, integer)).orElse(20);
+
+                if (ChunkLoader.isActive()) {
+                    CommandUtils.sendErrorMessage(player, "You can't start countdowns while UHC maps are being pre-generated!");
+                    return;
+                }
 
                 if (TaskUtils.isRunning(CycleCountdown.getCountdown())) {
                     CommandUtils.sendErrorMessage(player, "You can't start a countdown while a map is cycling!");

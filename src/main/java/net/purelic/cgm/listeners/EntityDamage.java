@@ -97,6 +97,11 @@ public class EntityDamage implements Listener {
                 return;
             }
 
+            // fix bug where punching can sometimes do a lot of damage
+            if (damager.getItemInHand() == null) {
+                event.setDamage(20);
+            }
+
             if (MatchManager.isPlaying(damager) && FlagUtils.isCarrier(MatchManager.getParticipant(damager))) {
                 event.setDamage(event.getDamage() * (NumberSetting.FLAG_CARRIER_MELEE_MODIFIER.value() / 100.0));
             }

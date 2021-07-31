@@ -60,8 +60,8 @@ public class ParticipantKill implements Listener {
         this.awardMedals(participant, event.getKilled(), points, event.getAssist(), event.isBetrayal());
 
         if (!MatchState.isState(MatchState.STARTED)
-                || TaskUtils.isRunning(RoundCountdown.getCountdown())
-                || participant.isDead()) return;
+            || TaskUtils.isRunning(RoundCountdown.getCountdown())
+            || participant.isDead()) return;
 
         int gapples = NumberSetting.KILL_REWARD_GAPPLES.value();
         if (gapples > 0) {
@@ -252,7 +252,7 @@ public class ParticipantKill implements Listener {
 
                 if (hill.isInside(pKilled.getLocation())) {
                     if (hill.isCaptured() && hill.getCapturedBy() == killerTeam
-                            || (!hill.isNeutral() && hill.getOwner() == killerTeam)) {
+                        || (!hill.isNeutral() && hill.getOwner() == killerTeam)) {
                         // kill enemy that's on own or captured hill
                         medals.add(Medal.WATCH_DOG);
                     } else {

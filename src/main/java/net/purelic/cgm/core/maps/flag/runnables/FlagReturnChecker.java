@@ -1,6 +1,5 @@
 package net.purelic.cgm.core.maps.flag.runnables;
 
-import net.minecraft.server.v1_8_R3.PacketListener;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.ProgressBar;
@@ -64,8 +63,8 @@ public class FlagReturnChecker extends BukkitRunnable {
 
         // clear the action bar for participants who are no longer returning the flag
         this.tempParticipants.stream()
-                .filter(participant -> !participants.contains(participant))
-                .forEach(participant -> ChatUtils.sendActionBar(participant.getPlayer(), ""));
+            .filter(participant -> !participants.contains(participant))
+            .forEach(participant -> ChatUtils.sendActionBar(participant.getPlayer(), ""));
 
         this.tempParticipants = participants;
     }

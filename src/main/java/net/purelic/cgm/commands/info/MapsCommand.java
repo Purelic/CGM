@@ -66,7 +66,7 @@ public class MapsCommand implements CustomCommand {
                         String command = "/download map " + playerName + " ";
 
                         List<BaseComponent[]> entries = new ArrayList<>();
-                        Set<String> maps = MapUtils.listPublishedMaps(uuid); // these might be alphabetical already
+                        List<String> maps = MapUtils.listPublishedMaps(uuid); // these might be alphabetical already
 
                         for (String map : maps) {
                             boolean canDownload = CGM.getPlaylist().getMapByName(map) == null;

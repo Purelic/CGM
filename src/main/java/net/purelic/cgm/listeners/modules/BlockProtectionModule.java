@@ -69,11 +69,11 @@ public class BlockProtectionModule implements Listener {
         if (MatchState.isState(MatchState.STARTED)
             && EnumSetting.GAME_TYPE.is(GameType.SURVIVAL_GAMES)
             && (material == Material.VINE
-                || material == Material.LEAVES
-                || material == Material.RED_MUSHROOM
-                || material == Material.BROWN_MUSHROOM
-                || material == Material.WEB
-                || material == Material.WATER_LILY)
+            || material == Material.LEAVES
+            || material == Material.RED_MUSHROOM
+            || material == Material.BROWN_MUSHROOM
+            || material == Material.WEB
+            || material == Material.WATER_LILY)
         ) {
             return;
         }
@@ -522,7 +522,7 @@ public class BlockProtectionModule implements Listener {
     }
 
     public static boolean isSpawnProtected(Block block) {
-        if (!ToggleSetting.SPAWN_PROTECTION.isEnabled()) return false;
+        if (!ToggleSetting.SPAWN_PROTECTION.isEnabled() || EnumSetting.GAME_TYPE.is(GameType.UHC)) return false;
 
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
 

@@ -48,7 +48,7 @@ public class SpawnPoint {
 
     public void teleportAll(World world) {
         Bukkit.getOnlinePlayers()
-                .forEach(player -> player.teleport(this.getLocation(world)));
+            .forEach(player -> player.teleport(this.getLocation(world)));
     }
 
 }

@@ -10,6 +10,7 @@ import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;
@@ -124,13 +125,13 @@ public class PlayerUtils {
             }
         } else if (bothPlaying) {
             // Hide the other player if they're respawning, otherwise show them
-            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
+            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING)) {
                 hidePlayer(player, other);
             } else {
                 showPlayer(player, other);
             }
 
-            if (MatchManager.getParticipant(player).isState(ParticipantState.RESPAWNING))  {
+            if (MatchManager.getParticipant(player).isState(ParticipantState.RESPAWNING)) {
                 hidePlayer(other, player);
             } else {
                 showPlayer(other, player);
@@ -139,7 +140,7 @@ public class PlayerUtils {
             hidePlayer(other, player);
 
             // Hide the other player if they're respawning, otherwise show them
-            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING))  {
+            if (MatchManager.getParticipant(other).isState(ParticipantState.RESPAWNING)) {
                 hidePlayer(player, other);
             } else {
                 showPlayer(player, other);
@@ -203,7 +204,7 @@ public class PlayerUtils {
 
     private static void clearInventory(Inventory inventory) {
         List<ItemStack> remove = new ArrayList<>();
-        
+
         for (ItemStack item : inventory.getContents()) {
             if (item != null && item.getType() != Material.AIR) {
                 remove.add(item);
@@ -248,9 +249,11 @@ public class PlayerUtils {
         addPermanentEffect(player, PotionEffectType.FAST_DIGGING, NumberSetting.PLAYER_HASTE.value() - 1);
         addPermanentEffect(player, PotionEffectType.INCREASE_DAMAGE, NumberSetting.PLAYER_STRENGTH.value() - 1);
         if (ToggleSetting.PLAYER_INVISIBILITY.isEnabled()) addPermanentEffect(player, PotionEffectType.INVISIBILITY);
-        if (ToggleSetting.PLAYER_FIRE_RESISTANCE.isEnabled()) addPermanentEffect(player, PotionEffectType.FIRE_RESISTANCE);
+        if (ToggleSetting.PLAYER_FIRE_RESISTANCE.isEnabled())
+            addPermanentEffect(player, PotionEffectType.FIRE_RESISTANCE);
         if (ToggleSetting.PLAYER_BLINDNESS.isEnabled()) addPermanentEffect(player, PotionEffectType.BLINDNESS);
-        if (MatchManager.getCurrentMap() != null && MatchManager.getCurrentMap().getYaml().hasNightVision()) PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
+        if (MatchManager.getCurrentMap() != null && MatchManager.getCurrentMap().getYaml().hasNightVision())
+            PlayerUtils.addPermanentEffect(player, PotionEffectType.NIGHT_VISION);
     }
 
     public static void logRespawnLocation(Player player) {
@@ -283,13 +286,17 @@ public class PlayerUtils {
         Player target = null;
         double dist = Double.MAX_VALUE;
 
+        // Don't allow tracking players during grace period
+        if (GracePeriodModule.isActive()) return null;
+
         for (Participant participant : MatchManager.getParticipants()) {
             Player player = participant.getPlayer();
 
             if (MatchTeam.isSameTeam(player, tracker)
-                    || player == tracker
-                    || participant.isDead()
-                    || participant.isEliminated()) {
+                || player == tracker
+                || participant.isDead()
+                || participant.isEliminated()
+                || participant.getPlayer().getWorld() != player.getWorld()) {
                 continue;
             }
 
@@ -305,8 +312,12 @@ public class PlayerUtils {
     }
 
     public static void setLevelAll(int level) {
+        setLevelAll(level, 0F);
+    }
+
+    public static void setLevelAll(int level, float exp) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            setLevel(player, level);
+            setLevel(player, level, exp);
         }
     }
 

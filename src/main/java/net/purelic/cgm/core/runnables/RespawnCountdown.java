@@ -10,8 +10,8 @@ import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
 import net.purelic.cgm.utils.EntityUtils;
 import net.purelic.cgm.utils.FlagUtils;
 import net.purelic.cgm.utils.PlayerUtils;
-import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -101,8 +101,8 @@ public class RespawnCountdown extends BukkitRunnable {
 
         String secondsFormat = FORMAT.format(this.seconds);
         ChatUtils.sendActionBar(
-                this.player,
-                "Respawning in " + ChatColor.AQUA + secondsFormat + (secondsFormat.contains(".") ? "" : ".0") + ChatColor.RESET + " seconds");
+            this.player,
+            "Respawning in " + ChatColor.AQUA + secondsFormat + (secondsFormat.contains(".") ? "" : ".0") + ChatColor.RESET + " seconds");
 
         float perc = (float) (this.seconds - ((int) this.seconds));
         PlayerUtils.setLevel(this.player, (int) (this.seconds + 1), perc);

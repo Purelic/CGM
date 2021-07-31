@@ -54,6 +54,9 @@ public enum Medal {
     CLOSE_DROP(MedalType.STYLE, "Kill an enemy while carrying a flag on low heath"),
     FLAG_DEFENSE(MedalType.STYLE, "Kill an enemy that's close to your flag"),
     STOPPED_SHORT(MedalType.STYLE, "Kill an enemy carrier that's close to collecting your flag"),
+
+    // UHC
+    DRAGON_TAMER(MedalType.OBJECTIVE, "Kill the Ender Dragon during a UHC match")
     ;
 
     private final String medalId;

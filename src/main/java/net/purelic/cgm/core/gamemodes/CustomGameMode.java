@@ -2,8 +2,8 @@ package net.purelic.cgm.core.gamemodes;
 
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.kit.MatchKit;
 import net.purelic.cgm.kit.KitType;
+import net.purelic.cgm.kit.MatchKit;
 import shaded.com.google.cloud.Timestamp;
 import shaded.com.google.cloud.firestore.QueryDocumentSnapshot;
 

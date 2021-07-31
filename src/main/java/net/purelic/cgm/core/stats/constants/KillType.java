@@ -31,7 +31,7 @@ public enum KillType {
             if (proj instanceof Fireball) return EXPLOSION;
             else return BOW;
         } else if (cause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || cause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-           return EXPLOSION;
+            return EXPLOSION;
         } else if (cause == EntityDamageEvent.DamageCause.VOID) {
             return VOID;
         } else if (cause == EntityDamageEvent.DamageCause.FALL) {

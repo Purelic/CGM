@@ -16,6 +16,9 @@ import net.purelic.cgm.commands.preferences.ColorCommand;
 import net.purelic.cgm.commands.preferences.HotbarCommand;
 import net.purelic.cgm.commands.preferences.SoundCommand;
 import net.purelic.cgm.commands.toggles.*;
+import net.purelic.cgm.commands.uhc.UHCCommand;
+import net.purelic.cgm.commands.uhc.UHCScenarioPresetCommand;
+import net.purelic.cgm.commands.uhc.UHCScenarioToggleCommand;
 import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.LootManager;
 import net.purelic.cgm.core.managers.MatchManager;
@@ -34,6 +37,7 @@ import net.purelic.cgm.listeners.participant.*;
 import net.purelic.cgm.listeners.shop.ShopItemPurchase;
 import net.purelic.cgm.listeners.shop.TeamUpgradePurchase;
 import net.purelic.cgm.server.Playlist;
+import net.purelic.cgm.uhc.UHCModule;
 import net.purelic.cgm.voting.VotingManager;
 import net.purelic.cgm.voting.VotingModule;
 import net.purelic.commons.Commons;
@@ -52,6 +56,15 @@ import java.util.function.Function;
 
 public class CGM extends JavaPlugin {
 
+    // dont cycle automatically until map is loaded
+    // alert in chat about automatic cycling when uhc is sn
+    // cycle anyways if voting is going
+    // update scoreboard
+    // grace period (and dont let compass tracking)
+    // new spawn kit items
+    // DOCUMENT use bed spawn if there is one
+    // uhc playlist not getting added properly
+
     private static CGM plugin;
     private static boolean ready;
 
@@ -68,11 +81,11 @@ public class CGM extends JavaPlugin {
         plugin = this;
         ready = false;
 
-        // download lobby map
-        TaskUtils.runAsync(new MapLoader("Lobby"));
-
         // download playlist
         this.playlist = new Playlist();
+
+        // download lobby map
+        TaskUtils.runAsync(new MapLoader("Lobby"));
 
         // register managers, listeners, and commands
         this.registerManagers();
@@ -189,7 +202,6 @@ public class CGM extends JavaPlugin {
         this.registerListener(new ArrowTrailModule());
         this.registerListener(new AutoLapisModule());
         this.registerListener(new BlockProtectionModule());
-        this.registerListener(new CompassTrackingModule());
         this.registerListener(new DamageTrackerModule());
         this.registerListener(new ExplosionModule());
         this.registerListener(new GappleSpawnModule());
@@ -222,6 +234,7 @@ public class CGM extends JavaPlugin {
 
         // General
         this.registerListener(new EntityDamage());
+        this.registerListener(new EntityTarget());
         // this.registerListener(new OpStatusChange());
         this.registerListener(new PlayerChat());
         this.registerListener(new ItemLockModule());
@@ -229,6 +242,12 @@ public class CGM extends JavaPlugin {
         this.registerListener(new PlayerQuit());
         this.registerListener(new PlayerRankChange());
         this.registerListener(new ServerListPing());
+
+        // Dynamic Modules
+        new DynamicModuleModule().register();
+        DynamicModuleModule.add(new UHCModule());
+        DynamicModuleModule.add(new GracePeriodModule());
+        DynamicModuleModule.add(new CompassTrackingModule());
     }
 
     public void registerListener(Listener listener) {
@@ -237,7 +256,7 @@ public class CGM extends JavaPlugin {
 
     private void registerCommandManager() {
         final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
-                CommandExecutionCoordinator.simpleCoordinator();
+            CommandExecutionCoordinator.simpleCoordinator();
 
 //        final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
 //            AsynchronousCommandExecutionCoordinator.<CommandSender>newBuilder().build();
@@ -273,6 +292,8 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new DownloadGameModeCommand());
         this.registerCommand(new DownloadMapCommand());
         this.registerCommand(new EndCommand());
+        this.registerCommand(new LTPCommand(this.getConfig()));
+        this.registerCommand(new PregenCommand());
         this.registerCommand(new RematchCommand());
         this.registerCommand(new SetNextCommand());
         // this.registerCommand(new ShutdownCommand());
@@ -286,6 +307,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new MatchCommand());
         this.registerCommand(new RoundsCommand());
         this.registerCommand(new ScoreLimitCommand());
+        this.registerCommand(new SeedCommand());
         this.registerCommand(new TimeCommand());
         this.registerCommand(new WorldBorderCommand());
 
@@ -315,6 +337,11 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());
         this.registerCommand(new ToggleVotingCommand(this.votingManager));
+
+        // UHC
+        this.registerCommand(new UHCCommand());
+        this.registerCommand(new UHCScenarioPresetCommand());
+        this.registerCommand(new UHCScenarioToggleCommand());
     }
 
     public void registerCommand(CustomCommand customCommand) {

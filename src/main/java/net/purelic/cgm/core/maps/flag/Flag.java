@@ -277,9 +277,9 @@ public class Flag implements Listener {
 
     private boolean isTouching(Participant participant, double radius) {
         return !participant.isDead()
-                && this.location.distance(participant.getPlayer().getLocation()) <= radius
-                && (!this.cooldowns.containsKey(participant)
-                    || Timestamp.now().getSeconds() - this.cooldowns.get(participant).getSeconds() >= DROP_COOLDOWN);
+            && this.location.distance(participant.getPlayer().getLocation()) <= radius
+            && (!this.cooldowns.containsKey(participant)
+            || Timestamp.now().getSeconds() - this.cooldowns.get(participant).getSeconds() >= DROP_COOLDOWN);
     }
 
     public boolean canTake(Participant participant) {
@@ -288,8 +288,8 @@ public class Flag implements Listener {
 
     private boolean canTake(Participant participant, boolean excludeCollected) {
         return (this.isNeutral() || this.owner != MatchTeam.getTeam(participant))
-                && !FlagUtils.isCarrier(participant)
-                && (excludeCollected || this.getCollectedBy() != MatchTeam.getTeam(participant));
+            && !FlagUtils.isCarrier(participant)
+            && (excludeCollected || this.getCollectedBy() != MatchTeam.getTeam(participant));
     }
 
     public void addCooldown(Participant participant) {
@@ -393,7 +393,8 @@ public class Flag implements Listener {
 
                 if (base.isLiquid()) {
                     Material type = base.getType();
-                    if (type == Material.LAVA || type == Material.STATIONARY_LAVA) base.setType(Material.REDSTONE_BLOCK);
+                    if (type == Material.LAVA || type == Material.STATIONARY_LAVA)
+                        base.setType(Material.REDSTONE_BLOCK);
                     else base.setType(Material.ICE);
                 }
 
@@ -498,12 +499,12 @@ public class Flag implements Listener {
         this.returnRing = null;
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onParticipantDeath(ParticipantDeathEvent event) {
         if (this.carrier == event.getParticipant()) this.setState(FlagState.DROPPED);
     }
 
-    @EventHandler (priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void onMatchQuit(MatchQuitEvent event) {
         Participant participant = event.getParticipant();
         if (participant != null && this.carrier == participant) this.setState(FlagState.DROPPED);
@@ -530,8 +531,8 @@ public class Flag implements Listener {
         ItemStack item = event.getCurrentItem();
 
         if (item != null
-                && item.getType() == Material.BANNER
-                && !item.getItemMeta().getLore().isEmpty()) {
+            && item.getType() == Material.BANNER
+            && !item.getItemMeta().getLore().isEmpty()) {
             event.setCancelled(true);
 
             Player player = (Player) event.getWhoClicked();
@@ -554,7 +555,7 @@ public class Flag implements Listener {
         if (this.flagWaypoint != null) this.flagWaypoint.showLunarWaypoint(event.getPlayer());
     }
 
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (!this.active
             || !this.isState(FlagState.DROPPED, FlagState.RETURNED)

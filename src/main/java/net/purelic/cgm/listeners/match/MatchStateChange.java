@@ -39,7 +39,9 @@ public class MatchStateChange implements Listener {
             this.scoreboardManager.updateWaitingSidebar(false);
         } else if (newState == MatchState.STARTING) {
             if (ToggleAutoStartCommand.autostart || forced) {
-                new StartCountdown(ServerUtils.isRanked() ? 60 : seconds, forced).runTaskTimer(CGM.get(), 0, 20);
+                if (ServerUtils.isRanked()) seconds = 60;
+
+                new StartCountdown(seconds, forced).runTaskTimer(CGM.get(), 0, 20);
             } else {
                 MatchState.setState(MatchState.PRE_GAME);
             }

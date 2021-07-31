@@ -53,6 +53,10 @@ public class CustomMap {
         if (this.world == null) this.world = world;
     }
 
+    public World getNextWorld() {
+        return this.nextWorld;
+    }
+
     public void loadObjectives() {
         this.world = this.nextWorld;
 
@@ -66,8 +70,8 @@ public class CustomMap {
 
         if (EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
             this.world.getEntities().stream()
-                    .filter(entity -> entity.getType() == EntityType.VILLAGER)
-                    .forEach(villager -> EntityUtils.setAi(villager, false));
+                .filter(entity -> entity.getType() == EntityType.VILLAGER)
+                .forEach(villager -> EntityUtils.setAi(villager, false));
         }
     }
 
@@ -77,9 +81,9 @@ public class CustomMap {
         GameType gameType = EnumSetting.GAME_TYPE.get();
 
         if (gameType == GameType.KING_OF_THE_HILL
-                || (gameType == GameType.HEAD_HUNTER && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())
-                || (gameType == GameType.CAPTURE_THE_FLAG && ToggleSetting.FLAG_GOALS.isEnabled())
-                || (gameType == GameType.DEATHMATCH && ToggleSetting.DEATHMATCH_SCOREBOXES.isEnabled())) {
+            || (gameType == GameType.HEAD_HUNTER && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())
+            || (gameType == GameType.CAPTURE_THE_FLAG && ToggleSetting.FLAG_GOALS.isEnabled())
+            || (gameType == GameType.DEATHMATCH && ToggleSetting.DEATHMATCH_SCOREBOXES.isEnabled())) {
             boolean neutralHills = ToggleSetting.NEUTRAL_HILLS.isEnabled();
             TeamType teamType = EnumSetting.TEAM_TYPE.get();
             List<MatchTeam> teams = teamType.getTeams();
@@ -97,12 +101,12 @@ public class CustomMap {
                 totalHills = hills.size();
             }
 
-            int startingRow = teamType == TeamType.SOLO ? 0 : teams.size() + 1;
+            int startingRow = 0;
 
             if (ToggleSetting.PERMANENT_HILLS.isEnabled()) {
                 startingRow = -1;
             } else {
-                ScoreboardManager.setScore(teamType == TeamType.SOLO ? startingRow + 1 : startingRow - 1, "");
+                // ScoreboardManager.setScore(teamType == TeamType.SOLO ? startingRow + 1 : startingRow - 1, "");
             }
 
             if (neutralHills) {
@@ -136,7 +140,7 @@ public class CustomMap {
     private void loadFlags() {
         GameType gameType = EnumSetting.GAME_TYPE.get();
 
-        if (gameType!= GameType.CAPTURE_THE_FLAG) return;
+        if (gameType != GameType.CAPTURE_THE_FLAG) return;
 
         boolean neutralFlags = ToggleSetting.NEUTRAL_FLAGS.isEnabled();
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
@@ -146,7 +150,7 @@ public class CustomMap {
 
         // filter on flags valid for this game mode
         List<Flag> flags = this.yaml.getFlags().stream().filter(flag ->
-                (neutralFlags ? flag.isNeutral() : !flag.isNeutral() && teams.contains(flag.getOwner()))
+            (neutralFlags ? flag.isNeutral() : !flag.isNeutral() && teams.contains(flag.getOwner()))
         ).collect(Collectors.toList());
 
         // if total flags = 0, load all flags
@@ -157,10 +161,12 @@ public class CustomMap {
         int hillOffset = (int) this.getLoadedHills().stream().filter(hill -> hill.getScoreboardRow() != -1).count();
         hillOffset = hillOffset == 0 ? 0 : hillOffset + 1;
 
-        int startingRow = (teamType == TeamType.SOLO ? 0 : teams.size() + 1) + hillOffset;
+        int startingRow = hillOffset;
 
-        if (hillOffset > 0) ScoreboardManager.setScore(startingRow - 1, ""); // blank line between hills and flags
-        ScoreboardManager.setScore(teamType == TeamType.SOLO ? (movingFlag ? startingRow + 1 : totalFlags) : startingRow - 1, "");
+        if (hillOffset > 0) {
+            ScoreboardManager.setScore(hillOffset - 1, ""); // blank line between hills and flags
+        }
+        // ScoreboardManager.setScore(teamType == TeamType.SOLO ? (movingFlag ? startingRow + 1 : totalFlags) : startingRow - 1, "");
 
         if (neutralFlags) {
             for (int i = 0; i < Math.min(totalFlags, flags.size()); i++) {
@@ -194,14 +200,14 @@ public class CustomMap {
 
         GameType gameType = EnumSetting.GAME_TYPE.get();
 
-        if (gameType!= GameType.BED_WARS) return;
+        if (gameType != GameType.BED_WARS) return;
 
         TeamType teamType = EnumSetting.TEAM_TYPE.get();
         List<MatchTeam> teams = teamType.getTeams();
 
         // filter on beds valid for this game mode
         List<Bed> beds = this.yaml.getBeds().stream().filter(bed ->
-                (teams.contains(bed.getOwner()))
+            (teams.contains(bed.getOwner()))
         ).collect(Collectors.toList());
 
         for (MatchTeam team : teams) {
@@ -271,8 +277,8 @@ public class CustomMap {
             Vector coords = hill.getCoords();
 
             if (coords.getBlockX() == spawnerX
-                    && coords.getBlockY() == spawnerY
-                    && coords.getBlockZ() == spawnerZ) return true;
+                && coords.getBlockY() == spawnerY
+                && coords.getBlockZ() == spawnerZ) return true;
         }
 
         return false;
@@ -300,7 +306,7 @@ public class CustomMap {
 
     private boolean supportsSquads() {
         return this.supportsMultiTeam() && !this.yaml.getAquaSpawns().isEmpty() && !this.yaml.getPinkSpawns().isEmpty()
-                && !this.yaml.getWhiteSpawns().isEmpty() && !this.yaml.getGraySpawns().isEmpty();
+            && !this.yaml.getWhiteSpawns().isEmpty() && !this.yaml.getGraySpawns().isEmpty();
     }
 
     private boolean supportsHills(CustomGameMode gameMode, GameType gameType) {
@@ -357,9 +363,17 @@ public class CustomMap {
     }
 
     public boolean supportsGameMode(CustomGameMode gameMode) {
-        TeamType teamType = TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
-        boolean supports = this.supportsTeamType(teamType);
         GameType gameType = gameMode.getGameType();
+        TeamType teamType = TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
+
+        boolean supports;
+
+        if (gameType == GameType.UHC) {
+            // UHC game types don't use the map yaml spawn points and can only be set for the map named "UHC"
+            supports = this.name.equals("UHC");
+        } else {
+            supports = this.supportsTeamType(teamType);
+        }
 
         if (gameType == GameType.KING_OF_THE_HILL
             || (gameType == GameType.HEAD_HUNTER && gameMode.getToggleSetting(ToggleSetting.HEAD_COLLECTION_HILLS))) {

@@ -16,20 +16,20 @@ public class RoundsCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("rounds")
-                .senderType(Player.class)
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
+            .senderType(Player.class)
+            .handler(c -> {
+                Player player = (Player) c.getSender();
 
-                    if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
-                        if (NumberSetting.ROUNDS.value() == 1) {
-                            CommandUtils.sendAlertMessage(player, "This game mode only has " + ChatColor.AQUA + "1" + ChatColor.RESET + " round");
-                        } else {
-                            player.sendMessage(TabManager.getRounds(false));
-                        }
+                if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
+                    if (NumberSetting.ROUNDS.value() == 1) {
+                        CommandUtils.sendAlertMessage(player, "This game mode only has " + ChatColor.AQUA + "1" + ChatColor.RESET + " round");
                     } else {
-                        CommandUtils.sendErrorMessage(player, "You can't view the round status right now!");
+                        player.sendMessage(TabManager.getRounds(false));
                     }
-                });
+                } else {
+                    CommandUtils.sendErrorMessage(player, "You can't view the round status right now!");
+                }
+            });
     }
 
 }

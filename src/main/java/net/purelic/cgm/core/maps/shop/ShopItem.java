@@ -52,7 +52,7 @@ public class ShopItem {
 
     public ShopItem(TeamUpgrade upgrade, int price, int slot, ShopItem parent) {
         this(new ItemCrafter(upgrade.getMaterial()).name(upgrade.getName()).setTag("team_upgrade", upgrade.name()).craft(),
-                price, Material.DIAMOND, slot, false, null, parent);
+            price, Material.DIAMOND, slot, false, null, parent);
     }
 
     public ShopItem(ItemStack item, int price, Material currency, int slot, boolean colored, ArmorType armorType, ShopItem parent) {
@@ -96,7 +96,7 @@ public class ShopItem {
         } else if (!this.isUpgrade() && this.isTiered()) {
             lore.add("");
             String description =
-                    this.hasChild() ?
+                this.hasChild() ?
                     "You will be downgraded to " + this.getChild().getName() + " upon death!" :
                     "You will permanently respawn with " + this.getName() + "!";
             String wrapped = WordUtils.wrap(ChatColor.GRAY + description, 30, "%%" + ChatColor.GRAY, false);
@@ -140,9 +140,9 @@ public class ShopItem {
         }
 
         return ChatColor.GRAY + "Cost: " +
-                this.getCurrencyColor() + this.price + " " +
-                WordUtils.capitalizeFully(this.currency.name().replaceAll("_", " ")) +
-                (this.price == 1 ? "" : "s");
+            this.getCurrencyColor() + this.price + " " +
+            WordUtils.capitalizeFully(this.currency.name().replaceAll("_", " ")) +
+            (this.price == 1 ? "" : "s");
     }
 
     private ChatColor getCurrencyColor() {

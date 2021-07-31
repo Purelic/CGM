@@ -1,6 +1,7 @@
 package net.purelic.cgm.core.gamemodes;
 
 import net.purelic.cgm.core.gamemodes.constants.*;
+import org.bukkit.Material;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -32,8 +33,14 @@ public enum EnumSetting implements GameSetting {
 
     INFECTED_SWORD_TYPE(GameSettingType.INFECTED_SWORD, SwordType.class, SwordType.GOLD),
     INFECTED_BOW_TYPE(GameSettingType.INFECTED_BOW, BowType.class, BowType.NONE),
+    INFECTED_BLOCK_TYPE(GameSettingType.INFECTED_ITEMS, Material.class, Material.WOOL),
 
     PLAYER_COMPASS_TYPE(GameSettingType.PLAYER_COMPASS, CompassTrackingType.class, CompassTrackingType.PLAYER),
+    PLAYER_PICKAXE_TYPE(GameSettingType.PLAYER_PICKAXE, ToolType.class, ToolType.NONE),
+    PLAYER_AXE_TYPE(GameSettingType.PLAYER_AXE, ToolType.class, ToolType.NONE),
+    PLAYER_SHOVEL_TYPE(GameSettingType.PLAYER_SHOVEL, ToolType.class, ToolType.NONE),
+    PLAYER_FOOD_TYPE(GameSettingType.PLAYER_ITEMS, Material.class, Material.GOLDEN_CARROT),
+    PLAYER_BLOCK_TYPE(GameSettingType.PLAYER_ITEMS, Material.class, Material.WOOL),
 
     LOOT_TYPE(GameSettingType.SURVIVAL_GAMES, LootType.class, LootType.SG_NORMAL),
     ;

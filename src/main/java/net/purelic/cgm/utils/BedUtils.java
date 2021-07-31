@@ -29,11 +29,11 @@ public class BedUtils {
         ChatColor color = team.getColor();
 
         if (!MatchState.isState(MatchState.STARTED) || !isBedDestroyed(team)) {
-            return " " + color + SYMBOL_BED_INCOMPLETE + "  " + team.getColoredName();
+            return " " + color + SYMBOL_BED_INCOMPLETE + " " + team.getColoredName();
         } else if (isBedDestroyed(team) && !MatchUtils.isTeamEliminated(team)) {
-            return " " + color + SYMBOL_BED_COMPLETE + "  " + ChatColor.RESET + MatchUtils.getAlive(team) + color + " Alive";
+            return " " + color + SYMBOL_BED_COMPLETE + " " + ChatColor.RESET + MatchUtils.getAlive(team) + color + " Alive";
         } else {
-            return " " + ChatColor.RED + SYMBOL_TEAM_ELIMINATED + "  " + team.getColoredName();
+            return " " + ChatColor.RED + SYMBOL_TEAM_ELIMINATED + " " + team.getColoredName();
         }
     }
 

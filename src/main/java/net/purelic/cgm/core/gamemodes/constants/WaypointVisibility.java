@@ -20,9 +20,12 @@ public enum WaypointVisibility {
 
     public Collection<? extends Player> getPlayers(Participant participant) {
         switch (this) {
-            case TEAM_ONLY: return new HashSet<>(participant.getTeam().getPlayers());
-            case ENEMY_ONLY: return new HashSet<>(this.getEnemyPlayers(participant.getTeam()));
-            case EVERYONE: return Bukkit.getOnlinePlayers();
+            case TEAM_ONLY:
+                return new HashSet<>(participant.getTeam().getPlayers());
+            case ENEMY_ONLY:
+                return new HashSet<>(this.getEnemyPlayers(participant.getTeam()));
+            case EVERYONE:
+                return Bukkit.getOnlinePlayers();
         }
 
         return new HashSet<>();

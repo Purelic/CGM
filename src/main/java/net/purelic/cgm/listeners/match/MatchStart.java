@@ -57,7 +57,7 @@ public class MatchStart implements Listener {
                 for (Set<Player> party : parties) {
                     if (party.size() > maxTeamSize || party.size() > 4) {
                         party.forEach(player ->
-                                    CommandUtils.sendAlertMessage(player, "Your party is too big for this match - shuffling your party..."));
+                            CommandUtils.sendAlertMessage(player, "Your party is too big for this match - shuffling your party..."));
                         continue;
                     }
 
@@ -76,13 +76,14 @@ public class MatchStart implements Listener {
                 }
 
                 parties.forEach(party -> party.stream()
-                        .filter(player -> MatchTeam.getTeam(player) == MatchTeam.OBS && !shuffled.contains(player))
-                        .forEach(player ->
-                                CommandUtils.sendAlertMessage(player, "Too many parties already joined this match - shuffling your party...")));
+                    .filter(player -> MatchTeam.getTeam(player) == MatchTeam.OBS && !shuffled.contains(player))
+                    .forEach(player ->
+                        CommandUtils.sendAlertMessage(player, "Too many parties already joined this match - shuffling your party...")));
             }
         }
 
         JoinState.setState(JoinState.EVERYONE);
+        MatchJoin.setAddParticipants(false);
 
         List<Player> premiumPlayers = Bukkit.getOnlinePlayers().stream()
             .filter(player -> CommandUtils.isOp(player) || (!Commons.getProfile(player).isStaff() && Commons.getProfile(player).isDonator()))
@@ -103,6 +104,8 @@ public class MatchStart implements Listener {
             }
         }
 
+        MatchJoin.setAddParticipants(true);
+
         for (MatchTeam team : teamType.getTeams()) {
             if (team == MatchTeam.OBS) continue;
             for (Player player : team.getPlayers()) {
@@ -121,6 +124,7 @@ public class MatchStart implements Listener {
         // DatabaseUtils.updateStatus(ServerStatus.STARTED, MatchManager.getCurrentMap().getName(), MatchManager.getCurrentGameMode().getName());
     }
 
+    // TODO is there any way to get this data from spring instead?
     public static void updateParties() {
         Map<String, Set<Player>> parties = new HashMap<>();
 
@@ -138,6 +142,9 @@ public class MatchStart implements Listener {
     }
 
     private static List<Set<Player>> orderParties(List<Set<Player>> parties) {
+        // If match is cycled back to lobby before this runs, stop updating parties
+        if (MatchManager.getCurrentGameMode() == null) return new ArrayList<>();
+
         int maxTeamSize = MatchUtils.getMaxTeamPlayers();
         List<Set<Player>> highPriority = new ArrayList<>();
         List<Set<Player>> lowPriority = new ArrayList<>();

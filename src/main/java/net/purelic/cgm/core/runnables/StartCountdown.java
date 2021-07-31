@@ -38,7 +38,7 @@ public class StartCountdown extends BukkitRunnable {
         }
 
         String message = "Match starts in " + ChatColor.AQUA + seconds +
-                ChatColor.RESET + " second" + ((seconds == 1) ? "!" : "s!");
+            ChatColor.RESET + " second" + ((seconds == 1) ? "!" : "s!");
 
         ChatUtils.broadcastActionBar(message);
         SoundUtils.playCountdownNote(seconds);

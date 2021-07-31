@@ -13,7 +13,6 @@ import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,7 +39,8 @@ public class HillCaptureCountdown extends BukkitRunnable {
 
     private float getStartingProgress() {
         // if no one controls the hill or the hill is fully reclaimed by the owner start them from 0
-        if (this.hill.getControlledBy() == null || (this.hill.getControlledBy() == this.hill.getOwner() && this.hill.getProgress() == 1F)) return 0F;
+        if (this.hill.getControlledBy() == null || (this.hill.getControlledBy() == this.hill.getOwner() && this.hill.getProgress() == 1F))
+            return 0F;
         else return this.hill.getProgress();
     }
 

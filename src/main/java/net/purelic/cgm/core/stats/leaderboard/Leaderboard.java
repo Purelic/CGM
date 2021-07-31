@@ -98,8 +98,8 @@ public class Leaderboard {
         data.put("leaders", leaders);
 
         DatabaseUtils.getFirestore()
-                .collection("leaderboards")
-                .document(this.id).set(data);
+            .collection("leaderboards")
+            .document(this.id).set(data);
     }
 
 }

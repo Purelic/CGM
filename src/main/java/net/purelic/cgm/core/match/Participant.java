@@ -14,8 +14,8 @@ import net.purelic.cgm.events.participant.ParticipantScoreEvent;
 import net.purelic.cgm.listeners.match.MatchEnd;
 import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
 import net.purelic.cgm.utils.MatchUtils;
-import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
 import net.purelic.commons.utils.VersionUtils;
 import org.bukkit.ChatColor;
@@ -99,7 +99,7 @@ public class Participant {
 
         int killStreak = this.killstreak;
         int bestKillStreak = this.bestKillstreak;
-        String bestStreakStr = bestKillStreak > 0 && bestKillStreak > killStreak ? net.md_5.bungee.api.ChatColor.GRAY + " (Best " + bestKillStreak + ")" :"";
+        String bestStreakStr = bestKillStreak > 0 && bestKillStreak > killStreak ? net.md_5.bungee.api.ChatColor.GRAY + " (Best " + bestKillStreak + ")" : "";
 
         return ChatColor.GRAY + "Score: " + ChatColor.YELLOW + this.totalScore + ChatColor.DARK_GRAY + " | " + ChatColor.GRAY +
             "Kills: " + ChatColor.GREEN + this.kills + assistsStr + ChatColor.DARK_GRAY + " | " + ChatColor.GRAY +
@@ -250,7 +250,7 @@ public class Participant {
     }
 
     public boolean isQueued() {
-        return this.queued;
+        return this.isState(ParticipantState.QUEUED);
     }
 
     public void setQueued(boolean queued) {

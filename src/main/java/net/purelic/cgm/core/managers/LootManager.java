@@ -180,7 +180,7 @@ public class LootManager {
             new LootChestItem(LootItemLevel.LEVEL_7, new ItemCrafter(Material.IRON_BOOTS).enchant(Enchantment.PROTECTION_ENVIRONMENTAL)),
             new LootChestItem(LootItemLevel.LEVEL_8, Material.TNT, 4),
             new LootChestItem(LootItemLevel.LEVEL_8, Material.TNT, 8),
-            new LootChestItem(LootItemLevel.LEVEL_8, Material.TNT,  16),
+            new LootChestItem(LootItemLevel.LEVEL_8, Material.TNT, 16),
             new LootChestItem(LootItemLevel.LEVEL_8, Material.REDSTONE_BLOCK, 16),
             new LootChestItem(LootItemLevel.LEVEL_8, Material.REDSTONE, 32),
             new LootChestItem(LootItemLevel.LEVEL_8, Material.REDSTONE_TORCH_ON, 16),

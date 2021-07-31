@@ -31,10 +31,10 @@ public interface Broadcastable {
 
     default BaseComponent[] getPrefix(MatchTeam team) {
         return new ComponentBuilder("[").color(ChatColor.DARK_GRAY)
-                .append(team.getName()).color(team.getColor())
-                .append("]").color(ChatColor.DARK_GRAY)
-                .append(" ").reset()
-                .create();
+            .append(team.getName()).color(team.getColor())
+            .append("]").color(ChatColor.DARK_GRAY)
+            .append(" ").reset()
+            .create();
     }
 
     default Set<Player> getAudience(MatchTeam team) {

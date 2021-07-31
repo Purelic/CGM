@@ -134,8 +134,8 @@ public enum BedDefense {
         block.setType(material);
 
         if (material == Material.WOOL
-                || material == Material.STAINED_CLAY
-                || material == Material.STAINED_GLASS) {
+            || material == Material.STAINED_CLAY
+            || material == Material.STAINED_GLASS) {
             BlockState state = block.getState();
             MaterialData data = state.getData();
             data.setData(color.getData());

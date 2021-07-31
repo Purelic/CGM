@@ -21,16 +21,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.DecimalFormat;
 
-public class CompassTrackingModule implements Listener {
+public class CompassTrackingModule implements DynamicModule {
 
     private BukkitRunnable tracker;
+
+    @Override
+    public boolean isValid() {
+        return ToggleSetting.PLAYER_COMPASS_ENABLED.isEnabled();
+    }
 
     @EventHandler
     public void onRoundStart(RoundStartEvent event) {
@@ -61,15 +66,28 @@ public class CompassTrackingModule implements Listener {
     }
 
     @EventHandler
+    public void onCraftingPrepare(PrepareItemCraftEvent event) {
+        if (event.getRecipe().getResult().getType() == Material.COMPASS) {
+            CompassTrackingType type = EnumSetting.PLAYER_COMPASS_TYPE.get();
+
+            event.getInventory().setResult(new ItemCrafter(Material.COMPASS)
+                .name("" + org.bukkit.ChatColor.RESET + org.bukkit.ChatColor.BOLD + "Tracking Compass")
+                .lore("R-Click to track the closest " + (type == CompassTrackingType.PLAYER ? "enemy" : "objective") + "!")
+                .addTag("tracking_compass")
+                .craft());
+        }
+    }
+
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!event.getAction().name().contains("RIGHT_CLICK")) return;
 
         Player player = event.getPlayer();
 
         if (!ToggleSetting.PLAYER_COMPASS_ENABLED.isEnabled()
-                || !isHoldingCompass(player)) return;
+            || !isHoldingCompass(player)) return;
 
-        String trackingMessage = "";
+        String trackingMessage;
 
         if (ToggleSetting.PLAYER_COMPASS_DISPLAY.isEnabled()) {
             trackingMessage = getTrackingMessage(player);
@@ -114,7 +132,11 @@ public class CompassTrackingModule implements Listener {
 
     public static String getNoDisplayMessage() {
         if (EnumSetting.PLAYER_COMPASS_TYPE.is(CompassTrackingType.PLAYER)) {
-            return "" + ChatColor.RED + ChatColor.BOLD + "Tracking Closest Player";
+            if (GracePeriodModule.isActive()) {
+                return "" + ChatColor.RED + ChatColor.BOLD + "Disabled During Grace Period";
+            } else {
+                return "" + ChatColor.RED + ChatColor.BOLD + "Tracking Closest Player";
+            }
         } else if (EnumSetting.PLAYER_COMPASS_TYPE.is(CompassTrackingType.OBJECTIVE)) {
             GameType gameType = EnumSetting.GAME_TYPE.get();
 
@@ -135,6 +157,10 @@ public class CompassTrackingModule implements Listener {
             return "" + ChatColor.RED + ChatColor.BOLD + "Beds Not Broken Yet";
         }
 
+        if (GracePeriodModule.isActive()) {
+            return "" + ChatColor.RED + ChatColor.BOLD + "Disabled During Grace Period";
+        }
+
         if (target == null) return "" + ChatColor.RED + ChatColor.BOLD + "No Target Found";
 
         double dist = tracker.getLocation().distance(target.getLocation());
@@ -143,16 +169,16 @@ public class CompassTrackingModule implements Listener {
             String distValue = (new DecimalFormat("#.#").format(dist));
 
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + NickUtils.getDisplayName(target) +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    distValue + (distValue.contains(".") ? "" : ".0");
+                ChatColor.RESET + NickUtils.getDisplayName(target) +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                distValue + (distValue.contains(".") ? "" : ".0");
         } else {
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + NickUtils.getDisplayName(target) +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    "< 5 Blocks";
+                ChatColor.RESET + NickUtils.getDisplayName(target) +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                "< 5 Blocks";
         }
     }
 
@@ -162,8 +188,8 @@ public class CompassTrackingModule implements Listener {
         Location flagLoc = FlagUtils.getCurrentFlagLocation(flag);
 
         String display = flag.hasCarrier()
-                ? NickUtils.getDisplayName(flag.getCarrier().getPlayer())
-                : flag.getTitle();
+            ? NickUtils.getDisplayName(flag.getCarrier().getPlayer())
+            : flag.getTitle();
 
         return getObjectiveTrackingMessage(tracker, display, flagLoc);
     }
@@ -185,16 +211,16 @@ public class CompassTrackingModule implements Listener {
             String distValue = (new DecimalFormat("#.#").format(dist));
 
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + display +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    distValue + (distValue.contains(".") ? "" : ".0");
+                ChatColor.RESET + display +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                distValue + (distValue.contains(".") ? "" : ".0");
         } else {
             return "" + ChatColor.WHITE + ChatColor.BOLD + "Tracking: " +
-                    ChatColor.RESET + display +
-                    ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
-                    ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
-                    "< 1 Block";
+                ChatColor.RESET + display +
+                ChatColor.WHITE + ChatColor.BOLD + "  Distance: " +
+                ChatColor.RESET + ChatColor.GREEN + ChatColor.BOLD +
+                "< 1 Block";
         }
     }
 

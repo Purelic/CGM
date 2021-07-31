@@ -30,4 +30,5 @@ public class OtherDamageTick extends DamageTick {
     public String getSingleLineSummary() {
         return DamageManger.ACCENT_COLOR + getName() + DamageManger.BASE_COLOR + " damage";
     }
+
 }

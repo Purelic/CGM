@@ -45,8 +45,8 @@ public class Area {
 
     public boolean contains(Area area) {
         return area.getWorld().equals(this.world) &&
-                area.getMinX() >= this.minX && area.getMaxX() <= this.maxX &&
-                area.getMinZ() >= this.minZ && area.getMaxZ() <= this.maxZ;
+            area.getMinX() >= this.minX && area.getMaxX() <= this.maxX &&
+            area.getMinZ() >= this.minZ && area.getMaxZ() <= this.maxZ;
     }
 
     public boolean contains(Location location) {
@@ -55,13 +55,13 @@ public class Area {
 
     public boolean contains(int x, int z) {
         return x >= this.minX && x <= this.maxX &&
-                z >= this.minZ && z <= this.maxZ;
+            z >= this.minZ && z <= this.maxZ;
     }
 
     public boolean overlaps(Area area) {
         return area.getWorld().equals(this.world) &&
-                !(area.getMinX() > this.maxX || area.getMinZ() > this.maxZ ||
-                    this.minZ > area.getMaxX() || this.minZ > area.getMaxZ());
+            !(area.getMinX() > this.maxX || area.getMinZ() > this.maxZ ||
+                this.minZ > area.getMaxX() || this.minZ > area.getMaxZ());
     }
 
 }

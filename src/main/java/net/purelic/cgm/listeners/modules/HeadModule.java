@@ -9,7 +9,6 @@ import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.rewards.Medal;
 import net.purelic.cgm.core.rewards.RewardBuilder;
-import net.purelic.cgm.events.match.MatchStartEvent;
 import net.purelic.cgm.events.match.RoundStartEvent;
 import net.purelic.cgm.events.participant.ParticipantKillEvent;
 import net.purelic.commons.utils.ChatUtils;
@@ -46,12 +45,12 @@ public class HeadModule implements Listener {
             skull.setItemMeta(meta);
 
             skull = new ItemCrafter(skull)
-                    .name(ChatColor.RESET + NickUtils.getDisplayName(killed) + " killed by " + NickUtils.getDisplayName(killer))
-                    .setTag("killer", killer.getName())
-                    .setTag("killed", killed.getName())
-                    .setTag("killer_team", killerTeam.name())
-                    .setTag("killed_team", killedTeam.name())
-                    .craft();
+                .name(ChatColor.RESET + NickUtils.getDisplayName(killed) + " killed by " + NickUtils.getDisplayName(killer))
+                .setTag("killer", killer.getName())
+                .setTag("killed", killed.getName())
+                .setTag("killer_team", killerTeam.name())
+                .setTag("killed_team", killedTeam.name())
+                .craft();
 
             killed.getWorld().dropItem(killed.getLocation(), skull);
         }
@@ -60,8 +59,8 @@ public class HeadModule implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {
         if (event.isCancelled()
-                || !EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER)
-                || !ToggleSetting.COLLECT_HEADS_INSTANTLY.isEnabled()) return;
+            || !EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER)
+            || !ToggleSetting.COLLECT_HEADS_INSTANTLY.isEnabled()) return;
 
         Player player = event.getPlayer();
         player.getInventory().addItem(event.getItem().getItemStack());
@@ -74,7 +73,7 @@ public class HeadModule implements Listener {
         HeadModule.scoreHeads(participant);
     }
 
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onRoundStart(RoundStartEvent event) {
         int interval = NumberSetting.HEAD_COLLECTION_INTERVAL.value();
         if (interval > 0) {
@@ -144,24 +143,24 @@ public class HeadModule implements Listener {
                 if (player == online) continue;
 
                 online.spigot().playEffect(
-                        player.getLocation().clone().add(0, 1, 0),
-                        Effect.FLAME,
-                        0,
-                        0,
-                        0.5F,
-                        0.5F,
-                        0.5F,
-                        0.1F,
-                        amount,
-                        30);
+                    player.getLocation().clone().add(0, 1, 0),
+                    Effect.FLAME,
+                    0,
+                    0,
+                    0.5F,
+                    0.5F,
+                    0.5F,
+                    0.1F,
+                    amount,
+                    30);
             }
         }
     }
 
     public static Set<ItemStack> getSkulls(Player player) {
         return Arrays.stream(player.getInventory().getContents())
-                .filter(item -> item != null && item.getType() == Material.SKULL_ITEM)
-                .collect(Collectors.toSet());
+            .filter(item -> item != null && item.getType() == Material.SKULL_ITEM)
+            .collect(Collectors.toSet());
     }
 
     public static int getTotalSkulls(Player player) {

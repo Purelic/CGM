@@ -90,10 +90,10 @@ public class FlagUtils {
 
         if (flag != null) {
             if (ToggleSetting.FLAG_AT_HOME.isEnabled()
-                    && FlagUtils.getFlags().stream()
-                        .anyMatch(f -> !f.isNeutral()
-                                && f.getOwner() == participant.getTeam()
-                                && !f.isState(FlagState.RETURNED, FlagState.RESPAWNING))) {
+                && FlagUtils.getFlags().stream()
+                .anyMatch(f -> !f.isNeutral()
+                    && f.getOwner() == participant.getTeam()
+                    && !f.isState(FlagState.RETURNED, FlagState.RESPAWNING))) {
                 return;
             } else if (NumberSetting.FLAG_COLLECTION_INTERVAL.value() > 0) {
                 return;
@@ -114,8 +114,8 @@ public class FlagUtils {
         if (carrierPoints == 0) return;
 
         FlagUtils.getFlags().stream()
-                .filter(Flag::hasCarrier)
-                .forEach(flag -> flag.getCarrier().addScore(carrierPoints));
+            .filter(Flag::hasCarrier)
+            .forEach(flag -> flag.getCarrier().addScore(carrierPoints));
     }
 
     public static void collectFlags() {
@@ -133,25 +133,25 @@ public class FlagUtils {
 
     public static Hill getHill(Flag flag) {
         return HillUtils.getHills().stream()
-                .filter(hill ->
-                        hill.isInside(flag.hasCarrier() ? flag.getCarrier().getPlayer().getLocation() : flag.getLocation())
-                                && hill.getControlledBy() != flag.getOwner())
-                .findFirst().orElse(null);
+            .filter(hill ->
+                hill.isInside(flag.hasCarrier() ? flag.getCarrier().getPlayer().getLocation() : flag.getLocation())
+                    && hill.getControlledBy() != flag.getOwner())
+            .findFirst().orElse(null);
     }
 
     public static boolean inFlagProximity(MatchTeam owner, Player player, double dist) {
         if (ToggleSetting.NEUTRAL_FLAGS.isEnabled()) return false;
         return FlagUtils.getFlags().stream()
-                .filter(flag -> flag.getOwner() == owner)
-                .anyMatch(flag -> flag.getLocation().distance(player.getLocation()) <= dist);
+            .filter(flag -> flag.getOwner() == owner)
+            .anyMatch(flag -> flag.getLocation().distance(player.getLocation()) <= dist);
     }
 
     public static boolean inGoalProximity(MatchTeam owner, Player player, double dist) {
         if (!ToggleSetting.FLAG_GOALS.isEnabled()) return false;
         return HillUtils.getHills().stream()
-                .filter(Hill::isActive)
-                .filter(hill -> hill.getCapturedBy() == owner)
-                .anyMatch(hill -> hill.getCenter().distance(player.getLocation()) <= dist);
+            .filter(Hill::isActive)
+            .filter(hill -> hill.getCapturedBy() == owner)
+            .anyMatch(hill -> hill.getCenter().distance(player.getLocation()) <= dist);
     }
 
     public static Flag getClosestFlag(Player player) {
@@ -179,8 +179,8 @@ public class FlagUtils {
 
     public static Location getCurrentFlagLocation(Flag flag) {
         return flag.hasCarrier()
-                ? flag.getCarrier().getPlayer().getLocation()
-                : flag.isState(FlagState.RESPAWNING) ? flag.getHome() : flag.getLocation();
+            ? flag.getCarrier().getPlayer().getLocation()
+            : flag.isState(FlagState.RESPAWNING) ? flag.getHome() : flag.getLocation();
     }
 
     private static List<Medal> getMedals(Player player) {

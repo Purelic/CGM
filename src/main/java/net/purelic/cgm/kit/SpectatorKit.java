@@ -5,6 +5,7 @@ import net.purelic.cgm.commands.toggles.ToggleSpectatorsCommand;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.commons.utils.ItemCrafter;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,6 +25,7 @@ public class SpectatorKit implements Kit {
             }
 
             inv.addItem(this.getToggleSpecsItem(player));
+            inv.addItem(this.getToggleGameModeItem(player));
         }
 
         if (inv.getItem(8) == null) {
@@ -37,6 +39,7 @@ public class SpectatorKit implements Kit {
         return new ItemCrafter(Material.EMERALD)
             .name(ChatColor.BOLD + "Join Match" + ChatColor.RESET + ChatColor.GRAY + " (/join)")
             .command("join", false)
+            .addTag("locked")
             .craft();
     }
 
@@ -46,6 +49,17 @@ public class SpectatorKit implements Kit {
             .name(ChatColor.BOLD + (hiding ? "Hiding" : "Showing") + " Spectators" + ChatColor.RESET + ChatColor.GRAY + " (R-Click)")
             .command("toggle spectators", false)
             .addTag("toggle_spectators")
+            .addTag("locked")
+            .craft();
+    }
+
+    private ItemStack getToggleGameModeItem(Player player) {
+        boolean spectator = player.getGameMode() == GameMode.SPECTATOR;
+        return new ItemCrafter(spectator ? Material.PRISMARINE : Material.SEA_LANTERN)
+            .name(ChatColor.BOLD + (spectator ? "Spectator" : "Creative") + " Mode" + ChatColor.RESET + ChatColor.GRAY + " (/toggle gamemode)")
+            .command("toggle gamemode", false)
+            .addTag("toggle_gm")
+            .addTag("locked")
             .craft();
     }
 
@@ -53,6 +67,7 @@ public class SpectatorKit implements Kit {
         return new ItemCrafter(Material.COMPASS)
             .name(ChatColor.BOLD + "Servers" + ChatColor.RESET + ChatColor.GRAY + " (/servers)")
             .spring("ServerSelector")
+            .addTag("locked")
             .craft();
     }
 

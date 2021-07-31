@@ -36,7 +36,7 @@ public class RoundEndEvent extends Event {
 
     public RoundEndEvent(Participant winner) {
         this.result = new RoundResult(winner);
-   }
+    }
 
     public RoundEndEvent(MatchTeam team) {
         this.result = new RoundResult(team);

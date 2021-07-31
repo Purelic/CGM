@@ -6,13 +6,10 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
-import net.purelic.cgm.core.gamemodes.NumberSetting;
-import net.purelic.cgm.core.gamemodes.ToggleSetting;
-import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.gamemodes.constants.LootType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.utils.*;
+import net.purelic.cgm.scoreboards.MatchScoreboard;
+import net.purelic.cgm.scoreboards.PlayerScoreboard;
+import net.purelic.cgm.scoreboards.TeamScoreboard;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.ServerUtils;
@@ -26,7 +23,7 @@ public class ScoreboardManager {
 
     private static Scoreboard board;
     private static Objective sidebar;
-    private Objective tab;
+    private static MatchScoreboard matchScoreboard;
 
     public ScoreboardManager() {
         board = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -45,10 +42,6 @@ public class ScoreboardManager {
                 team.setCanSeeFriendlyInvisibles(true);
             }
         }
-    }
-
-    public static Scoreboard getBoard() {
-        return board;
     }
 
     public static void setScoreboard(Player player) {
@@ -121,117 +114,136 @@ public class ScoreboardManager {
         }
     }
 
+    public static MatchScoreboard getMatchScoreboard() {
+        return matchScoreboard;
+    }
+
+    public static void initMatchScoreboard() {
+        if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
+            matchScoreboard = new PlayerScoreboard();
+        } else {
+            matchScoreboard = new TeamScoreboard();
+        }
+
+        matchScoreboard.init();
+    }
+
     public static void updateSoloBoard() {
-        if (!MatchState.isState(MatchState.STARTED) || !EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) return;
+        if (!MatchState.isState(MatchState.STARTED) || !(matchScoreboard instanceof PlayerScoreboard)) return;
 
-        List<Participant> participants = MatchManager.getOrderedParticipants(true);
+        ((PlayerScoreboard) matchScoreboard).update();
 
-        int offset = 0;
-
-        int hills = MatchManager.getCurrentMap().getLoadedHills().size();
-        offset += !ToggleSetting.PERMANENT_HILLS.isEnabled() && hills > 0 ? (NumberSetting.HILL_MOVE_INTERVAL.value() > 0 ? 1 : hills) : 0;
-
-        int flags = MatchManager.getCurrentMap().getLoadedFlags().size();
-        offset += flags > 0 ? (ToggleSetting.MOVING_FLAG.isEnabled() ? 1 : flags) : 0;
-
-        offset += offset > 0 ? 1 : 0; // add extra blank row to separate objectives and player scores
-
-        if (EnumSetting.GAME_TYPE.is(GameType.SURVIVAL_GAMES) && NumberSetting.REFILL_EVENT.value() > 0 && !EnumSetting.LOOT_TYPE.is(LootType.CUSTOM)) {
-            offset += 2;
-        }
-
-        if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
-            if (MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) return;
-
-            int alive = MatchUtils.getAlive(MatchTeam.SOLO);
-            String suffix = MatchTeam.SOLO.getColor() + (alive == 0 ? MatchTeam.SOLO.getName() : "Alive");
-            setScore(offset, alive + "  " + suffix);
-            return;
-        }
-
-        int scored = 0;
-
-        int limit = NumberSetting.SCORE_LIMIT.value();
-        String scoreSuffix = limit == 0 ? "" : ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + limit;
-
-        for (int i = 0; i < participants.size(); i++) {
-            Participant participant = participants.get(i);
-            String scoreColor = getScoreColor(participant);
-            int score = participant.getTotalScore();
-
-            if (score > 0) {
-                setScore(i + offset, scoreColor + score + scoreSuffix + "  " + NickUtils.getDisplayName(participant.getPlayer()));
-                scored++;
-            } else {
-                resetScores(i + offset);
-            }
-        }
-
-        resetScores(scored + offset);
+//        List<Participant> participants = MatchManager.getOrderedParticipants(true);
+//
+//        int offset = 0;
+//
+//        int hills = MatchManager.getCurrentMap().getLoadedHills().size();
+//        offset += !ToggleSetting.PERMANENT_HILLS.isEnabled() && hills > 0 ? (NumberSetting.HILL_MOVE_INTERVAL.value() > 0 ? 1 : hills) : 0;
+//
+//        int flags = MatchManager.getCurrentMap().getLoadedFlags().size();
+//        offset += flags > 0 ? (ToggleSetting.MOVING_FLAG.isEnabled() ? 1 : flags) : 0;
+//
+//        offset += offset > 0 ? 1 : 0; // add extra blank row to separate objectives and player scores
+//
+//        if (EnumSetting.GAME_TYPE.is(GameType.SURVIVAL_GAMES) && NumberSetting.REFILL_EVENT.value() > 0 && !EnumSetting.LOOT_TYPE.is(LootType.CUSTOM)) {
+//            offset += 2;
+//        }
+//
+//        if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
+//            if (MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) return;
+//
+//            int alive = MatchUtils.getAlive(MatchTeam.SOLO);
+//            String suffix = MatchTeam.SOLO.getColor() + (alive == 0 ? MatchTeam.SOLO.getName() : "Alive");
+//            setScore(offset, alive + "  " + suffix);
+//            return;
+//        }
+//
+//        int scored = 0;
+//
+//        int limit = NumberSetting.SCORE_LIMIT.value();
+//        String scoreSuffix = limit == 0 ? "" : ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + limit;
+//
+//        for (int i = 0; i < participants.size(); i++) {
+//            Participant participant = participants.get(i);
+//            String scoreColor = getScoreColor(participant);
+//            int score = participant.getTotalScore();
+//
+//            if (score > 0) {
+//                setScore(i + offset, scoreColor + score + scoreSuffix + "  " + NickUtils.getDisplayName(participant.getPlayer()));
+//                scored++;
+//            } else {
+//                resetScores(i + offset);
+//            }
+//        }
+//
+//        resetScores(scored + offset);
     }
 
-    private static String getScoreColor(MatchTeam team) {
-        if (EnumSetting.GAME_TYPE.is(GameType.CAPTURE_THE_FLAG)
-            && NumberSetting.FLAG_CARRIER_POINTS.value() > 0
-            && FlagUtils.hasCarrier(team)) {
-            return ChatColor.GREEN.toString();
-        } else if (EnumSetting.GAME_TYPE.is(GameType.KING_OF_THE_HILL)
-            && !EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
-            && HillUtils.hasCaptured(team)) {
-            return ChatColor.GREEN.toString();
-        }
-
-        return "";
-    }
-
-    private static String getScoreColor(Participant participant) {
-        if (EnumSetting.GAME_TYPE.is(GameType.CAPTURE_THE_FLAG)
-            && NumberSetting.FLAG_CARRIER_POINTS.value() > 0
-            && FlagUtils.isCarrier(participant)) {
-            return ChatColor.GREEN.toString();
-        } else if (EnumSetting.GAME_TYPE.is(GameType.KING_OF_THE_HILL)
-            && EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
-            && HillUtils.hasCaptured(participant.getPlayer())) {
-            return ChatColor.GREEN.toString();
-        }
-
-        return "";
-    }
+//    private static String getScoreColor(MatchTeam team) {
+//        if (EnumSetting.GAME_TYPE.is(GameType.CAPTURE_THE_FLAG)
+//            && NumberSetting.FLAG_CARRIER_POINTS.value() > 0
+//            && FlagUtils.hasCarrier(team)) {
+//            return ChatColor.GREEN.toString();
+//        } else if (EnumSetting.GAME_TYPE.is(GameType.KING_OF_THE_HILL)
+//            && !EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
+//            && HillUtils.hasCaptured(team)) {
+//            return ChatColor.GREEN.toString();
+//        }
+//
+//        return "";
+//    }
+//
+//    private static String getScoreColor(Participant participant) {
+//        if (EnumSetting.GAME_TYPE.is(GameType.CAPTURE_THE_FLAG)
+//            && NumberSetting.FLAG_CARRIER_POINTS.value() > 0
+//            && FlagUtils.isCarrier(participant)) {
+//            return ChatColor.GREEN.toString();
+//        } else if (EnumSetting.GAME_TYPE.is(GameType.KING_OF_THE_HILL)
+//            && EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
+//            && HillUtils.hasCaptured(participant.getPlayer())) {
+//            return ChatColor.GREEN.toString();
+//        }
+//
+//        return "";
+//    }
 
     public static void updateTeamBoard() {
-        TeamType teamType = EnumSetting.TEAM_TYPE.get();
+        // TeamType teamType = EnumSetting.TEAM_TYPE.get();
+        // TODO unsure if this check is necessary anymore
         CustomGameMode gameMode = MatchManager.getCurrentGameMode();
 
         if (gameMode == null
             || MatchState.isState(MatchState.ENDED)
-            || teamType == TeamType.SOLO) return;
+            || !(matchScoreboard instanceof TeamScoreboard)) return;
 
-        List<MatchTeam> teams = MatchManager.getOrderedTeams(teamType);
+        ((TeamScoreboard) matchScoreboard).update();
 
-        for (MatchTeam team : teams) {
-            int index = teams.indexOf(team);
-
-            if (index < 0) return;
-
-            int limit = NumberSetting.SCORE_LIMIT.value();
-            String scoreSuffix = limit == 0 ? "" : ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + limit;
-
-            if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
-                if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
-                    if (MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) continue;
-
-                    int alive = MatchUtils.getAlive(team);
-                    String prefix = alive == 0 ? " " + ChatColor.RED + BedUtils.SYMBOL_TEAM_ELIMINATED : " " + alive;
-                    String suffix = team.getColor() + (alive == 0 ? team.getName() : "Alive");
-                    setScore(index, prefix + "  " + suffix);
-                } else {
-                    String scoreColor = getScoreColor(team);
-                    setScore(index, scoreColor + team.getScore() + scoreSuffix + "  " + team.getColoredName());
-                }
-            } else {
-                setScore(index, BedUtils.getScoreboardScore(team));
-            }
-        }
+//        List<MatchTeam> teams = MatchManager.getOrderedTeams(teamType);
+//
+//        for (MatchTeam team : teams) {
+//            int index = teams.indexOf(team);
+//
+//            if (index < 0) return;
+//
+//            int limit = NumberSetting.SCORE_LIMIT.value();
+//            String scoreSuffix = limit == 0 ? "" : ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + limit;
+//
+//            if (!EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
+//                if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
+//                    if (MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) continue;
+//
+//                    int alive = MatchUtils.getAlive(team);
+//                    String prefix = alive == 0 ? " " + ChatColor.RED + BedUtils.SYMBOL_TEAM_ELIMINATED : " " + alive;
+//                    String suffix = team.getColor() + (alive == 0 ? team.getName() : "Alive");
+//                    setScore(index, prefix + "  " + suffix);
+//                } else {
+//                    String scoreColor = getScoreColor(team);
+//                    setScore(index, scoreColor + team.getScore() + scoreSuffix + "  " + team.getColoredName());
+//                }
+//            } else {
+//                setScore(index, BedUtils.getScoreboardScore(team));
+//            }
+//        }
     }
 
     public static void setDisplayName(String displayName) {

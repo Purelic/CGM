@@ -35,11 +35,11 @@ public class TNTWaypointModule implements Listener {
             @Override
             public void run() {
                 Bukkit.getOnlinePlayers().stream()
-                        .filter(player -> player.getInventory().contains(Material.TNT))
-                        .forEach(player -> ParticleUtils.spawnColoredParticle(
-                                player,
-                                player.getLocation().clone().add(0, 2.5, 0),
-                                true));
+                    .filter(player -> player.getInventory().contains(Material.TNT))
+                    .forEach(player -> ParticleUtils.spawnColoredParticle(
+                        player,
+                        player.getLocation().clone().add(0, 2.5, 0),
+                        true));
             }
         };
     }

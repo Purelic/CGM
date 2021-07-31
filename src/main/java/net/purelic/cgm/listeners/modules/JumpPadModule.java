@@ -32,7 +32,7 @@ public class JumpPadModule implements Listener {
 
     @EventHandler
     public void onMatchCycle(MatchCycleEvent event) {
-        if (!ToggleSetting.JUMP_PADS.isEnabled()) return;
+        if (!event.hasMap() || !ToggleSetting.JUMP_PADS.isEnabled()) return;
 
         List<JumpPad> jumpPads = event.getMap().getYaml().getJumpPads();
         this.startParticleEffects(jumpPads);

@@ -14,7 +14,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class ArrowStatsModule implements Listener {
 
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         Entity entity = event.getEntity();
 
@@ -28,7 +28,7 @@ public class ArrowStatsModule implements Listener {
         participant.getStats().addArrowShot();
     }
 
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity entity = event.getDamager();
 

@@ -18,7 +18,7 @@ public class ChatEvent extends Event {
     public ChatEvent(Player player, String message, boolean global) {
         this.player = player;
         this.global =
-                global
+            global
                 || !MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING, MatchState.STARTED)
                 || EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
                 || (message.startsWith("!") && message.length() > 1);

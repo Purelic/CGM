@@ -11,7 +11,7 @@ public class RegenerationModule implements Listener {
     @EventHandler
     public void onEntityRegainHealth(EntityRegainHealthEvent event) {
         if (!(event.getEntity() instanceof Player)
-                || event.getRegainReason() != EntityRegainHealthEvent.RegainReason.SATIATED) {
+            || event.getRegainReason() != EntityRegainHealthEvent.RegainReason.SATIATED) {
             return;
         }
 

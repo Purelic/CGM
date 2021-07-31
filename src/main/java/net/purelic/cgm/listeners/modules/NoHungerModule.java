@@ -1,8 +1,7 @@
 package net.purelic.cgm.listeners.modules;
 
 import net.purelic.cgm.core.constants.MatchState;
-import net.purelic.cgm.core.gamemodes.EnumSetting;
-import net.purelic.cgm.core.gamemodes.constants.GameType;
+import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.managers.MatchManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +17,7 @@ public class NoHungerModule implements Listener {
         if (MatchState.isState(MatchState.STARTED)
             && MatchManager.isPlaying(player)
             && MatchManager.getParticipant(player).isAlive()
-            && EnumSetting.GAME_TYPE.is(GameType.SURVIVAL_GAMES)) {
+            && ToggleSetting.HUNGER.isEnabled()) {
             return;
         }
 

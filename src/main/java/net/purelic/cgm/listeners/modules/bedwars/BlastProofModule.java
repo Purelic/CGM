@@ -174,7 +174,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(nw)) {
             if ((north || isBlastProof(corner.getRelative(BlockFace.EAST)))
-                    && (west || isBlastProof(corner.getRelative(BlockFace.SOUTH)))) {
+                && (west || isBlastProof(corner.getRelative(BlockFace.SOUTH)))) {
                 toRemove.add(corner);
             }
         }
@@ -184,7 +184,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(ne)) {
             if ((north || isBlastProof(corner.getRelative(BlockFace.EAST)))
-                    && (west || isBlastProof(corner.getRelative(BlockFace.SOUTH)))) {
+                && (west || isBlastProof(corner.getRelative(BlockFace.SOUTH)))) {
                 toRemove.add(corner);
             }
         }
@@ -193,7 +193,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(ne)) {
             if ((north || isBlastProof(corner.getRelative(BlockFace.WEST)))
-                    && (east || isBlastProof(corner.getRelative(BlockFace.SOUTH)))) {
+                && (east || isBlastProof(corner.getRelative(BlockFace.SOUTH)))) {
                 toRemove.add(corner);
             }
         }
@@ -203,7 +203,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(sw)) {
             if ((south || isBlastProof(corner.getRelative(BlockFace.EAST)))
-                    && (west || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
+                && (west || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
                 toRemove.add(corner);
             }
         }
@@ -212,7 +212,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(sw)) {
             if ((south || isBlastProof(corner.getRelative(BlockFace.EAST)))
-                    && (west || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
+                && (west || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
                 toRemove.add(corner);
             }
         }
@@ -222,7 +222,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(se)) {
             if ((south || isBlastProof(corner.getRelative(BlockFace.WEST)))
-                    && (east || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
+                && (east || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
                 toRemove.add(corner);
             }
         }
@@ -231,7 +231,7 @@ public class BlastProofModule implements Listener {
 
         if (isBlastProof(se)) {
             if ((south || isBlastProof(corner.getRelative(BlockFace.WEST)))
-                    && (east || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
+                && (east || isBlastProof(corner.getRelative(BlockFace.NORTH)))) {
                 toRemove.add(corner);
             }
         }

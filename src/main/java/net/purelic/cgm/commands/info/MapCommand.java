@@ -38,89 +38,89 @@ public class MapCommand implements CustomCommand {
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
         return mgr.commandBuilder("map")
-                .senderType(Player.class)
-                .argument(StringArgument.optional("map", StringArgument.StringMode.GREEDY))
-                .handler(c -> {
-                    Player player = (Player) c.getSender();
-                    Optional<String> mapArg = c.getOptional("map");
-                    String mapName = "";
+            .senderType(Player.class)
+            .argument(StringArgument.optional("map", StringArgument.StringMode.GREEDY))
+            .handler(c -> {
+                Player player = (Player) c.getSender();
+                Optional<String> mapArg = c.getOptional("map");
+                String mapName = "";
 
-                    if (mapArg.isPresent()) {
-                        mapName = mapArg.get();
-                    } else {
-                        CustomMap map = MatchManager.getCurrentMap();
-
-                        if (map == null) {
-                            CommandUtils.sendErrorMessage(player, "Please specify a map!");
-                            return;
-                        } else {
-                            mapName = map.getName();
-                        }
-                    }
-
-                    // TODO move /sn map logic into this method
-                    CustomMap map = CGM.getPlaylist().getMap(mapName);
+                if (mapArg.isPresent()) {
+                    mapName = mapArg.get();
+                } else {
+                    CustomMap map = MatchManager.getCurrentMap();
 
                     if (map == null) {
-                        CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapName + "\"!");
+                        CommandUtils.sendErrorMessage(player, "Please specify a map!");
                         return;
-                    }
-
-                    MapYaml yaml = map.getYaml();
-                    List<String> authors = new ArrayList<>();
-                    yaml.getAuthors().forEach(author -> authors.add(Fetcher.getNameOf(author)));
-
-                    BookUtil.PageBuilder pageBuilder = new BookUtil.PageBuilder()
-                        .add(new ComponentBuilder("⬅ Back")
-                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/maps").italic(true).color(ChatColor.GRAY).create()))
-                            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maps"))
-                            .bold(true)
-                            .create()).newLine().newLine()
-                        .add("Name: ")
-                        .add(map.getName()).newLine().newLine()
-                        .add("Created: ")
-                        .add(new ComponentBuilder(this.pt.format(yaml.getCreated()))
-                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(this.df.format(yaml.getCreated())).create()))
-                            .create()).newLine().newLine()
-                        .add("Updated: ")
-                        .add(new ComponentBuilder(this.pt.format(yaml.getUpdated()))
-                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(this.df.format(yaml.getUpdated())).create()))
-                            .create()).newLine().newLine();
-
-                    if (authors.size() == 1) {
-                        String name = authors.get(0);
-                        Player author = Bukkit.getPlayer(name);
-                        if (author != null) pageBuilder.add("Author:").newLine().add(Fetcher.getFancyName(author));
-                        else pageBuilder.add("Author:").newLine().add(ChatColor.DARK_AQUA + name);
                     } else {
-                        pageBuilder.add("Authors:");
+                        mapName = map.getName();
+                    }
+                }
 
-                        boolean compact = authors.size() > this.authorLimit;
+                // TODO move /sn map logic into this method
+                CustomMap map = CGM.getPlaylist().getMap(mapName);
 
-                        int l = 0;
-                        for (String name : authors) {
-                            if (compact && l == this.authorLimit - 1) break;
-                            l++;
-                            pageBuilder.newLine().add(" • ").add(this.getFancyAuthorComponent(name));
-                        }
+                if (map == null) {
+                    CommandUtils.sendErrorMessage(player, "Could not find map \"" + mapName + "\"!");
+                    return;
+                }
 
-                        if (compact) {
-                            String hover = "";
+                MapYaml yaml = map.getYaml();
+                List<String> authors = new ArrayList<>();
+                yaml.getAuthors().forEach(author -> authors.add(Fetcher.getNameOf(author)));
 
-                            for (int i = this.authorLimit - 1; i < authors.size(); i++) {
-                                if (i != this.authorLimit - 1) hover += "\n";
-                                hover += " • " + this.getAuthorComponent(authors.get(i));
-                            }
+                BookUtil.PageBuilder pageBuilder = new BookUtil.PageBuilder()
+                    .add(new ComponentBuilder("⬅ Back")
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("/maps").italic(true).color(ChatColor.GRAY).create()))
+                        .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/maps"))
+                        .bold(true)
+                        .create()).newLine().newLine()
+                    .add("Name: ")
+                    .add(map.getName()).newLine().newLine()
+                    .add("Created: ")
+                    .add(new ComponentBuilder(this.pt.format(yaml.getCreated()))
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(this.df.format(yaml.getCreated())).create()))
+                        .create()).newLine().newLine()
+                    .add("Updated: ")
+                    .add(new ComponentBuilder(this.pt.format(yaml.getUpdated()))
+                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(this.df.format(yaml.getUpdated())).create()))
+                        .create()).newLine().newLine();
 
-                            pageBuilder.newLine().add(new ComponentBuilder(" • and " + (authors.size() - 2) + " others")
-                                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hover).create()))
-                                    .create());
-                        }
+                if (authors.size() == 1) {
+                    String name = authors.get(0);
+                    Player author = Bukkit.getPlayer(name);
+                    if (author != null) pageBuilder.add("Author:").newLine().add(Fetcher.getFancyName(author));
+                    else pageBuilder.add("Author:").newLine().add(ChatColor.DARK_AQUA + name);
+                } else {
+                    pageBuilder.add("Authors:");
+
+                    boolean compact = authors.size() > this.authorLimit;
+
+                    int l = 0;
+                    for (String name : authors) {
+                        if (compact && l == this.authorLimit - 1) break;
+                        l++;
+                        pageBuilder.newLine().add(" • ").add(this.getFancyAuthorComponent(name));
                     }
 
-                    ItemStack book = BookUtil.writtenBook().pages(pageBuilder.build()).build();
-                    BookUtil.openPlayer(player, book);
-                });
+                    if (compact) {
+                        String hover = "";
+
+                        for (int i = this.authorLimit - 1; i < authors.size(); i++) {
+                            if (i != this.authorLimit - 1) hover += "\n";
+                            hover += " • " + this.getAuthorComponent(authors.get(i));
+                        }
+
+                        pageBuilder.newLine().add(new ComponentBuilder(" • and " + (authors.size() - 2) + " others")
+                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hover).create()))
+                            .create());
+                    }
+                }
+
+                ItemStack book = BookUtil.writtenBook().pages(pageBuilder.build()).build();
+                BookUtil.openPlayer(player, book);
+            });
     }
 
     private TextComponent getFancyAuthorComponent(String name) {

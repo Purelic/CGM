@@ -11,44 +11,44 @@ import java.util.Random;
 public enum FlagPattern {
 
     POKEBALL("Pokéball", true,
-            new Pattern(DyeColor.WHITE, PatternType.BASE),
-            new Pattern(DyeColor.RED, PatternType.HALF_HORIZONTAL),
-            new Pattern(DyeColor.RED, PatternType.HALF_HORIZONTAL),
-            new Pattern(DyeColor.BLACK, PatternType.RHOMBUS_MIDDLE),
-            new Pattern(DyeColor.RED, PatternType.STRIPE_TOP),
-            new Pattern(DyeColor.WHITE, PatternType.STRIPE_BOTTOM),
-            new Pattern(DyeColor.BLACK, PatternType.STRIPE_MIDDLE),
-            new Pattern(DyeColor.WHITE, PatternType.CIRCLE_MIDDLE)
+        new Pattern(DyeColor.WHITE, PatternType.BASE),
+        new Pattern(DyeColor.RED, PatternType.HALF_HORIZONTAL),
+        new Pattern(DyeColor.RED, PatternType.HALF_HORIZONTAL),
+        new Pattern(DyeColor.BLACK, PatternType.RHOMBUS_MIDDLE),
+        new Pattern(DyeColor.RED, PatternType.STRIPE_TOP),
+        new Pattern(DyeColor.WHITE, PatternType.STRIPE_BOTTOM),
+        new Pattern(DyeColor.BLACK, PatternType.STRIPE_MIDDLE),
+        new Pattern(DyeColor.WHITE, PatternType.CIRCLE_MIDDLE)
     ),
 
     ZOMBIE("Zombie", false,
-            new Pattern(DyeColor.BLACK, PatternType.BASE),
-            new Pattern(DyeColor.GREEN, PatternType.SKULL),
-            new Pattern(DyeColor.BLUE, PatternType.HALF_HORIZONTAL_MIRROR),
-            new Pattern(DyeColor.LIGHT_BLUE, PatternType.CREEPER),
-            new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT),
-            new Pattern(DyeColor.BLACK, PatternType.STRIPE_RIGHT),
-            new Pattern(DyeColor.BLACK, PatternType.GRADIENT)
+        new Pattern(DyeColor.BLACK, PatternType.BASE),
+        new Pattern(DyeColor.GREEN, PatternType.SKULL),
+        new Pattern(DyeColor.BLUE, PatternType.HALF_HORIZONTAL_MIRROR),
+        new Pattern(DyeColor.LIGHT_BLUE, PatternType.CREEPER),
+        new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT),
+        new Pattern(DyeColor.BLACK, PatternType.STRIPE_RIGHT),
+        new Pattern(DyeColor.BLACK, PatternType.GRADIENT)
     ),
 
     LIGHTSABER("Lightsaber", false,
-            new Pattern(DyeColor.WHITE, PatternType.BASE),
-            new Pattern(DyeColor.PURPLE, PatternType.STRIPE_SMALL),
-            new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL),
-            new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR),
-            new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_LEFT),
-            new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_RIGHT),
-            new Pattern(DyeColor.BLACK, PatternType.TRIANGLES_BOTTOM)
+        new Pattern(DyeColor.WHITE, PatternType.BASE),
+        new Pattern(DyeColor.PURPLE, PatternType.STRIPE_SMALL),
+        new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL),
+        new Pattern(DyeColor.BLACK, PatternType.HALF_VERTICAL_MIRROR),
+        new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_LEFT),
+        new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_RIGHT),
+        new Pattern(DyeColor.BLACK, PatternType.TRIANGLES_BOTTOM)
     ),
 
     CAMERA("Camera", false,
-            new Pattern(DyeColor.BLACK, PatternType.BASE),
-            new Pattern(DyeColor.WHITE, PatternType.SQUARE_TOP_LEFT),
-            new Pattern(DyeColor.SILVER, PatternType.SKULL),
-            new Pattern(DyeColor.SILVER, PatternType.CIRCLE_MIDDLE),
-            new Pattern(DyeColor.WHITE, PatternType.HALF_HORIZONTAL),
-            new Pattern(DyeColor.BLACK, PatternType.RHOMBUS_MIDDLE),
-            new Pattern(DyeColor.WHITE, PatternType.HALF_HORIZONTAL_MIRROR)
+        new Pattern(DyeColor.BLACK, PatternType.BASE),
+        new Pattern(DyeColor.WHITE, PatternType.SQUARE_TOP_LEFT),
+        new Pattern(DyeColor.SILVER, PatternType.SKULL),
+        new Pattern(DyeColor.SILVER, PatternType.CIRCLE_MIDDLE),
+        new Pattern(DyeColor.WHITE, PatternType.HALF_HORIZONTAL),
+        new Pattern(DyeColor.BLACK, PatternType.RHOMBUS_MIDDLE),
+        new Pattern(DyeColor.WHITE, PatternType.HALF_HORIZONTAL_MIRROR)
     ),
     ;
 

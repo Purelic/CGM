@@ -60,10 +60,10 @@ public class RewardBuilder {
         boolean positive = this.amount >= 0;
 
         ComponentBuilder message =
-                new ComponentBuilder((positive ? "+" : "") + this.amount + " " + this.type + (Math.abs(this.amount) == 1 || this.excludeSuffix ? "" : "s"))
-                            .color(positive ? ChatColor.GREEN : ChatColor.RED).bold(true)
-                        .append(" | ").reset().color(ChatColor.DARK_GRAY)
-                        .append(this.reason).reset();
+            new ComponentBuilder((positive ? "+" : "") + this.amount + " " + this.type + (Math.abs(this.amount) == 1 || this.excludeSuffix ? "" : "s"))
+                .color(positive ? ChatColor.GREEN : ChatColor.RED).bold(true)
+                .append(" | ").reset().color(ChatColor.DARK_GRAY)
+                .append(this.reason).reset();
 
         for (Medal medal : this.medals.keySet()) {
             this.addMedal(message, medal, this.medals.get(medal));
@@ -77,8 +77,8 @@ public class RewardBuilder {
 
     private void addMedal(ComponentBuilder builder, Medal medal, int amount) {
         builder.append(", ").reset()
-                .append(medal.getName()).color(medal.getColor())
-                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(medal.getDescription()).color(medal.getColor()).create()));
+            .append(medal.getName()).color(medal.getColor())
+            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(medal.getDescription()).color(medal.getColor()).create()));
         if (amount > 1) builder.append(" (x" + amount + ")").color(ChatColor.GRAY);
     }
 
