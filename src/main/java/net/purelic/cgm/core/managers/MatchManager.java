@@ -350,9 +350,21 @@ public class MatchManager {
 
     public static Participant getTopParticipant(boolean totalScore) {
         List<Participant> ordered = getOrderedParticipants(totalScore);
+
         if (ordered.size() == 0) return null;
         if (ordered.size() == 1) return ordered.get(0);
-        return ordered.get(0).getScore() == ordered.get(1).getScore() ? null : ordered.get(0);
+
+        if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
+            if (ordered.get(0).getEliminatedScore() == ordered.get(1).getEliminatedScore()) {
+                return ordered.get(0).getLives() == ordered.get(1).getLives() ? null : ordered.get(0);
+            } else {
+                return ordered.get(0);
+            }
+        } else if (totalScore) {
+            return ordered.get(0).getTotalScore() == ordered.get(1).getTotalScore() ? null : ordered.get(0);
+        } else {
+            return ordered.get(0).getScore() == ordered.get(1).getScore() ? null : ordered.get(0);
+        }
     }
 
     public static List<MatchTeam> getOrderedTeams(TeamType teamType) {
