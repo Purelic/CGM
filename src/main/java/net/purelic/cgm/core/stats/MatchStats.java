@@ -12,6 +12,8 @@ import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.stats.constants.MatchResult;
+import net.purelic.cgm.core.stats.leaderboard.Leaderboard;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.utils.DatabaseUtils;
@@ -37,7 +39,7 @@ public class MatchStats {
     private final TeamType teamType;
     private int rounds;
     private final boolean roundBased;
-    private Map<Player, MatchPlacement> placements;
+    private Map<UUID, MatchPlacement> placements;
     private final Map<UUID, PlayerStats> stats;
     private MatchTeam winner;
 
@@ -65,7 +67,7 @@ public class MatchStats {
         this.winner = winner;
     }
 
-    public void setPlacements(Map<Player, MatchPlacement> placements) {
+    public void setPlacements(Map<UUID, MatchPlacement> placements) {
         this.placements = placements;
         this.ended = Timestamp.now();
         this.rounds = MatchManager.getRound();
@@ -441,8 +443,9 @@ public class MatchStats {
             data.put(this.gameType.name().toLowerCase(), gameTypeStats);
 
             if (ServerUtils.isRanked() && this.winner != null) {
-                MatchTeam team = LeagueManager.getTeam(uuid);
-                int rating = LeagueManager.getRating(uuid, this.isWinner(uuid), team == MatchTeam.BLUE ? blueWeight : redWeight);
+                // TODO offline placements shouldnt be -1 if they were on a team that won
+                MatchPlacement placement = this.placements.get(uuid);
+                int rating = LeagueModule.get().getRating(uuid, placement != null ? placement.getPlace() : -1);
 
                 Map<String, Object> playlistStats = new HashMap<>();
                 statsDetailed.put("rating", rating);
@@ -480,7 +483,11 @@ public class MatchStats {
             DatabaseUtils.getFirestore().collection("players").document(uuid.toString()).set(finalData, SetOptions.merge());
         }
 
-        if (!leagueRatings.isEmpty()) LeagueManager.updateLeaderboard(leagueRatings);
+        if (!leagueRatings.isEmpty()) {
+            Leaderboard leaderboard = LeagueModule.get().getLeaderboard();
+            if (leaderboard != null) leaderboard.updateLeaders(leagueRatings);
+        }
+
         if (this.stats.isEmpty()) return;
 
         Map<String, Object> match = this.exportMatch();

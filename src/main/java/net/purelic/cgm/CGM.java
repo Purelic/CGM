@@ -7,7 +7,6 @@ import cloud.commandframework.paper.PaperCommandManager;
 import net.purelic.cgm.commands.communication.GlobalCommand;
 import net.purelic.cgm.commands.controls.*;
 import net.purelic.cgm.commands.info.*;
-import net.purelic.cgm.commands.league.NoSpectatorsCommand;
 import net.purelic.cgm.commands.league.RankCommand;
 import net.purelic.cgm.commands.league.ReRollCommand;
 import net.purelic.cgm.commands.league.ReadyCommand;
@@ -19,12 +18,12 @@ import net.purelic.cgm.commands.toggles.*;
 import net.purelic.cgm.commands.uhc.UHCCommand;
 import net.purelic.cgm.commands.uhc.UHCScenarioPresetCommand;
 import net.purelic.cgm.commands.uhc.UHCScenarioToggleCommand;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.LootManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.hill.HillModule;
 import net.purelic.cgm.core.maps.region.RegionModule;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.cgm.listeners.*;
 import net.purelic.cgm.listeners.bed.BedBreak;
 import net.purelic.cgm.listeners.flag.*;
@@ -101,9 +100,13 @@ public class CGM extends JavaPlugin {
     private void setReady() {
         ready = true;
         DatabaseUtils.setServerOnline();
+
         if (ServerUtils.isRanked()) {
-            LeagueManager.loadListenerRegistration();
+            LeagueModule leagueModule = new LeagueModule();
+            leagueModule.loadListenerRegistration();
+            Commons.registerListener(leagueModule);
         }
+
         System.out.println("The server is now ready!");
 
         // Cache all the author names
@@ -311,7 +314,6 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new ReRollCommand());
         this.registerCommand(new RenameCommand());
         this.registerCommand(new ShuffleCommand());
-        this.registerCommand(new NoSpectatorsCommand());
         this.registerCommand(new SpectateCommand());
         this.registerCommand(new TeleportCommand());
 

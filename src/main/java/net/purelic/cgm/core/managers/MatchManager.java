@@ -16,6 +16,7 @@ import net.purelic.cgm.core.match.Round;
 import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.MatchCountdown;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.cgm.uhc.runnables.UHCLoader;
 import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
@@ -141,7 +142,7 @@ public class MatchManager {
             if (CGM.getVotingManager().shouldStartVoting()) MatchState.setState(MatchState.VOTING);
             currentMap = null;
             currentGameMode = null;
-            if (ServerUtils.isRanked()) LeagueManager.reset();
+            if (ServerUtils.isRanked()) LeagueModule.get().reset();
             else DatabaseUtils.updateStatus(ServerStatus.STARTING, null, null);
         } else {
             MatchState.setState(MatchState.STARTING);

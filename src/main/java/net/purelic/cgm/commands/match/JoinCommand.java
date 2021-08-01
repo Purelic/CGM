@@ -11,10 +11,10 @@ import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.ToggleSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.events.match.MatchJoinEvent;
 import net.purelic.cgm.events.match.MatchQuitEvent;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.cgm.utils.BedUtils;
 import net.purelic.cgm.utils.MatchUtils;
@@ -46,7 +46,7 @@ public class JoinCommand implements CustomCommand {
                 }
 
                 // Don't allow players to join ranked matches if they aren't participating
-                if (ServerUtils.isRanked() && !LeagueManager.isPlaying(player)) {
+                if (ServerUtils.isRanked() && !LeagueModule.get().isPlaying(player)) {
                     CommandUtils.sendErrorMessage(player, "You can only spectate this match!");
                     return;
                 }

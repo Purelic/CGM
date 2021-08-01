@@ -29,10 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MatchEnd implements Listener {
 
@@ -65,7 +62,7 @@ public class MatchEnd implements Listener {
     }
 
     private void sendGameOverTitles(boolean forced) {
-        Map<Player, MatchPlacement> placements = new HashMap<>();
+        Map<UUID, MatchPlacement> placements = new HashMap<>();
 
         if (forced) {
             Bukkit.getOnlinePlayers().forEach(player -> {
@@ -167,7 +164,7 @@ public class MatchEnd implements Listener {
 
                     MatchResult result = MatchResult.getResult(topParticipant != null, place, ordered.size() >= 8);
                     MatchPlacement placement = this.sendPostMatchResults(participant, place, tied, result);
-                    placements.put(participant.getPlayer(), placement);
+                    placements.put(participant.getPlayer().getUniqueId(), placement);
                     // TODO reward players with XP and Relics
 
                     tied = false;
@@ -267,7 +264,7 @@ public class MatchEnd implements Listener {
 
                             MatchResult result = MatchResult.getResult(topTeam != null, place, false);
                             MatchPlacement placement = this.sendPostMatchResults(participant, place, tied, result);
-                            placements.put(participant.getPlayer(), placement);
+                            placements.put(participant.getPlayer().getUniqueId(), placement);
                             // TODO reward players with XP and Relics
                         }
 
@@ -370,7 +367,7 @@ public class MatchEnd implements Listener {
 
                             MatchResult result = MatchResult.getResult(winner != null, place, false);
                             MatchPlacement placement = this.sendPostMatchResults(participant, place, tied, result);
-                            placements.put(player, placement);
+                            placements.put(player.getUniqueId(), placement);
                             // TODO reward players with XP and Relics
                         }
 
