@@ -7,7 +7,6 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.match.Participant;
@@ -421,13 +420,6 @@ public class MatchStats {
 //        }
 
         Map<UUID, Integer> leagueRatings = new HashMap<>();
-        double blueWeight = 1D;
-        double redWeight = 1D;
-
-        if (ServerUtils.isRanked()) {
-            blueWeight = LeagueManager.getEloWeight(MatchTeam.BLUE, this.winner == MatchTeam.BLUE);
-            redWeight = LeagueManager.getEloWeight(MatchTeam.RED, this.winner == MatchTeam.RED);
-        }
 
         for (Map.Entry<UUID, PlayerStats> entry : this.stats.entrySet()) {
             UUID uuid = entry.getKey();
