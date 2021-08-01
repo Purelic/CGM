@@ -197,7 +197,7 @@ public class LeagueModule implements Module {
         try {
             document = future.get();
 
-            if (document.exists()) {
+            if (document.exists() && document.getData() != null) {
                 return new Leaderboard(id, document.getData());
             } else {
                 return new Leaderboard(id, ServerUtils.getPlaylist());
