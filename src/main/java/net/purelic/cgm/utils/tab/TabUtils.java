@@ -43,7 +43,7 @@ public class TabUtils {
     }
 
     public static String getLegacyName(int index) {
-        return LegacyTabName.values()[index].toString();
+        return LegacyTabName.get(index);
     }
 
     public static GameProfile createProfile(UUID uuid, String name) {
