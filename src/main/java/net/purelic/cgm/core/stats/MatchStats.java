@@ -133,7 +133,7 @@ public class MatchStats {
                 for (Map.Entry<UUID, PlayerStats> entry : this.stats.entrySet()) {
                     PlayerStats stats = entry.getValue();
                     Player player = stats.getPlayer();
-                    MatchTeam playerTeam = this.placements.containsKey(player) ? this.placements.get(player).getTeam() : stats.getTeam();
+                    MatchTeam playerTeam = this.placements.containsKey(player.getUniqueId()) ? this.placements.get(player.getUniqueId()).getTeam() : stats.getTeam();
                     if (playerTeam == team) playerStats.add(this.stats.get(entry.getKey()));
                 }
 
@@ -160,7 +160,7 @@ public class MatchStats {
     }
 
     public Map<String, Object> exportMatchSummary(Player player) {
-        MatchPlacement placement = this.placements.get(player);
+        MatchPlacement placement = this.placements.get(player.getUniqueId());
         Map<String, Object> data = new HashMap<>();
 
         data.put("match_id", this.matchId);
@@ -287,8 +287,6 @@ public class MatchStats {
         data.put("net_damage_ratio", this.formatRatio(stats.getNetDamageRatio(), false));
         data.put("net_damage", this.formatRatio(stats.getNetDamage(), false));
         data.put("arrow_accuracy", this.formatRatio(stats.getArrowAccuracy(), true));
-
-        // TODO could add round based stats/averages
 
         // kills
         Map<String, Object> killTypes = new HashMap<>();
@@ -434,10 +432,30 @@ public class MatchStats {
             data.put("total", stats);
             data.put(this.gameType.name().toLowerCase(), gameTypeStats);
 
-            if (ServerUtils.isRanked() && this.winner != null) {
-                // TODO offline placements shouldnt be -1 if they were on a team that won
+            boolean everyoneTied = this.placements.values().stream().allMatch(MatchPlacement::isTied);
+
+            if (ServerUtils.isRanked() && !everyoneTied) {
                 MatchPlacement placement = this.placements.get(uuid);
-                int rating = LeagueModule.get().getRating(uuid, placement != null ? placement.getPlace() : -1);
+                int place;
+
+                if (placement != null) {
+                    place = placement.getPlace();
+                } else {
+                    int totalPlaces = LeagueModule.get().getTotalPlaces();
+
+                    if (this.teamType == TeamType.SOLO) { // offline solo players get last place
+                        place = totalPlaces;
+                    } else { // offline team players get placed with their team
+                        place = this.placements.values().stream()
+                            .filter(matchPlacement -> matchPlacement.getTeam() == this.stats.get(uuid).getTeam())
+                            .findAny() // Try to find a placement of a teammate
+                            .map(MatchPlacement::getPlace) // Use the teammates place if there is one
+                            .orElse(totalPlaces) // Fallback to last place if the entire team disconnected
+                            ;
+                    }
+                }
+
+                int rating = LeagueModule.get().getRating(uuid, place);
 
                 Map<String, Object> playlistStats = new HashMap<>();
                 statsDetailed.put("rating", rating);
@@ -455,7 +473,7 @@ public class MatchStats {
             Profile profile = Commons.getProfile(uuid);
             List<Map<String, Object>> recentMatches = profile.getRecentMatches();
 
-            if (player != null && this.placements.containsKey(player)) {
+            if (player != null && this.placements.containsKey(uuid)) {
                 Map<String, Object> summary = this.exportMatchSummary(player);
 
                 recentMatches.add(summary);
@@ -487,7 +505,7 @@ public class MatchStats {
     }
 
     private boolean isWinner(UUID uuid) {
-        MatchPlacement placement = this.placements.get(Bukkit.getPlayer(uuid));
+        MatchPlacement placement = this.placements.get(uuid);
         PlayerStats stats = this.stats.get(uuid);
         return placement != null ? placement.getStatResult() == MatchResult.WIN : stats.getTeam() == this.winner;
     }

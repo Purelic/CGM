@@ -251,7 +251,6 @@ public class LeagueModule implements Module {
 
         double points = 0;
         int totalPlaces = this.getTotalPlaces();
-        if (place <= 0) place = totalPlaces; // todo if player is offline they get put in last place
         boolean odd = totalPlaces % 2 != 0;
         double topPlacementRange = totalPlaces / 2D;
         boolean win = (odd && place + 0.5D == topPlacementRange) || place <= topPlacementRange;
