@@ -21,6 +21,7 @@ import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.profile.Rank;
 import net.purelic.commons.utils.DatabaseUtils;
+import net.purelic.commons.utils.PlayerUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.constants.ServerStatus;
 import org.bukkit.Bukkit;
@@ -159,7 +160,7 @@ public class LeagueModule implements DynamicModule {
             MatchTeam team = entry.getValue().getMatchTeam();
             Player player = Bukkit.getPlayer(uuid);
             if (player == null || !player.isOnline() || MatchTeam.getTeam(player) == team) continue;
-            player.performCommand("join " + team.name());
+            PlayerUtils.performCommand(player, "join " + team.getName());
         }
     }
 

@@ -9,6 +9,7 @@ import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.league.LeagueModule;
 import net.purelic.commons.utils.ChatUtils;
+import net.purelic.commons.utils.PlayerUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.GameMode;
@@ -32,7 +33,7 @@ public class PlayerJoin implements Listener {
 
         if (ServerUtils.isRanked() && LeagueModule.get().isPlaying(player)) {
             MatchTeam team = LeagueModule.get().getTeam(player);
-            player.performCommand("join " + team.name());
+            PlayerUtils.performCommand(player, "join " + team.getName());
         }
 
         if (MatchState.isActive()) {
