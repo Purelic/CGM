@@ -36,7 +36,7 @@ import java.util.UUID;
 
 public class Spawner implements Listener {
 
-    private final UUID id;
+    private final String id;
     private final Location location;
     private final Material material;
     private final int amount;
@@ -55,7 +55,7 @@ public class Spawner implements Listener {
     private int totalSpawned;
 
     public Spawner(Map<String, Object> map) {
-        this.id = UUID.randomUUID();
+        this.id = UUID.randomUUID().toString();
         int[] coords = this.getCoords(((String) map.get("location")).split(","));
         this.location = new Location(null, coords[0], coords[1], coords[2]);
         this.material = Material.valueOf((String) map.getOrDefault("material", Material.GOLDEN_APPLE.name()));
@@ -167,7 +167,7 @@ public class Spawner implements Listener {
 
     private void spawnItem() {
         Location itemLoc = this.location.clone().add(0.5, 1.5, 0.5);
-        ItemStack item = new ItemCrafter(this.material).amount(this.amount).setTag("spawner_id", this.id.toString()).craft();
+        ItemStack item = new ItemCrafter(this.material).amount(this.amount).setTag("spawner_id", this.id).craft();
         Item drop = this.world.dropItem(itemLoc, item);
         drop.setVelocity(new Vector(0, 0, 0));
         this.totalSpawned += this.amount;
@@ -232,7 +232,7 @@ public class Spawner implements Listener {
         Item item = event.getItem();
         ItemStack itemStack = item.getItemStack();
 
-        if (new ItemCrafter(itemStack).getTag("spawner_id").equals(this.id.toString())) {
+        if (new ItemCrafter(itemStack).getTag("spawner_id").equals(this.id)) {
             itemStack.setItemMeta(Bukkit.getItemFactory().getItemMeta(itemStack.getType()));
             if (!this.infinite || this.isMaxSpawnedItems()) this.start();
             this.totalSpawned = 0;
@@ -245,7 +245,7 @@ public class Spawner implements Listener {
         Item item = event.getEntity();
         ItemStack itemStack = item.getItemStack();
 
-        if (new ItemCrafter(itemStack).getTag("spawner_id").equals(this.id.toString())) {
+        if (new ItemCrafter(itemStack).getTag("spawner_id").equals(this.id)) {
             event.setCancelled(true);
         }
     }
@@ -258,7 +258,7 @@ public class Spawner implements Listener {
         Item item = (Item) event.getEntity();
         ItemStack itemStack = item.getItemStack();
 
-        if (new ItemCrafter(itemStack).getTag("spawner_id").equals(this.id.toString())) {
+        if (new ItemCrafter(itemStack).getTag("spawner_id").equals(this.id)) {
             if (!this.infinite || this.isMaxSpawnedItems()) this.start();
             this.totalSpawned = 0;
         }
