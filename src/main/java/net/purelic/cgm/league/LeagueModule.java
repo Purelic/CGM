@@ -13,18 +13,19 @@ import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.rewards.RewardBuilder;
 import net.purelic.cgm.core.stats.MatchStats;
 import net.purelic.cgm.core.stats.leaderboard.Leaderboard;
+import net.purelic.cgm.events.match.MatchCycleEvent;
+import net.purelic.cgm.listeners.modules.DynamicModule;
 import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
 import net.purelic.cgm.utils.PlaceUtils;
 import net.purelic.commons.Commons;
-import net.purelic.commons.modules.Module;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.profile.Rank;
 import net.purelic.commons.utils.DatabaseUtils;
 import net.purelic.commons.utils.ServerUtils;
-import net.purelic.commons.utils.TaskUtils;
 import net.purelic.commons.utils.constants.ServerStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import shaded.com.google.api.core.ApiFuture;
 import shaded.com.google.cloud.firestore.DocumentReference;
 import shaded.com.google.cloud.firestore.DocumentSnapshot;
@@ -35,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public class LeagueModule implements Module {
+public class LeagueModule implements DynamicModule {
 
     private static LeagueModule instance;
 
@@ -179,12 +180,6 @@ public class LeagueModule implements Module {
             MatchManager.setNext(map, gameMode);
             break;
         }
-
-        TaskUtils.runLater(() -> {
-            MatchManager.cycle();
-            MatchStatsModule.setCurrent(new MatchStats());
-            loadPlayers();
-        }, 20L);
     }
 
     public Leaderboard loadLeaderboard() {
@@ -361,6 +356,19 @@ public class LeagueModule implements Module {
         ReadyCommand.PLAYERS_READY.clear();
         ReRollCommand.TEAMS_VOTED.clear();
         ReRollCommand.PLAYERS_VOTED.clear();
+    }
+
+    @Override
+    public boolean isValid() {
+        return ServerUtils.isRanked();
+    }
+
+    @EventHandler
+    public void onMatchCycle(MatchCycleEvent event) {
+        if (event.hasMap()) {
+            MatchStatsModule.setCurrent(new MatchStats());
+            loadPlayers();
+        }
     }
 
 }
