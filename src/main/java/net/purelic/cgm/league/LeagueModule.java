@@ -62,7 +62,7 @@ public class LeagueModule implements DynamicModule {
     }
 
     public boolean isPlaying(Player player) {
-        return this.getTeam(player) != null;
+        return this.players.containsKey(player.getUniqueId());
     }
 
     public MatchTeam getTeam(Player player) {
@@ -115,6 +115,9 @@ public class LeagueModule implements DynamicModule {
     }
 
     private void loadPlayers() {
+        this.teams.clear();
+        this.players.clear();
+
         boolean solo = EnumSetting.TEAM_TYPE.is(TeamType.SOLO);
         int index = 2; // skips obs and ffa team
 
@@ -244,7 +247,6 @@ public class LeagueModule implements DynamicModule {
         int rating = profile.getRating();
         Rank rank = profile.getLeagueRank();
 
-
         double points = 0;
         int totalPlaces = this.getTotalPlaces();
         boolean odd = totalPlaces % 2 != 0;
@@ -272,7 +274,7 @@ public class LeagueModule implements DynamicModule {
         points *= ratingWeight;
 
         // apply the placement weight
-        double basePercent = 100D / (int) topPlacementRange;
+        double basePercent = 1D / (int) topPlacementRange;
 
         // odd number of placements
         if (odd && place + 0.5D == topPlacementRange) {
@@ -368,7 +370,7 @@ public class LeagueModule implements DynamicModule {
     public void onMatchCycle(MatchCycleEvent event) {
         if (event.hasMap()) {
             MatchStatsModule.setCurrent(new MatchStats());
-            loadPlayers();
+            this.loadPlayers();
         }
     }
 
