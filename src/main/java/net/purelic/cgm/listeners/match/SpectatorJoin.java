@@ -46,7 +46,8 @@ public class SpectatorJoin implements Listener {
             PlayerUtils.reset(player, GameMode.ADVENTURE);
         }
 
-        if (CommandUtils.isOp(player) || Commons.getProfile(player).isMapDev()) this.controlsKit.apply(player);
+        if (!ServerUtils.isRanked()
+            && (CommandUtils.isOp(player) || Commons.getProfile(player).isMapDev())) this.controlsKit.apply(player);
 
         CGM.get().getMatchManager().removeParticipant(player);
         SpawnUtils.teleportObsSpawn(player);
