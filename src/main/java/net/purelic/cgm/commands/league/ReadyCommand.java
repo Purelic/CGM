@@ -53,7 +53,7 @@ public class ReadyCommand implements CustomCommand {
                 }
 
                 int totalPlaces = LeagueModule.get().getTotalPlaces();
-                int majority = totalPlaces == 2 ? 2 : totalPlaces / 2;
+                int majority = totalPlaces == 2 ? 2 : (int) (totalPlaces * 0.75);
                 boolean start;
 
                 if (team == MatchTeam.SOLO) {
