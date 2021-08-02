@@ -43,6 +43,8 @@ public enum MatchTeam {
 //    TEAM_4("T4", ChatColor.BLUE, -1, -1),
     ;
 
+    private static final Map<Player, MatchTeam> PLAYER_MAP = new HashMap<>();
+
     private final String defaultName;
     private final ChatColor defaultColor;
     private String name;
@@ -131,6 +133,7 @@ public enum MatchTeam {
     public void addPlayer(Player player, boolean initialJoin) {
         removePlayer(player);
         this.players.add(player);
+        PLAYER_MAP.put(player, this);
         this.allowed.add(player.getUniqueId());
         player.setDisplayName(this.color + NickUtils.getRealName(player) + ChatColor.RESET);
         player.setPlayerListName(Commons.getProfile(player).getFlairs() + player.getDisplayName());
@@ -199,10 +202,7 @@ public enum MatchTeam {
     }
 
     public static MatchTeam getTeam(Player player) {
-        for (MatchTeam team : MatchTeam.values()) {
-            if (team.hasPlayer(player)) return team;
-        }
-        return MatchTeam.OBS;
+        return PLAYER_MAP.getOrDefault(player, OBS);
     }
 
     public static int totalPlaying() {
