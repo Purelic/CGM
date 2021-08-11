@@ -40,7 +40,7 @@ import net.purelic.cgm.voting.VotingManager;
 import net.purelic.cgm.voting.VotingModule;
 import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
-import net.purelic.commons.runnables.MapLoader;
+import net.purelic.commons.runnables.MapDownloader;
 import net.purelic.commons.utils.DatabaseUtils;
 import net.purelic.commons.utils.Fetcher;
 import net.purelic.commons.utils.ServerUtils;
@@ -74,7 +74,7 @@ public class CGM extends JavaPlugin {
         this.playlist = new Playlist();
 
         // download lobby map
-        TaskUtils.runAsync(new MapLoader(Commons.getLobbyPreference(), true));
+        TaskUtils.runAsync(new MapDownloader(Commons.getLobbyPreference(), true));
 
         // register managers, listeners, and commands
         this.registerManagers();
