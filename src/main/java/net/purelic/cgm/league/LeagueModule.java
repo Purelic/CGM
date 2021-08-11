@@ -222,7 +222,7 @@ public class LeagueModule implements DynamicModule {
             MatchTeam team = this.players.get(player).getMatchTeam();
             teamAvg = this.teams.get(team).getAverageRating();
 
-            Collection<LeagueTeam> enemies = this.teams.values();
+            List<LeagueTeam> enemies = new ArrayList<>(this.teams.values());
             enemies.remove(this.teams.get(team));
             enemyAvg = this.getAverageEnemyRating(enemies);
         }
@@ -236,7 +236,7 @@ public class LeagueModule implements DynamicModule {
         return this.teams.size() == 1 ? this.teams.get(MatchTeam.SOLO).getPlayers().size() : this.teams.size();
     }
 
-    private double getAverageEnemyRating(Collection<LeagueTeam> teams) {
+    private double getAverageEnemyRating(List<LeagueTeam> teams) {
         int total = teams.stream().mapToInt(LeagueTeam::getTotalRating).sum();
         return total / (double) teams.size();
     }
@@ -258,13 +258,13 @@ public class LeagueModule implements DynamicModule {
         // points for win/loss
         if (win) {
             if (rank == Rank.IRON) points += 35;
-            else if (rank == Rank.GOLD) points += 30;
+            else if (rank == Rank.GOLD_LEAGUE) points += 30;
             else if (rank == Rank.DIAMOND) points += 25;
             else if (rank == Rank.EMERALD) points += 20;
             else if (rank == Rank.QUARTZ) points += 15;
         } else {
             if (rank == Rank.IRON) points -= 15;
-            else if (rank == Rank.GOLD) points -= 20;
+            else if (rank == Rank.GOLD_LEAGUE) points -= 20;
             else if (rank == Rank.DIAMOND) points -= 25;
             else if (rank == Rank.EMERALD) points -= 30;
             else if (rank == Rank.QUARTZ) points -= 35;
