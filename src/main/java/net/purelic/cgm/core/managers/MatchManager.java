@@ -16,6 +16,7 @@ import net.purelic.cgm.core.match.Round;
 import net.purelic.cgm.core.match.constants.ParticipantState;
 import net.purelic.cgm.core.runnables.CycleCountdown;
 import net.purelic.cgm.core.runnables.MatchCountdown;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.cgm.uhc.runnables.UHCLoader;
 import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.participant.ParticipantRespawnEvent;
@@ -112,7 +113,7 @@ public class MatchManager {
         nextMap = map;
 
         if (map.getName().equals("UHC")) TaskUtils.runAsync(new UHCLoader(map));
-        else TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString()));
+        else TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString(), false));
     }
 
     private static void setNextGameMode(CustomGameMode gameMode) {
@@ -141,7 +142,7 @@ public class MatchManager {
             if (CGM.getVotingManager().shouldStartVoting()) MatchState.setState(MatchState.VOTING);
             currentMap = null;
             currentGameMode = null;
-            if (ServerUtils.isRanked()) LeagueManager.reset();
+            if (ServerUtils.isRanked()) LeagueModule.get().reset();
             else DatabaseUtils.updateStatus(ServerStatus.STARTING, null, null);
         } else {
             MatchState.setState(MatchState.STARTING);
@@ -349,9 +350,21 @@ public class MatchManager {
 
     public static Participant getTopParticipant(boolean totalScore) {
         List<Participant> ordered = getOrderedParticipants(totalScore);
+
         if (ordered.size() == 0) return null;
         if (ordered.size() == 1) return ordered.get(0);
-        return ordered.get(0).getScore() == ordered.get(1).getScore() ? null : ordered.get(0);
+
+        if (MatchUtils.isElimination() && !MatchUtils.hasKillScoring()) {
+            if (ordered.get(0).getEliminatedScore() == ordered.get(1).getEliminatedScore()) {
+                return ordered.get(0).getLives() == ordered.get(1).getLives() ? null : ordered.get(0);
+            } else {
+                return ordered.get(0);
+            }
+        } else if (totalScore) {
+            return ordered.get(0).getTotalScore() == ordered.get(1).getTotalScore() ? null : ordered.get(0);
+        } else {
+            return ordered.get(0).getScore() == ordered.get(1).getScore() ? null : ordered.get(0);
+        }
     }
 
     public static List<MatchTeam> getOrderedTeams(TeamType teamType) {

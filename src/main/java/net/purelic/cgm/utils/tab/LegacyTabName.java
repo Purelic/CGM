@@ -2,6 +2,9 @@ package net.purelic.cgm.utils.tab;
 
 import org.bukkit.ChatColor;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum LegacyTabName {
 
     CHAR01("!"),
@@ -86,15 +89,17 @@ public enum LegacyTabName {
     CHAR80("\u00AA"),
     ;
 
+    private static List<LegacyTabName> names;
+
     private final String value;
 
     LegacyTabName(String value) {
         this.value = ChatColor.COLOR_CHAR + value + ChatColor.RESET;
     }
 
-    @Override
-    public String toString() {
-        return this.value;
+    public static String get(int index) {
+        if (names == null) names = Arrays.asList(values());
+        return names.get(index).value;
     }
 
 }

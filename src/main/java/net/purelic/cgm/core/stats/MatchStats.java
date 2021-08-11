@@ -7,11 +7,12 @@ import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.stats.constants.MatchResult;
+import net.purelic.cgm.core.stats.leaderboard.Leaderboard;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.utils.DatabaseUtils;
@@ -37,7 +38,7 @@ public class MatchStats {
     private final TeamType teamType;
     private int rounds;
     private final boolean roundBased;
-    private Map<Player, MatchPlacement> placements;
+    private Map<UUID, MatchPlacement> placements;
     private final Map<UUID, PlayerStats> stats;
     private MatchTeam winner;
 
@@ -65,7 +66,7 @@ public class MatchStats {
         this.winner = winner;
     }
 
-    public void setPlacements(Map<Player, MatchPlacement> placements) {
+    public void setPlacements(Map<UUID, MatchPlacement> placements) {
         this.placements = placements;
         this.ended = Timestamp.now();
         this.rounds = MatchManager.getRound();
@@ -132,7 +133,7 @@ public class MatchStats {
                 for (Map.Entry<UUID, PlayerStats> entry : this.stats.entrySet()) {
                     PlayerStats stats = entry.getValue();
                     Player player = stats.getPlayer();
-                    MatchTeam playerTeam = this.placements.containsKey(player) ? this.placements.get(player).getTeam() : stats.getTeam();
+                    MatchTeam playerTeam = this.placements.containsKey(player.getUniqueId()) ? this.placements.get(player.getUniqueId()).getTeam() : stats.getTeam();
                     if (playerTeam == team) playerStats.add(this.stats.get(entry.getKey()));
                 }
 
@@ -159,7 +160,7 @@ public class MatchStats {
     }
 
     public Map<String, Object> exportMatchSummary(Player player) {
-        MatchPlacement placement = this.placements.get(player);
+        MatchPlacement placement = this.placements.get(player.getUniqueId());
         Map<String, Object> data = new HashMap<>();
 
         data.put("match_id", this.matchId);
@@ -286,8 +287,6 @@ public class MatchStats {
         data.put("net_damage_ratio", this.formatRatio(stats.getNetDamageRatio(), false));
         data.put("net_damage", this.formatRatio(stats.getNetDamage(), false));
         data.put("arrow_accuracy", this.formatRatio(stats.getArrowAccuracy(), true));
-
-        // TODO could add round based stats/averages
 
         // kills
         Map<String, Object> killTypes = new HashMap<>();
@@ -419,13 +418,6 @@ public class MatchStats {
 //        }
 
         Map<UUID, Integer> leagueRatings = new HashMap<>();
-        double blueWeight = 1D;
-        double redWeight = 1D;
-
-        if (ServerUtils.isRanked()) {
-            blueWeight = LeagueManager.getEloWeight(MatchTeam.BLUE, this.winner == MatchTeam.BLUE);
-            redWeight = LeagueManager.getEloWeight(MatchTeam.RED, this.winner == MatchTeam.RED);
-        }
 
         for (Map.Entry<UUID, PlayerStats> entry : this.stats.entrySet()) {
             UUID uuid = entry.getKey();
@@ -440,9 +432,30 @@ public class MatchStats {
             data.put("total", stats);
             data.put(this.gameType.name().toLowerCase(), gameTypeStats);
 
-            if (ServerUtils.isRanked() && this.winner != null) {
-                MatchTeam team = LeagueManager.getTeam(uuid);
-                int rating = LeagueManager.getRating(uuid, this.isWinner(uuid), team == MatchTeam.BLUE ? blueWeight : redWeight);
+            boolean everyoneTied = this.placements.values().stream().allMatch(MatchPlacement::isTied);
+
+            if (ServerUtils.isRanked() && !everyoneTied) {
+                MatchPlacement placement = this.placements.get(uuid);
+                int place;
+
+                if (placement != null) {
+                    place = placement.getPlace();
+                } else {
+                    int totalPlaces = LeagueModule.get().getTotalPlaces();
+
+                    if (this.teamType == TeamType.SOLO) { // offline solo players get last place
+                        place = totalPlaces;
+                    } else { // offline team players get placed with their team
+                        place = this.placements.values().stream()
+                            .filter(matchPlacement -> matchPlacement.getTeam() == this.stats.get(uuid).getTeam())
+                            .findAny() // Try to find a placement of a teammate
+                            .map(MatchPlacement::getPlace) // Use the teammates place if there is one
+                            .orElse(totalPlaces) // Fallback to last place if the entire team disconnected
+                            ;
+                    }
+                }
+
+                int rating = LeagueModule.get().getRating(uuid, place);
 
                 Map<String, Object> playlistStats = new HashMap<>();
                 statsDetailed.put("rating", rating);
@@ -460,7 +473,7 @@ public class MatchStats {
             Profile profile = Commons.getProfile(uuid);
             List<Map<String, Object>> recentMatches = profile.getRecentMatches();
 
-            if (player != null && this.placements.containsKey(player)) {
+            if (player != null && this.placements.containsKey(uuid)) {
                 Map<String, Object> summary = this.exportMatchSummary(player);
 
                 recentMatches.add(summary);
@@ -480,7 +493,11 @@ public class MatchStats {
             DatabaseUtils.getFirestore().collection("players").document(uuid.toString()).set(finalData, SetOptions.merge());
         }
 
-        if (!leagueRatings.isEmpty()) LeagueManager.updateLeaderboard(leagueRatings);
+        if (!leagueRatings.isEmpty()) {
+            Leaderboard leaderboard = LeagueModule.get().getLeaderboard();
+            if (leaderboard != null) leaderboard.updateLeaders(leagueRatings);
+        }
+
         if (this.stats.isEmpty()) return;
 
         Map<String, Object> match = this.exportMatch();
@@ -488,7 +505,7 @@ public class MatchStats {
     }
 
     private boolean isWinner(UUID uuid) {
-        MatchPlacement placement = this.placements.get(Bukkit.getPlayer(uuid));
+        MatchPlacement placement = this.placements.get(uuid);
         PlayerStats stats = this.stats.get(uuid);
         return placement != null ? placement.getStatResult() == MatchResult.WIN : stats.getTeam() == this.winner;
     }

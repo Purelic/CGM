@@ -4,8 +4,8 @@ import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.events.match.MatchQuitEvent;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.utils.CommandUtils;
@@ -22,7 +22,7 @@ public class QuitCommand implements CustomCommand {
             .handler(c -> {
                 Player player = (Player) c.getSender();
 
-                if (ServerUtils.isRanked() && LeagueManager.isPlaying(player)) {
+                if (ServerUtils.isRanked() && LeagueModule.get().isPlaying(player)) {
                     CommandUtils.sendErrorMessage(player, "You aren't able to leave matches on ranked servers!");
                     return;
                 }

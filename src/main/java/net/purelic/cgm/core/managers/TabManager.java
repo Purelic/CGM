@@ -105,46 +105,46 @@ public class TabManager {
     }
 
     public static TextComponent getHeader() {
-        StringBuilder header = new StringBuilder(ChatColor.BOLD + ServerUtils.getName());
-        if (Commons.hasOwner()) header.append("'s Server");
+        String header = ChatColor.BOLD + ServerUtils.getName();
+        if (Commons.hasOwner()) header += "'s Server";
 
         CustomGameMode gameMode = MatchManager.getCurrentGameMode();
         CustomMap map = MatchManager.getCurrentMap();
 
         if (gameMode != null && map != null) {
             if (gameMode.getGameType() == GameType.UHC) {
-                header.append("\n").append(gameMode.getColoredNameWithAlias());
-                return new TextComponent(header.toString());
+                header += "\n" + gameMode.getColoredNameWithAlias();
+                return new TextComponent(header);
             }
 
-            header.append("\n").append(gameMode.getColoredName()).append(" on ").append(map.getColoredName());
+            header += "\n" + gameMode.getColoredName() + " on " + map.getColoredName();
 
             List<UUID> authors = map.getYaml().getAuthors();
 
             if (authors.size() >= 3) {
-                header.append("\nby ");
+                header += "\nby ";
             } else {
-                header.append(" by ");
+                header += " by ";
             }
 
             if (authors.size() == 1) {
-                header.append(getAuthor(authors.get(0)));
+                header += getAuthor(authors.get(0));
             } else if (authors.size() == 2) {
-                header.append(getAuthor(authors.get(0))).append(" and ").append(getAuthor(authors.get(1)));
+                header += getAuthor(authors.get(0)) + " and " + getAuthor(authors.get(1));
             } else {
                 for (int i = 0; i < authors.size(); i++) {
                     if (i == 0) {
-                        header.append(getAuthor(authors.get(i)));
+                        header += getAuthor(authors.get(i));
                     } else if (i == authors.size() - 1) {
-                        header.append(", and ").append(getAuthor(authors.get(i)));
+                        header += ", and " + getAuthor(authors.get(i));
                     } else {
-                        header.append(", ").append(getAuthor(authors.get(i)));
+                        header += ", " + getAuthor(authors.get(i));
                     }
                 }
             }
         }
 
-        return new TextComponent(header.toString());
+        return new TextComponent(header);
     }
 
     private static String getAuthor(UUID uuid) {

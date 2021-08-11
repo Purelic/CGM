@@ -1,5 +1,7 @@
 package net.purelic.cgm.listeners.modules;
 
+import net.purelic.cgm.core.gamemodes.EnumSetting;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.utils.PreferenceUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Preference;
@@ -83,6 +85,14 @@ public class HotbarModule implements Listener {
                 String value = new ItemCrafter(item).getTag("hotbar_menu_item");
                 try {
                     Preference preference = Preference.valueOf(value);
+
+                    // separate hotbar preferences for bed wars and uhc
+                    if (EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
+                        preference = Preference.valueOf(preference.name() + "_BW");
+                    } else if (EnumSetting.GAME_TYPE.is(GameType.UHC)) {
+                        preference = Preference.valueOf(preference.name() + "_UHC");
+                    }
+
                     profile.updatePreference(preference, (long) i);
                 } catch (Exception e) {
                     // ignore

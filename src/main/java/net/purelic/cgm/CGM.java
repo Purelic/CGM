@@ -7,24 +7,22 @@ import cloud.commandframework.paper.PaperCommandManager;
 import net.purelic.cgm.commands.communication.GlobalCommand;
 import net.purelic.cgm.commands.controls.*;
 import net.purelic.cgm.commands.info.*;
-import net.purelic.cgm.commands.league.NoSpectatorsCommand;
 import net.purelic.cgm.commands.league.RankCommand;
 import net.purelic.cgm.commands.league.ReRollCommand;
 import net.purelic.cgm.commands.league.ReadyCommand;
 import net.purelic.cgm.commands.match.*;
-import net.purelic.cgm.commands.preferences.ColorCommand;
 import net.purelic.cgm.commands.preferences.HotbarCommand;
 import net.purelic.cgm.commands.preferences.SoundCommand;
 import net.purelic.cgm.commands.toggles.*;
 import net.purelic.cgm.commands.uhc.UHCCommand;
 import net.purelic.cgm.commands.uhc.UHCScenarioPresetCommand;
 import net.purelic.cgm.commands.uhc.UHCScenarioToggleCommand;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.LootManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.maps.hill.HillModule;
 import net.purelic.cgm.core.maps.region.RegionModule;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.cgm.listeners.*;
 import net.purelic.cgm.listeners.bed.BedBreak;
 import net.purelic.cgm.listeners.flag.*;
@@ -56,15 +54,6 @@ import java.util.function.Function;
 
 public class CGM extends JavaPlugin {
 
-    // dont cycle automatically until map is loaded
-    // alert in chat about automatic cycling when uhc is sn
-    // cycle anyways if voting is going
-    // update scoreboard
-    // grace period (and dont let compass tracking)
-    // new spawn kit items
-    // DOCUMENT use bed spawn if there is one
-    // uhc playlist not getting added properly
-
     private static CGM plugin;
     private static boolean ready;
 
@@ -85,7 +74,7 @@ public class CGM extends JavaPlugin {
         this.playlist = new Playlist();
 
         // download lobby map
-        TaskUtils.runAsync(new MapLoader("Lobby"));
+        TaskUtils.runAsync(new MapLoader(Commons.getLobbyPreference(), true));
 
         // register managers, listeners, and commands
         this.registerManagers();
@@ -109,11 +98,15 @@ public class CGM extends JavaPlugin {
 
     private void setReady() {
         ready = true;
-        DatabaseUtils.setServerOnline();
+
         if (ServerUtils.isRanked()) {
-            LeagueManager.loadListenerRegistration();
+            LeagueModule leagueModule = new LeagueModule();
+            leagueModule.loadListenerRegistration();
+            Commons.registerListener(leagueModule);
         }
+
         System.out.println("The server is now ready!");
+        Commons.setServerReady();
 
         // Cache all the author names
         TaskUtils.runAsync(() -> playlist.getMaps().values().forEach(map -> map.getYaml().getAuthors().forEach(Fetcher::getNameOf)));
@@ -320,12 +313,10 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new ReRollCommand());
         this.registerCommand(new RenameCommand());
         this.registerCommand(new ShuffleCommand());
-        this.registerCommand(new NoSpectatorsCommand());
         this.registerCommand(new SpectateCommand());
         this.registerCommand(new TeleportCommand());
 
         // Preferences
-        this.registerCommand(new ColorCommand());
         this.registerCommand(new HotbarCommand());
         this.registerCommand(new SoundCommand());
 

@@ -4,7 +4,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.gamemodes.constants.TeamSize;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
@@ -15,8 +14,10 @@ import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.match.SpectatorJoinEvent;
 import net.purelic.cgm.listeners.match.MatchEnd;
 import net.purelic.cgm.utils.BedUtils;
+import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.profile.preferences.ArmorColor;
 import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
@@ -42,6 +43,8 @@ public enum MatchTeam {
 //    TEAM_3("T3", ChatColor.BLUE, -1, -1),
 //    TEAM_4("T4", ChatColor.BLUE, -1, -1),
     ;
+
+    private static final Map<Player, MatchTeam> PLAYER_MAP = new HashMap<>();
 
     private final String defaultName;
     private final ChatColor defaultColor;
@@ -89,6 +92,10 @@ public enum MatchTeam {
         return this.color;
     }
 
+    public ArmorColor getArmorColor() {
+        return ColorConverter.getArmorColor(this.color);
+    }
+
     public void setColor(ChatColor color) {
         this.color = color;
     }
@@ -131,6 +138,7 @@ public enum MatchTeam {
     public void addPlayer(Player player, boolean initialJoin) {
         removePlayer(player);
         this.players.add(player);
+        PLAYER_MAP.put(player, this);
         this.allowed.add(player.getUniqueId());
         player.setDisplayName(this.color + NickUtils.getRealName(player) + ChatColor.RESET);
         player.setPlayerListName(Commons.getProfile(player).getFlairs() + player.getDisplayName());
@@ -199,10 +207,7 @@ public enum MatchTeam {
     }
 
     public static MatchTeam getTeam(Player player) {
-        for (MatchTeam team : MatchTeam.values()) {
-            if (team.hasPlayer(player)) return team;
-        }
-        return MatchTeam.OBS;
+        return PLAYER_MAP.getOrDefault(player, OBS);
     }
 
     public static int totalPlaying() {
@@ -234,7 +239,7 @@ public enum MatchTeam {
 
     // needs to filter out teams eliminated
     public static MatchTeam getSmallestTeam(TeamType teamType, boolean forced) {
-        boolean doubles = EnumSetting.TEAM_SIZE.is(TeamSize.DOUBLES) || MatchManager.getParticipants().size() > 2;
+        boolean doubles = MatchUtils.getMaxTeamPlayers() == 2 && MatchManager.getParticipants().size() > 2;
         MatchTeam smallest = null;
         int players = 0;
 

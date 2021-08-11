@@ -2,7 +2,6 @@ package net.purelic.cgm.listeners.match;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
@@ -29,10 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MatchEnd implements Listener {
 
@@ -55,74 +51,33 @@ public class MatchEnd implements Listener {
             }
         });
 
-        this.sendGameOverTitles(event.isForced());
+        this.sendMatchResults(event.isForced());
         MatchManager.addMatch();
 
         ScoreboardManager.setNameVisibility(true);
         ScoreboardManager.setFriendlyFire(false);
 
-        new CycleCountdown().runTaskTimer(CGM.get(), 0, 20);
+        TaskUtils.runTimer(new CycleCountdown(), 20L);
     }
 
-    private void sendGameOverTitles(boolean forced) {
-        Map<Player, MatchPlacement> placements = new HashMap<>();
+    private void sendMatchResults(boolean forced) {
+        Map<UUID, MatchPlacement> placements = new HashMap<>();
 
         if (forced) {
-            Bukkit.getOnlinePlayers().forEach(player -> {
-                ChatUtils.sendTitle(
-                    player,
-                    "Game Over",
-                    "",
-                    60
-                );
-
-                ChatUtils.sendMessage(
-                    player,
-                    new ComponentBuilder("\n")
-                        .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                        .append(ChatColor.YELLOW + "The match was force ended.").reset()
-                        .append("\n").reset()
-                );
-            });
+            this.sendPlacement(Bukkit.getOnlinePlayers(), ChatColor.YELLOW + "Force Ended!");
         } else {
             if (EnumSetting.TEAM_TYPE.is(TeamType.SOLO)) {
                 List<Participant> ordered = MatchManager.getOrderedParticipants(true);
                 Participant topParticipant = MatchManager.getTopParticipant(true);
 
-                for (Player player : MatchTeam.OBS.getPlayers()) {
-                    if (topParticipant == null) {
-                        ChatUtils.sendTitle(
-                            player,
-                            "Game Over",
-                            ChatColor.YELLOW + "Draw!",
-                            60
-                        );
-
-                        ChatUtils.sendMessage(
-                            player,
-                            new ComponentBuilder("\n")
-                                .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                .append(ChatColor.YELLOW + "Draw!").reset()
-                                .append("\n").reset()
-                        );
-                    } else {
-                        ChatUtils.sendTitle(
-                            player,
-                            "Game Over",
-                            NickUtils.getDisplayName(topParticipant.getPlayer()) + ChatColor.RESET + " won the match!",
-                            60
-                        );
-
-                        ChatUtils.sendMessage(
-                            player,
-                            new ComponentBuilder("\n")
-                                .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                .append(NickUtils.getDisplayName(topParticipant.getPlayer()) + ChatColor.RESET + " won the match!").reset()
-                                .append("\n").reset()
-                        );
-                    }
+                // Send match result to spectators
+                if (topParticipant == null) {
+                    this.sendPlacement(MatchTeam.OBS.getPlayers(), ChatColor.YELLOW + "Draw!");
+                } else {
+                    this.sendPlacement(MatchTeam.OBS.getPlayers(), NickUtils.getDisplayName(topParticipant.getPlayer()) + ChatColor.RESET + " won the match!");
                 }
 
+                // Calculate match placements for all online participants
                 boolean tied = false;
                 int previousPlace = 1;
                 int previousScore = ordered.size() == 0 ? 0 : ordered.get(0).getFinalScore();
@@ -145,30 +100,12 @@ public class MatchEnd implements Listener {
                         tied = tied || nextScore == score;
                     }
 
-                    String placeStr =
-                        (tied ? "Tied for " : "") +
-                            ChatColor.AQUA + "" + place + PlaceUtils.getPlaceSuffix(place) +
-                            ChatColor.RESET + " Place";
-
-                    ChatUtils.sendTitle(
-                        participant.getPlayer(),
-                        "Game Over",
-                        placeStr,
-                        60
-                    );
-
-                    ChatUtils.sendMessage(
-                        participant.getPlayer(),
-                        new ComponentBuilder("\n")
-                            .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                            .append(placeStr).reset()
-                            .append("\n").reset()
-                    );
+                    String placeStr = (tied ? "Tied for " : "") + ChatColor.AQUA + PlaceUtils.getPlace(place);
+                    this.sendPlacement(participant.getPlayer(), placeStr);
 
                     MatchResult result = MatchResult.getResult(topParticipant != null, place, ordered.size() >= 8);
                     MatchPlacement placement = this.sendPostMatchResults(participant, place, tied, result);
-                    placements.put(participant.getPlayer(), placement);
-                    // TODO reward players with XP and Relics
+                    placements.put(participant.getPlayer().getUniqueId(), placement);
 
                     tied = false;
                     previousPlace = place;
@@ -180,40 +117,14 @@ public class MatchEnd implements Listener {
                     MatchTeam topTeam = MatchTeam.getTopTeam(true);
                     MatchStatsModule.getCurrent().setWinner(topTeam);
 
-                    for (Player player : MatchTeam.OBS.getPlayers()) {
-                        if (topTeam == null) {
-                            ChatUtils.sendTitle(
-                                player,
-                                "Game Over",
-                                ChatColor.YELLOW + "Draw!",
-                                60
-                            );
-
-                            ChatUtils.sendMessage(
-                                player,
-                                new ComponentBuilder("\n")
-                                    .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                    .append(ChatColor.YELLOW + "Draw!").reset()
-                                    .append("\n").reset()
-                            );
-                        } else {
-                            ChatUtils.sendTitle(
-                                player,
-                                "Game Over",
-                                topTeam.getColoredName() + ChatColor.RESET + " won the match!",
-                                60
-                            );
-
-                            ChatUtils.sendMessage(
-                                player,
-                                new ComponentBuilder("\n")
-                                    .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                    .append(topTeam.getColoredName() + ChatColor.RESET + " won the match!").reset()
-                                    .append("\n").reset()
-                            );
-                        }
+                    // Send match result to spectators
+                    if (topTeam == null) {
+                        this.sendPlacement(MatchTeam.OBS.getPlayers(), ChatColor.YELLOW + "Draw!");
+                    } else {
+                        this.sendPlacement(MatchTeam.OBS.getPlayers(), topTeam.getColoredName() + ChatColor.RESET + " won the match!");
                     }
 
+                    // Calculate match placements for all the teams
                     boolean tied = false;
                     int previousPlace = 1;
                     int previousRoundsWon = ordered.get(0).getRoundsWon();
@@ -236,39 +147,23 @@ public class MatchEnd implements Listener {
                             tied = tied || nextRoundsWon == roundsWon;
                         }
 
-                        boolean twoTeams = EnumSetting.TEAM_TYPE.is(TeamType.TEAMS);
-                        String placeStr = twoTeams ?
+                        String placeStr = EnumSetting.TEAM_TYPE.is(TeamType.TEAMS) ?
                             (tied ? ChatColor.YELLOW + "Draw!" :
                                 (place == 1 ? ChatColor.GREEN + "Match Won!" : ChatColor.RED + "Match Lost!")) :
                             (tied ? "Tied for " : "") +
-                                ChatColor.AQUA + "" + place + PlaceUtils.getPlaceSuffix(place) +
-                                ChatColor.RESET + " Place";
+                                ChatColor.AQUA + PlaceUtils.getPlace(place);
+
+                        this.sendPlacement(team.getPlayers(), placeStr);
 
                         for (Player player : team.getPlayers()) {
-                            Participant participant = MatchManager.getParticipant(player);
-
-                            ChatUtils.sendTitle(
-                                player,
-                                "Game Over",
-                                placeStr,
-                                60
-                            );
-
-                            ChatUtils.sendMessage(
-                                participant.getPlayer(),
-                                new ComponentBuilder("\n")
-                                    .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                    .append(placeStr).reset()
-                                    .append("\n").reset()
-                            );
-
-                            if (placeStr.contains("Won") || placeStr.contains("1st"))
+                            if (placeStr.contains("Won") || placeStr.contains("1st")) {
                                 SoundUtils.SFX.ALL_STAR.play(player);
+                            }
 
+                            Participant participant = MatchManager.getParticipant(player);
                             MatchResult result = MatchResult.getResult(topTeam != null, place, false);
                             MatchPlacement placement = this.sendPostMatchResults(participant, place, tied, result);
-                            placements.put(participant.getPlayer(), placement);
-                            // TODO reward players with XP and Relics
+                            placements.put(participant.getPlayer().getUniqueId(), placement);
                         }
 
                         tied = false;
@@ -283,38 +178,11 @@ public class MatchEnd implements Listener {
                     List<MatchTeam> teams = new ArrayList<>(ordered.keySet());
                     List<Integer> scores = new ArrayList<>(ordered.values());
 
-                    for (Player player : MatchTeam.OBS.getPlayers()) {
-                        if (winner == null) {
-                            ChatUtils.sendTitle(
-                                player,
-                                "Game Over",
-                                ChatColor.YELLOW + "Draw!",
-                                60
-                            );
-
-                            ChatUtils.sendMessage(
-                                player,
-                                new ComponentBuilder("\n")
-                                    .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                    .append(ChatColor.YELLOW + "Draw!").reset()
-                                    .append("\n").reset()
-                            );
-                        } else {
-                            ChatUtils.sendTitle(
-                                player,
-                                "Game Over",
-                                winner.getColoredName() + ChatColor.RESET + " won the match!",
-                                60
-                            );
-
-                            ChatUtils.sendMessage(
-                                player,
-                                new ComponentBuilder("\n")
-                                    .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                    .append(winner.getColoredName() + ChatColor.RESET + " won the match!").reset()
-                                    .append("\n").reset()
-                            );
-                        }
+                    // Send match result to spectators
+                    if (winner == null) {
+                        this.sendPlacement(MatchTeam.OBS.getPlayers(), ChatColor.YELLOW + "Draw!");
+                    } else {
+                        this.sendPlacement(MatchTeam.OBS.getPlayers(), winner.getColoredName() + ChatColor.RESET + " won the match!");
                     }
 
                     boolean tied = false;
@@ -339,39 +207,23 @@ public class MatchEnd implements Listener {
                             tied = tied || nextScore == score;
                         }
 
-                        boolean twoTeams = EnumSetting.TEAM_TYPE.is(TeamType.TEAMS);
-                        String placeStr = twoTeams ?
+                        String placeStr = EnumSetting.TEAM_TYPE.is(TeamType.TEAMS) ?
                             (tied ? ChatColor.YELLOW + "Draw!" :
                                 (place == 1 ? ChatColor.GREEN + "Match Won!" : ChatColor.RED + "Match Lost!")) :
                             (tied ? "Tied for " : "") +
-                                ChatColor.AQUA + "" + place + PlaceUtils.getPlaceSuffix(place) +
-                                ChatColor.RESET + " Place";
+                                ChatColor.AQUA + PlaceUtils.getPlace(place);
+
+                        this.sendPlacement(team.getPlayers(), placeStr);
 
                         for (Player player : team.getPlayers()) {
-                            Participant participant = MatchManager.getParticipant(player);
-
-                            ChatUtils.sendTitle(
-                                player,
-                                "Game Over",
-                                placeStr,
-                                60
-                            );
-
-                            ChatUtils.sendMessage(
-                                participant.getPlayer(),
-                                new ComponentBuilder("\n")
-                                    .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
-                                    .append(placeStr).reset()
-                                    .append("\n").reset()
-                            );
-
-                            if (placeStr.contains("Won") || placeStr.contains("1st"))
+                            if (placeStr.contains("Won") || placeStr.contains("1st")) {
                                 SoundUtils.SFX.ALL_STAR.play(player);
+                            }
 
+                            Participant participant = MatchManager.getParticipant(player);
                             MatchResult result = MatchResult.getResult(winner != null, place, false);
                             MatchPlacement placement = this.sendPostMatchResults(participant, place, tied, result);
-                            placements.put(player, placement);
-                            // TODO reward players with XP and Relics
+                            placements.put(player.getUniqueId(), placement);
                         }
 
                         tied = false;
@@ -397,10 +249,11 @@ public class MatchEnd implements Listener {
             .append("\n • Longest Shot: " + ChatColor.AQUA + participant.getLongestShot())
             .append("\n • Personal Score: " + ChatColor.AQUA + participant.getTotalScore());
 
-        if (!EnumSetting.TEAM_TYPE.is(TeamType.SOLO) && !NumberSetting.ROUNDS.isDefault())
+        if (!EnumSetting.TEAM_TYPE.is(TeamType.SOLO) && !NumberSetting.ROUNDS.isDefault()) {
             stats.append("\n • Rounds Won: " + ChatColor.AQUA + participant.getRoundsWon() + ChatColor.GRAY + " (of " + MatchManager.getRound() + ")");
+        }
 
-        stats.append("\n • Place: " + (tied ? "Tied for " : "") + ChatColor.AQUA + place + PlaceUtils.getPlaceSuffix(place));
+        stats.append("\n • Place: " + (tied ? "Tied for " : "") + ChatColor.AQUA + PlaceUtils.getPlace(place));
 
         ChatUtils.sendMessage(player, ChatUtils.getHeader("Post-Match Stats", ChatColor.AQUA, ChatColor.WHITE));
         ChatUtils.sendMessage(player, stats);
@@ -422,6 +275,22 @@ public class MatchEnd implements Listener {
     public void onMatchStart(MatchStartEvent event) {
         ELIMINATED_TEAMS.clear();
         ELIMINATED_PLAYERS.clear();
+    }
+
+    private void sendPlacement(Collection<? extends Player> players, String subtitle) {
+        for (Player player : players) this.sendPlacement(player, subtitle);
+    }
+
+    private void sendPlacement(Player player, String subtitle) {
+        ChatUtils.sendTitle(player, "Game Over", subtitle, 60);
+
+        ChatUtils.sendMessage(
+            player,
+            new ComponentBuilder("\n")
+                .append(" GAME OVER » ").color(ChatColor.WHITE).bold(true)
+                .append(subtitle).reset()
+                .append("\n").reset()
+        );
     }
 
 }

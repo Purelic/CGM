@@ -28,6 +28,8 @@ import java.util.Arrays;
 
 public class Participant {
 
+    private static final DecimalFormat DF = new DecimalFormat("0.0");
+
     private final Player player;
     private ParticipantState state;
     private int roundsWon;
@@ -93,8 +95,8 @@ public class Participant {
         int assists = this.getStats().getAssists();
         String assistsStr = assists == 0 ? "" : ChatColor.GRAY + " (" + assists + " Assist" + (assists == 1 ? "" : "s") + ")";
 
-        String kd = new DecimalFormat("0.0").format(this.getStats().getKillDeathRatio());
-        String kda = new DecimalFormat("0.0").format(this.getStats().getKillDeathAssistRatio());
+        String kd = DF.format(this.getStats().getKillDeathRatio());
+        String kda = DF.format(this.getStats().getKillDeathAssistRatio());
         String kdaStr = assists > 0 ? ChatColor.GRAY + " (" + kda + " KDA)" : "";
 
         int killStreak = this.killstreak;

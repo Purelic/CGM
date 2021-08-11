@@ -65,26 +65,26 @@ public class MatchKit implements Kit {
 
         Profile profile = Commons.getProfile(player);
         PlayerInventory inventory = player.getInventory();
-        ChatColor color = MatchTeam.getTeam(player).getColor();
-        int rgb = this.getRGB(player, color);
+        MatchTeam team = MatchTeam.getTeam(player);
+        ArmorColor color = this.getRGB(player, team.getArmorColor());
 
-        int swordSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_SWORD, 1));
-        int bowSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_BOW, 2));
-        int shearsSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_SHEARS, 3));
-        int pickaxeSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_PICKAXE, 4));
-        int axeSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_AXE, 5));
-        int shovelSlot = 5;
+        GameType gameType = EnumSetting.GAME_TYPE.get();
+        int swordSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_SWORD_BW : gameType == GameType.UHC ? Preference.HOTBAR_SWORD_UHC : Preference.HOTBAR_SWORD, 1));
+        int bowSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_BOW_BW : gameType == GameType.UHC ? Preference.HOTBAR_BOW_UHC : Preference.HOTBAR_BOW, 2));
+        int shearsSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_SHEARS_BW : gameType == GameType.UHC ? Preference.HOTBAR_SHEARS_UHC : Preference.HOTBAR_SHEARS, 3));
+        int pickaxeSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_PICKAXE_BW : gameType == GameType.UHC ? Preference.HOTBAR_PICKAXE_UHC : Preference.HOTBAR_PICKAXE, 4));
+        int axeSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_AXE_BW : gameType == GameType.UHC ? Preference.HOTBAR_AXE_UHC : Preference.HOTBAR_AXE, 5));
         int blocksSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_WOOL, 9));
 
-        inventory.setArmorContents(this.getArmor(rgb));
+        inventory.setArmorContents(this.getArmor(color));
         this.addItem(inventory, swordSlot, this.sword);
         this.addItem(inventory, bowSlot, this.bow);
         this.addItem(inventory, shearsSlot, this.shears);
         this.addItem(inventory, pickaxeSlot, this.pickaxe);
         this.addItem(inventory, axeSlot, this.axe);
-        this.addItem(inventory, shovelSlot, this.shovel);
+        this.addItem(inventory, 0, this.shovel);
 
-        for (ItemStack stack : this.getBlocks(color)) {
+        for (ItemStack stack : this.getBlocks(team.getColor())) {
             this.addItem(inventory, blocksSlot, stack);
             blocksSlot += 9;
         }
@@ -93,23 +93,21 @@ public class MatchKit implements Kit {
         if (this.compass != null) inventory.addItem(this.compass);
     }
 
-    private int getRGB(Player player, ChatColor fallback) {
+    private ArmorColor getRGB(Player player, ArmorColor fallback) {
         TeamType teamType = TeamType.valueOf(this.gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
-        int rgb = ColorConverter.convert(fallback).asRGB();
 
         if (teamType == TeamType.SOLO) {
             Profile profile = Commons.getProfile(player);
-            Object colorPref = profile.getPreference(Preference.ARMOR_COLOR);
+            String colorPref = (String) profile.getPreference(Preference.ARMOR_COLOR_UNLOCK, fallback.name());
 
-            if (colorPref != null) {
-                rgb = ((Long) colorPref).intValue();
+            if (ArmorColor.contains(colorPref)) {
+                return ArmorColor.valueOf(colorPref.toUpperCase());
             } else {
-                ArmorColor random = ArmorColor.random(profile.isDonator());
-                rgb = ColorConverter.convert(random.getColor()).asRGB();
+                return fallback;
             }
         }
 
-        return rgb;
+        return fallback;
     }
 
     private void addItem(PlayerInventory inventory, int slot, ItemStack item) {
@@ -118,12 +116,12 @@ public class MatchKit implements Kit {
         else inventory.setItem(slot, item);
     }
 
-    private ItemStack[] getArmor(int rgb) {
+    private ItemStack[] getArmor(ArmorColor armorColor) {
         return new ItemStack[]{
-            this.getColoredArmor(this.boots, rgb),
-            this.getColoredArmor(this.leggings, rgb),
-            this.getColoredArmor(this.chestplate, rgb),
-            this.getColoredArmor(this.helmet, rgb)
+            this.getColoredArmor(this.boots, armorColor.getBoots()),
+            this.getColoredArmor(this.leggings, armorColor.getLeggings()),
+            this.getColoredArmor(this.chestplate, armorColor.getChestplate()),
+            this.getColoredArmor(this.helmet, armorColor.getHelmet())
         };
     }
 

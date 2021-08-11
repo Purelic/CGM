@@ -4,11 +4,12 @@ import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.commons.utils.ChatUtils;
+import net.purelic.commons.utils.PlayerUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.GameMode;
@@ -30,9 +31,9 @@ public class PlayerJoin implements Listener {
         // then put them in adventure mode with a 1 tick delay (see below)
         MatchTeam.OBS.addPlayer(player, true);
 
-        if (ServerUtils.isRanked()) {
-            MatchTeam team = LeagueManager.getTeam(player);
-            if (team != null) player.performCommand("join " + team.name());
+        if (ServerUtils.isRanked() && LeagueModule.get().isPlaying(player)) {
+            MatchTeam team = LeagueModule.get().getTeam(player);
+            PlayerUtils.performCommand(player, "join " + team.getName());
         }
 
         if (MatchState.isActive()) {

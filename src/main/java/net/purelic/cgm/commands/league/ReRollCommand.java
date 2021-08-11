@@ -5,24 +5,24 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
-import net.purelic.cgm.core.gamemodes.EnumSetting;
-import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.cgm.core.managers.LeagueManager;
 import net.purelic.cgm.core.runnables.StartCountdown;
+import net.purelic.cgm.league.LeagueModule;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.utils.CommandUtils;
+import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReRollCommand implements CustomCommand {
 
-    public static final Set<MatchTeam> VOTED = new HashSet<>();
+    public static final List<MatchTeam> TEAMS_VOTED = new ArrayList<>();
+    public static final List<Player> PLAYERS_VOTED = new ArrayList<>();
 
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
@@ -42,7 +42,7 @@ public class ReRollCommand implements CustomCommand {
                     return;
                 }
 
-                if (!LeagueManager.isPlaying(player)) {
+                if (!LeagueModule.get().isPlaying(player)) {
                     CommandUtils.sendErrorMessage(player, "Spectators can't use this command!");
                     return;
                 }
@@ -52,24 +52,37 @@ public class ReRollCommand implements CustomCommand {
                     return;
                 }
 
-                if (ReRollCommand.VOTED.contains(team)) {
-                    CommandUtils.sendErrorMessage(player, "Your team can only vote to re-roll the map once!");
-                    return;
-                }
+                int totalPlaces = LeagueModule.get().getTotalPlaces();
+                int majority = totalPlaces == 2 ? 2 : totalPlaces / 2;
+                boolean reroll;
 
-                ReRollCommand.VOTED.add(team);
-                Bukkit.broadcastMessage(team.getColoredName() + " has voted to re-roll the map and game mode! " + ChatColor.GRAY + "(/reroll)");
-
-                TeamType teamType = EnumSetting.TEAM_TYPE.get();
-
-                for (MatchTeam matchTeam : teamType.getTeams()) {
-                    if (!VOTED.contains(matchTeam)) {
-                        return;
+                if (team == MatchTeam.SOLO) {
+                    if (PLAYERS_VOTED.contains(player)) {
+                        CommandUtils.sendErrorMessage(player, "You've already voted to re-roll the map!");
+                    } else {
+                        PLAYERS_VOTED.add(player);
+                        String progress = ChatColor.GRAY + " (" + PLAYERS_VOTED.size() + "/" + majority + ")";
+                        Bukkit.broadcastMessage(NickUtils.getDisplayName(player) + " voted to /reroll the map!" + progress);
                     }
+
+                    reroll = PLAYERS_VOTED.size() >= majority;
+                } else {
+                    if (TEAMS_VOTED.contains(team)) {
+                        CommandUtils.sendErrorMessage(player, "Your team has already voted to re-roll the map!");
+                    } else {
+                        TEAMS_VOTED.add(team);
+                        String progress = ChatColor.GRAY + " (" + TEAMS_VOTED.size() + "/" + majority + ")";
+                        Bukkit.broadcastMessage(team.getColoredName() + " voted to /reroll the map!" + progress);
+                    }
+
+                    reroll = TEAMS_VOTED.size() >= majority;
                 }
 
-                CommandUtils.broadcastAlertMessage("All teams voted to re-roll! Cycling to a new match...");
-                LeagueManager.cycleRandom();
+                if (reroll) {
+                    String prefix = (totalPlaces == 2 ? "Both" : "Most") + (team == MatchTeam.SOLO ? " players " : " teams ");
+                    CommandUtils.broadcastAlertMessage(prefix + "voted to re-roll! Cycling to a new match...");
+                    LeagueModule.get().cycleRandom();
+                }
             });
     }
 
