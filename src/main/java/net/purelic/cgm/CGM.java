@@ -11,7 +11,6 @@ import net.purelic.cgm.commands.league.RankCommand;
 import net.purelic.cgm.commands.league.ReRollCommand;
 import net.purelic.cgm.commands.league.ReadyCommand;
 import net.purelic.cgm.commands.match.*;
-import net.purelic.cgm.commands.preferences.ColorCommand;
 import net.purelic.cgm.commands.preferences.HotbarCommand;
 import net.purelic.cgm.commands.preferences.SoundCommand;
 import net.purelic.cgm.commands.toggles.*;
@@ -318,7 +317,6 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new TeleportCommand());
 
         // Preferences
-        this.registerCommand(new ColorCommand());
         this.registerCommand(new HotbarCommand());
         this.registerCommand(new SoundCommand());
 

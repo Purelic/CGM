@@ -2,6 +2,7 @@ package net.purelic.cgm.utils;
 
 import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.constants.MatchTeam;
+import net.purelic.commons.profile.preferences.ArmorColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
@@ -97,6 +98,50 @@ public class ColorConverter {
                 return DyeColor.BLACK;
         }
         return DyeColor.WHITE;
+    }
+
+    public static ArmorColor getArmorColor(ChatColor color) {
+        switch (color) {
+            case DARK_BLUE:
+                return ArmorColor.DARK_BLUE;
+            case DARK_GREEN:
+                return ArmorColor.DARK_GREEN;
+            case DARK_AQUA:
+                return ArmorColor.DARK_AQUA;
+            case DARK_RED:
+                return ArmorColor.DARK_RED;
+            case DARK_PURPLE:
+                return ArmorColor.DARK_PURPLE;
+            case GOLD:
+                return ArmorColor.GOLD;
+            case GRAY:
+                return ArmorColor.GRAY;
+            case DARK_GRAY:
+                return ArmorColor.DARK_GRAY;
+            case AQUA:
+                return ArmorColor.AQUA;
+            case LIGHT_PURPLE:
+                return ArmorColor.LIGHT_PURPLE;
+            case BLUE:
+                return ArmorColor.BLUE;
+            case GREEN:
+                return ArmorColor.GREEN;
+            case RED:
+                return ArmorColor.RED;
+            case BLACK:
+                return ArmorColor.BLACK;
+            case WHITE:
+                return ArmorColor.WHITE;
+            case YELLOW:
+            case MAGIC:
+            case BOLD:
+            case STRIKETHROUGH:
+            case UNDERLINE:
+            case ITALIC:
+            case RESET:
+            default:
+                return ArmorColor.YELLOW;
+        }
     }
 
 }

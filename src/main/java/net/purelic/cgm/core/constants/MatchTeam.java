@@ -14,8 +14,10 @@ import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.match.SpectatorJoinEvent;
 import net.purelic.cgm.listeners.match.MatchEnd;
 import net.purelic.cgm.utils.BedUtils;
+import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
+import net.purelic.commons.profile.preferences.ArmorColor;
 import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
@@ -88,6 +90,10 @@ public enum MatchTeam {
 
     public ChatColor getColor() {
         return this.color;
+    }
+
+    public ArmorColor getArmorColor() {
+        return ColorConverter.getArmorColor(this.color);
     }
 
     public void setColor(ChatColor color) {
