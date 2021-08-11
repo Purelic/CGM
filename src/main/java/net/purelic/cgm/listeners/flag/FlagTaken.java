@@ -2,6 +2,7 @@ package net.purelic.cgm.listeners.flag;
 
 import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
+import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.maps.flag.Flag;
 import net.purelic.cgm.core.maps.flag.FlagItem;
 import net.purelic.cgm.core.maps.flag.constants.FlagPattern;
@@ -50,7 +51,8 @@ public class FlagTaken implements Listener {
                 Hill hill = FlagUtils.getHill(flag);
                 boolean inGoal = hill != null && hill.getControlledBy() == team;
 
-                if (inGoal) {
+                // only show the drop flag title if flag collection is turned on
+                if (inGoal && NumberSetting.FLAG_COLLECTION_INTERVAL.value() > 0) {
                     ChatUtils.sendTitle(player, "", ChatColor.BOLD + "REMOVE HELMET TO DROP FLAG");
                 } else {
                     ChatUtils.sendActionBar(player, "Carrying " + flag.getTitle().trim());
