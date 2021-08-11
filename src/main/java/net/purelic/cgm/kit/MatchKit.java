@@ -68,12 +68,12 @@ public class MatchKit implements Kit {
         ChatColor color = MatchTeam.getTeam(player).getColor();
         int rgb = this.getRGB(player, color);
 
-        int swordSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_SWORD, 1));
-        int bowSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_BOW, 2));
-        int shearsSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_SHEARS, 3));
-        int pickaxeSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_PICKAXE, 4));
-        int axeSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_AXE, 5));
-        int shovelSlot = 5;
+        GameType gameType = EnumSetting.GAME_TYPE.get();
+        int swordSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_SWORD_BW : gameType == GameType.UHC ? Preference.HOTBAR_SWORD_UHC : Preference.HOTBAR_SWORD, 1));
+        int bowSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_BOW_BW : gameType == GameType.UHC ? Preference.HOTBAR_BOW_UHC : Preference.HOTBAR_BOW, 2));
+        int shearsSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_SHEARS_BW : gameType == GameType.UHC ? Preference.HOTBAR_SHEARS_UHC : Preference.HOTBAR_SHEARS, 3));
+        int pickaxeSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_PICKAXE_BW : gameType == GameType.UHC ? Preference.HOTBAR_PICKAXE_UHC : Preference.HOTBAR_PICKAXE, 4));
+        int axeSlot = PreferenceUtils.slotToIndex(profile.getPreference(gameType == GameType.BED_WARS ? Preference.HOTBAR_AXE_BW : gameType == GameType.UHC ? Preference.HOTBAR_AXE_UHC : Preference.HOTBAR_AXE, 5));
         int blocksSlot = PreferenceUtils.slotToIndex(profile.getPreference(Preference.HOTBAR_WOOL, 9));
 
         inventory.setArmorContents(this.getArmor(rgb));
@@ -82,7 +82,7 @@ public class MatchKit implements Kit {
         this.addItem(inventory, shearsSlot, this.shears);
         this.addItem(inventory, pickaxeSlot, this.pickaxe);
         this.addItem(inventory, axeSlot, this.axe);
-        this.addItem(inventory, shovelSlot, this.shovel);
+        this.addItem(inventory, 0, this.shovel);
 
         for (ItemStack stack : this.getBlocks(color)) {
             this.addItem(inventory, blocksSlot, stack);
