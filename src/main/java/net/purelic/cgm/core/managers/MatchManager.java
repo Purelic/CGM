@@ -113,7 +113,7 @@ public class MatchManager {
         nextMap = map;
 
         if (map.getName().equals("UHC")) TaskUtils.runAsync(new UHCLoader(map));
-        else TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString()));
+        else TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString(), false));
     }
 
     private static void setNextGameMode(CustomGameMode gameMode) {

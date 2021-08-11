@@ -72,7 +72,7 @@ public class UHCLoader extends BukkitRunnable {
 
             MapYaml yaml = new MapYaml(MapUtils.getMapYaml(downloaded));
             CustomMap map = new CustomMap(downloaded, yaml);
-            TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString()));
+            TaskUtils.runAsync(new MapLoader(map.getName(), UUID.randomUUID().toString(), false));
         }
     }
 
