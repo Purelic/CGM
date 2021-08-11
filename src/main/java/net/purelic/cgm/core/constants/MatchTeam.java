@@ -4,7 +4,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
-import net.purelic.cgm.core.gamemodes.constants.TeamSize;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.managers.ScoreboardManager;
@@ -234,7 +233,7 @@ public enum MatchTeam {
 
     // needs to filter out teams eliminated
     public static MatchTeam getSmallestTeam(TeamType teamType, boolean forced) {
-        boolean doubles = EnumSetting.TEAM_SIZE.is(TeamSize.DOUBLES) || MatchManager.getParticipants().size() > 2;
+        boolean doubles = MatchUtils.getMaxTeamPlayers() == 2 && MatchManager.getParticipants().size() > 2;
         MatchTeam smallest = null;
         int players = 0;
 
