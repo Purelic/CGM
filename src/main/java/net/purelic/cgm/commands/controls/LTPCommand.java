@@ -33,7 +33,9 @@ public class LTPCommand implements CustomCommand {
             .handler(c -> {
                 Player player = (Player) c.getSender();
 
-                if (Permission.notPremium(c) && !Commons.isOwner(player)) {
+                if (Permission.notPremium(c)) return;
+
+                if (!Commons.isOwner(player)) {
                     CommandUtils.sendErrorMessage(player, "Only the server owner can promote their server!");
                     return;
                 }
