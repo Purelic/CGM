@@ -6,6 +6,5 @@ public enum ArmorPiece {
     LEGGINGS,
     CHESTPLATE,
     HELMET,
-    ;
 
 }

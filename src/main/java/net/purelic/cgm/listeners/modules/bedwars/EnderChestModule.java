@@ -3,7 +3,6 @@ package net.purelic.cgm.listeners.modules.bedwars;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.events.match.MatchJoinEvent;
-import net.purelic.cgm.events.match.MatchStartEvent;
 import net.purelic.cgm.events.participant.ParticipantEliminateEvent;
 import net.purelic.cgm.utils.SpawnUtils;
 import org.bukkit.Location;
@@ -14,11 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 public class EnderChestModule implements Listener {
-
-    @EventHandler
-    public void onMatchStart(MatchStartEvent event) {
-        // Bukkit.getOnlinePlayers().forEach(player -> player.getEnderChest().clear());
-    }
 
     @EventHandler(priority = EventPriority.LOW)
     public void onParticipantEliminate(ParticipantEliminateEvent event) {

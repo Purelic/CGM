@@ -13,10 +13,8 @@ import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.TaskUtils;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.EulerAngle;
 
 import java.text.DecimalFormat;
 
@@ -27,31 +25,13 @@ public class RespawnCountdown extends BukkitRunnable {
     private double seconds;
     private final Participant participant;
     private final Player player;
-    // private final ArmorStand stand;
     private EntityArmorStand entity;
 
     public RespawnCountdown(double seconds, Participant participant) {
         this.seconds = seconds;
         this.participant = participant;
         this.player = participant.getPlayer();
-        // this.stand = RespawnModule.getStand(this.player);
-        // this.stand = this.getStand(this.player);
-
         this.setFrozen();
-
-        // EntityUtils.teleportEntity(this.player, this.stand, this.player.getLocation().clone().add(0, 0.5, 0));
-
-//        for (Player online : Bukkit.getOnlinePlayers()) {
-//            if (online == this.player) {
-//                // EntityUtils.teleportEntity(this.player, this.stand, this.player.getLocation().clone().add(0, 0.5, 0));
-//                // EntityUtils.showEntity(this.player, this.stand);
-//                continue;
-//            }
-//            else EntityUtils.hideEntity(online, this.stand);
-//        }
-
-        // this.stand.teleport(this.player.getLocation().add(0, 0.5, 0));
-        // this.player.setVelocity(new Vector());
     }
 
     @Override
@@ -95,10 +75,6 @@ public class RespawnCountdown extends BukkitRunnable {
             return;
         }
 
-//        if (this.stand.getPassenger() == null) {
-//            this.stand.setPassenger(this.player);
-//        }
-
         String secondsFormat = FORMAT.format(this.seconds);
         ChatUtils.sendActionBar(
             this.player,
@@ -111,7 +87,7 @@ public class RespawnCountdown extends BukkitRunnable {
     }
 
     private void setFrozen() {
-        EntityArmorStand entity = EntityUtils.spawnArmorStand(this.player, this.player.getLocation().add(0, 0.5, 0));
+        EntityArmorStand entity = EntityUtils.spawnArmorStand(this.player, this.player.getLocation().add(0, 0.25, 0));
         this.player.setAllowFlight(true);
         EntityUtils.attachEntity(this.player, entity);
         this.entity = entity;
@@ -121,27 +97,7 @@ public class RespawnCountdown extends BukkitRunnable {
         EntityUtils.destroyArmorStand(this.player, this.entity);
     }
 
-    private ArmorStand getStand(Player player) {
-        ArmorStand stand = player.getWorld().spawn(player.getLocation().add(0, 0.5, 0), ArmorStand.class);
-        stand.setVisible(false);
-        stand.setGravity(false);
-        stand.setBasePlate(false);
-        stand.setArms(false);
-        stand.setSmall(true);
-        stand.setLeftLegPose(new EulerAngle(3.14159265D, 0.0D, 0.0D));
-        stand.setRightLegPose(new EulerAngle(3.14159265D, 0.0D, 0.0D));
-        stand.setHeadPose(new EulerAngle(3.14159265D, 0.0D, 0.0D));
-        stand.setPassenger(player);
-        stand.setCanPickupItems(false);
-        stand.setMarker(true);
-        return stand;
-    }
-
     private void cancelAndClearStand() {
-//        this.stand.eject();
-//        // RespawnModule.removePlayer(this.player, this.stand);
-//        this.stand.remove();
-//
         this.destroyStand();
         this.cancel();
     }

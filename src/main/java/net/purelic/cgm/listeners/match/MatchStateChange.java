@@ -36,7 +36,7 @@ public class MatchStateChange implements Listener {
 
         if (newState == MatchState.WAITING) {
             ScoreboardManager.resetScores(0);
-            this.scoreboardManager.updateWaitingSidebar(false);
+            ScoreboardManager.updateWaitingSidebar(false);
         } else if (newState == MatchState.STARTING) {
             if (ToggleAutoStartCommand.autostart || forced) {
                 if (ServerUtils.isRanked()) seconds = 60;

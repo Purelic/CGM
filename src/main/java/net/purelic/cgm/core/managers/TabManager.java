@@ -184,7 +184,7 @@ public class TabManager {
 
     public static void updateStats(Participant participant) {
         TabList tabList = TAB_LISTS.get(participant.getPlayer());
-        tabList.updateStats(participant);
+        tabList.updateStats();
         if (!blockUpdates) tabList.update();
     }
 
@@ -196,27 +196,14 @@ public class TabManager {
 
     public static void updateScore(Participant participant) {
         updateStats(participant);
-//        TabList tabList = TAB_LISTS.get(participant.getPlayer());
-//        tabList.updateScore(participant);
-//        if (!blockUpdates) tabList.update();
     }
 
     public static void updateKills(Participant participant) {
         updateStats(participant);
-//        TabList tabList = TAB_LISTS.get(participant.getPlayer());
-//        tabList.updateKills(participant);
-//        tabList.updateKDR(participant);
-//        tabList.updateKillStreak(participant);
-//        if (!blockUpdates) tabList.update();
     }
 
     public static void updateDeaths(Participant participant) {
         updateStats(participant);
-//        TabList tabList = TAB_LISTS.get(participant.getPlayer());
-//        tabList.updateDeaths(participant);
-//        tabList.updateKDR(participant);
-//        tabList.updateKillStreak(participant);
-//        if (!blockUpdates) tabList.update();
     }
 
     public static void blockUpdates() {

@@ -87,8 +87,6 @@ public enum NumberSetting implements GameSetting {
 
     PLAYER_SHEAR_EFF(GameSettingType.PLAYER_SHEARS, 3),
     INFECTED_SHEAR_EFF(GameSettingType.INFECTED_SHEARS, 3),
-    // PLAYER_FLINT_USES(GameSettingType.PLAYER_FLINT, 0),
-    // PLAYER_ROD_USES(GameSettingType.PLAYER_ROD, 0),
 
     PLAYER_PICKAXE_EFFICIENCY(GameSettingType.PLAYER_PICKAXE, 0),
     PLAYER_PICKAXE_UNBREAKING(GameSettingType.PLAYER_PICKAXE, 0),

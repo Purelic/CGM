@@ -196,12 +196,6 @@ public class ShopManager {
             1, Material.EMERALD,
             34));
 
-//        ShopItem sharp2 = new ShopItem(
-//                new ItemCrafter(Material.GOLD_SWORD).name("Sharpness II").setTag("team_upgrade", TeamUpgrade.SHARPNESS_II.name()).craft(),
-//                1, Material.IRON_INGOT,
-//                46)
-//                .withDescription("Permanently gives your team Sharpness II!");
-
         bedWarsShop.addItem(new ShopItem(
             new ItemCrafter(Material.GOLD_SWORD).name("Sharpness I").setTag("limited", "true").setTag("team_upgrade", TeamUpgrade.SHARPNESS_I.name()).craft(),
             discount ? 4 : 8, Material.DIAMOND,
@@ -227,18 +221,6 @@ public class ShopManager {
             discount ? 2 : 4, Material.DIAMOND,
             48, haste2)
             .withDescription("Permanently gives your team Haste I!"));
-
-//        ShopItem featherFalling2 = new ShopItem(
-//                new ItemCrafter(Material.FEATHER).name("Feather Falling II").setTag("team_upgrade", TeamUpgrade.FEATHER_FALLING_II.name()).craft(),
-//                1, Material.IRON_INGOT,
-//                49)
-//                .withDescription("Permanently gives your team Feather Falling II!");
-//
-//        bedWarsShop.addItem(new ShopItem(
-//                new ItemCrafter(Material.FEATHER).name("Feather Falling I").setTag("team_upgrade", TeamUpgrade.FEATHER_FALLING_I.name()).craft(),
-//                1, Material.IRON_INGOT,
-//                49, featherFalling2)
-//                .withDescription("Permanently gives your team Feather Falling I!"));
 
         ShopItem trap3 = new ShopItem(TeamUpgrade.TRAP_III, 1, 49).withDescription("Gives the enemy mining fatigue (8s), slowness (4s), and blindness (4s)!");
 

@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 
 public class MonsterDamageTick extends DamageTick {
 
-    private LivingEntity entity;
+    private final LivingEntity entity;
     private double distance;
     private boolean ranged = false;
 

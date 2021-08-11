@@ -189,7 +189,6 @@ public class CGM extends JavaPlugin {
         this.registerListener(new VoidResourcesModule());
 
         // Modules
-        this.registerListener(new ArmorLockModule());
         this.registerListener(new StraightArrowModule());
         this.registerListener(new ArrowSpawnModule());
         this.registerListener(new ArrowTrailModule());
@@ -250,9 +249,6 @@ public class CGM extends JavaPlugin {
     private void registerCommandManager() {
         final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
             CommandExecutionCoordinator.simpleCoordinator();
-
-//        final Function<CommandTree<CommandSender>, CommandExecutionCoordinator<CommandSender>> executionCoordinatorFunction =
-//            AsynchronousCommandExecutionCoordinator.<CommandSender>newBuilder().build();
 
         final Function<CommandSender, CommandSender> mapperFunction = Function.identity();
 

@@ -75,7 +75,6 @@ public class Shop {
     private ShopItem getParentItem(Player player, ShopItem item) {
         if (!item.hasParent()) return item;
 
-        // TODO This logic could be cleaner
         if (item.isUpgrade()) {
             boolean hasItem = this.hasItem(player, item);
 

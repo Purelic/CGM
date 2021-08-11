@@ -12,8 +12,6 @@ import java.util.List;
 
 public class SoundBuilder {
 
-    // TODO add a repeat and volume option
-
     private static final float DEFAULT_VOLUME = 10F;
     private static final float DEFAULT_PITCH = 1F; // 0.5 = half speed, 1 = normal speed, 2 = double speed
 

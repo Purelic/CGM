@@ -28,20 +28,6 @@ public class VoidResourcesModule implements Listener {
         }
     }
 
-//    @EventHandler
-//    public void onInventoryClick(InventoryClickEvent event) {
-//        Player player = (Player) event.getWhoClicked();
-//
-//        if (event.getClickedInventory() != null
-//            && event.getClickedInventory().getType() == InventoryType.CRAFTING
-//            && EnumSetting.GAME_TYPE.is(GameType.BED_WARS)) {
-////            && this.isOverVoid(player)
-////            && this.isFalling(player)) {
-//            event.setCancelled(true);
-//            player.updateInventory();
-//        }
-//    }
-
     private boolean isResource(Item item) {
         if (item == null) return false;
 

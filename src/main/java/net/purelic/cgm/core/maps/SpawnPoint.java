@@ -1,7 +1,6 @@
 package net.purelic.cgm.core.maps;
 
 import net.purelic.cgm.core.constants.MatchTeam;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -44,11 +43,6 @@ public class SpawnPoint {
 
     public void teleport(Player player, World world) {
         player.teleport(this.getLocation(world));
-    }
-
-    public void teleportAll(World world) {
-        Bukkit.getOnlinePlayers()
-            .forEach(player -> player.teleport(this.getLocation(world)));
     }
 
 }

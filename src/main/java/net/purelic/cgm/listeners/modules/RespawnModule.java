@@ -2,11 +2,9 @@ package net.purelic.cgm.listeners.modules;
 
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.cgm.events.match.MatchCycleEvent;
 import net.purelic.cgm.events.match.MatchEndEvent;
 import net.purelic.cgm.events.participant.ParticipantDeathEvent;
 import net.purelic.cgm.utils.EntityUtils;
-import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -68,18 +66,6 @@ public class RespawnModule implements Listener {
     }
 
     @EventHandler
-    public void onMatchCycle(MatchCycleEvent event) {
-        if (!event.hasMap()) return;
-
-        int total = MatchUtils.getMaxPlayers(event.getGameMode());
-        Location location = event.getMap().getWorld().getSpawnLocation();
-
-        for (int i = 0; i < total; i++) {
-            // stands.put(getStand(location), null);
-        }
-    }
-
-    @EventHandler
     public void onMatchEnd(MatchEndEvent event) {
         for (ArmorStand stand : stands.keySet()) {
             stand.remove();
@@ -119,15 +105,6 @@ public class RespawnModule implements Listener {
     public static void removePlayer(Player player, ArmorStand stand) {
         EntityUtils.teleportEntity(player, stand, stand.getLocation().clone().add(0, Integer.MAX_VALUE, 0));
         stands.put(stand, null);
-
-//        new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                EntityUtils.teleportEntity(player, stand, stand.getLocation().clone().add(0, Integer.MAX_VALUE, 0));
-//                // stand.teleport(stand.getLocation().add(0, Integer.MAX_VALUE, 0));
-//                stands.put(stand, null);
-//            }
-//        }.runTask(CGM.get());
     }
 
 }

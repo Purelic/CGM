@@ -54,8 +54,6 @@ public class TeamUpgradePurchaseEvent extends Event implements Broadcastable {
     @Override
     public BaseComponent[] getBroadcastMessage() {
         return new ComponentBuilder("")
-            // .append(" TEAM UPGRADE » ").color(this.team.getColor()).bold(true)
-            //.append("").reset()
             .append(NickUtils.getNick(this.player))
             .append(" purchased ").reset()
             .append(this.upgrade.getName()).color(ChatColor.AQUA)

@@ -59,8 +59,6 @@ public class CycleCountdown extends BukkitRunnable {
             this.cancel();
 
             if (restarting) {
-//                Commons.setRestarting(true);
-//                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
                 Bukkit.getServer().shutdown();
             } else {
                 MatchManager.cycle();

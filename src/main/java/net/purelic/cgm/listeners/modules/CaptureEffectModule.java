@@ -15,8 +15,6 @@ import org.bukkit.inventory.meta.FireworkMeta;
 
 public class CaptureEffectModule implements Module {
 
-    // TODO eventually these could become player-specific/unlockable effects
-
     @EventHandler
     public void onFlagCapture(FlagCaptureEvent event) {
         Flag flag = event.getFlag();

@@ -9,8 +9,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class BlockDamageTick extends DamageTick {
 
-    private Material type;
-    private Location location;
+    private final Material type;
+    private final Location location;
 
     public BlockDamageTick(double damage, EntityDamageEvent.DamageCause cause, String name, long timestamp, Material type, Location location) {
         super(damage, cause, name, timestamp);

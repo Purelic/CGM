@@ -208,10 +208,6 @@ public class MatchCountdown extends BukkitRunnable {
         }
     }
 
-    public void addTime(int seconds) {
-        MatchCountdown.seconds += seconds;
-    }
-
     public static MatchCountdown getCountdown() {
         return countdown;
     }
@@ -226,10 +222,6 @@ public class MatchCountdown extends BukkitRunnable {
 
     public static boolean isForced() {
         return forced;
-    }
-
-    public static List<Hill> getHills() {
-        return hills;
     }
 
 }

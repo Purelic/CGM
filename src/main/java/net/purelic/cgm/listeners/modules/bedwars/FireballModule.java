@@ -64,10 +64,8 @@ public class FireballModule implements Listener {
 
     public void launchFireball(Player player) {
         Fireball fireball = player.launchProjectile(Fireball.class);
-        // fireball.setVelocity(player.getLocation().getDirection().multiply(0.5));
         setDirection(fireball, player.getLocation().getDirection());
 
-        // fireball.setCustomName(ChatColor.BOLD + "༼ つ ◕_◕ ༽つ");
         fireball.setCustomName(ChatColor.BOLD + "¯\\_(ツ)_/¯");
         fireball.setCustomNameVisible(true);
         fireball.setMetadata("fireball", new FixedMetadataValue(CGM.get(), "fireball"));

@@ -258,19 +258,6 @@ public class SoundUtils {
         VOTE(Sound.FIRE_IGNITE),
 
         UNVOTE(new SoundBuilder(Sound.FIZZ, 2F)),
-
-        // capturing hill
-        // hill captured
-        // hill lost
-        // teammate death
-        // enemy death
-        // respawn
-        // hill contested
-        // round win
-        // round lost
-        // match win
-        // match lost
-        // round start
         ;
 
         private final List<SoundBuilder> sfx;

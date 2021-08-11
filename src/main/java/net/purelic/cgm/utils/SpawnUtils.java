@@ -58,8 +58,6 @@ public class SpawnUtils {
         } else {
             player.teleport(Commons.getLobby().getSpawnLocation());
         }
-
-        // PacketUtils.removeBorder(player);
     }
 
     public static void teleportRandom(Player player, boolean initialSpawn) {
@@ -159,10 +157,6 @@ public class SpawnUtils {
 
     public static Location getInitialSpawn(MatchTeam team) {
         return getInitialSpawnPoint(team).getLocation(MatchManager.getCurrentMap().getWorld());
-    }
-
-    private static SpawnPoint getInitialSpawnPoint(Player player) {
-        return getInitialSpawnPoint(MatchTeam.getTeam(player));
     }
 
     private static SpawnPoint getInitialSpawnPoint(MatchTeam team) {

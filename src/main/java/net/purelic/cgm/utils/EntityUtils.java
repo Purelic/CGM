@@ -11,28 +11,6 @@ import org.bukkit.entity.Player;
 
 public class EntityUtils {
 
-    private static EntityHider entityHider;
-
-//    private static void registerEntityHider() {
-//        EntityUtils.entityHider = new EntityHider(CGM.get(), EntityHider.Policy.BLACKLIST);
-//    }
-
-    public static void hideEntity(Player player, Entity entity) {
-        PacketPlayOutEntityDestroy ppp = new PacketPlayOutEntityDestroy(entity.getEntityId());
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(ppp);
-
-//        if (EntityUtils.entityHider == null) EntityUtils.registerEntityHider();
-//        EntityUtils.entityHider.hideEntity(player, entity);
-//
-//        PacketPlayOutEntityDestroy packet = new PacketPlayOutEntityDestroy(entity.getEntityId());
-//        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-    }
-
-//    public static void showEntity(Player player, Entity entity) {
-//        if (EntityUtils.entityHider == null) EntityUtils.registerEntityHider();
-//        EntityUtils.entityHider.showEntity(player, entity);
-//    }
-
     public static void teleportEntity(Player player, Entity entity, Location location) {
         PacketPlayOutEntityTeleport ppp = new PacketPlayOutEntityTeleport(
             entity.getEntityId(),
@@ -43,7 +21,7 @@ public class EntityUtils {
             (byte) ((int) (location.getPitch() * 256.0F / 360.0F)),
             entity.isOnGround()
         );
-        // PacketPlayOutEntityTeleport ppp = new PacketPlayOutEntityTeleport(((CraftEntity) entity).getHandle());
+
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(ppp);
     }
 

@@ -27,21 +27,16 @@ import java.util.*;
 
 public enum MatchTeam {
 
-    OBS("Spectators", ChatColor.AQUA, 0, 0),
-    SOLO("FFA", ChatColor.YELLOW, 0, 0),
-    BLUE("Blue", ChatColor.BLUE, 0, 0),
-    RED("Red", ChatColor.RED, 0, 1),
-    GREEN("Green", ChatColor.GREEN, 1, 0),
-    YELLOW("Yellow", ChatColor.YELLOW, 1, 1),
-    AQUA("Aqua", ChatColor.AQUA, 0, 2),
-    PINK("Pink", ChatColor.LIGHT_PURPLE, 0, 3),
-    GRAY("Gray", ChatColor.GRAY, 1, 2),
-    WHITE("White", ChatColor.WHITE, 1, 3),
-
-//    TEAM_1("T1", ChatColor.BLUE, -1, -1),
-//    TEAM_2("T2", ChatColor.BLUE, -1, -1),
-//    TEAM_3("T3", ChatColor.BLUE, -1, -1),
-//    TEAM_4("T4", ChatColor.BLUE, -1, -1),
+    OBS("Spectators", ChatColor.AQUA),
+    SOLO("FFA", ChatColor.YELLOW),
+    BLUE("Blue", ChatColor.BLUE),
+    RED("Red", ChatColor.RED),
+    GREEN("Green", ChatColor.GREEN),
+    YELLOW("Yellow", ChatColor.YELLOW),
+    AQUA("Aqua", ChatColor.AQUA),
+    PINK("Pink", ChatColor.LIGHT_PURPLE),
+    GRAY("Gray", ChatColor.GRAY),
+    WHITE("White", ChatColor.WHITE),
     ;
 
     private static final Map<Player, MatchTeam> PLAYER_MAP = new HashMap<>();
@@ -50,20 +45,16 @@ public enum MatchTeam {
     private final ChatColor defaultColor;
     private String name;
     private ChatColor color;
-    private final int tabOrder;
-    private final int tabCol;
     private final List<Player> players;
     private final Set<UUID> allowed;
     private int score;
     private int roundsWon;
 
-    MatchTeam(String name, ChatColor color, int tabCol, int tabOrder) {
+    MatchTeam(String name, ChatColor color) {
         this.defaultName = name;
         this.defaultColor = color;
         this.name = name;
         this.color = color;
-        this.tabCol = tabCol;
-        this.tabOrder = tabOrder;
         this.players = new ArrayList<>();
         this.allowed = new HashSet<>();
         this.score = 0;
@@ -77,7 +68,6 @@ public enum MatchTeam {
     public void setName(String name) {
         this.name = name;
         ScoreboardManager.updateTeamBoard();
-        // ScoreboardManager.updateTeamBoard(this);
     }
 
     public String getDefaultName() {
@@ -100,18 +90,9 @@ public enum MatchTeam {
         this.color = color;
     }
 
-    public int getTabCol() {
-        return this.tabCol;
-    }
-
-    public int getTabOrder() {
-        return this.tabOrder;
-    }
-
     public void resetScore() {
         this.score = 0;
         ScoreboardManager.updateTeamBoard();
-        // ScoreboardManager.updateTeamBoard(this);
     }
 
     public void reset() {

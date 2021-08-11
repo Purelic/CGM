@@ -15,10 +15,4 @@ public class PlayerChat implements Listener {
         event.setCancelled(true);
     }
 
-//    // necessary for Matrix to detect chat violations
-//    @EventHandler (priority = EventPriority.MONITOR)
-//    public void onPlayerChatMonitor(AsyncPlayerChatEvent event) {
-//        event.setCancelled(true);
-//    }
-
 }

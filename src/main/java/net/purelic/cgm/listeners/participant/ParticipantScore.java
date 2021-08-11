@@ -1,6 +1,5 @@
 package net.purelic.cgm.listeners.participant;
 
-import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.NumberSetting;
@@ -16,12 +15,6 @@ import org.bukkit.event.Listener;
 
 public class ParticipantScore implements Listener {
 
-    private final ScoreboardManager scoreboardManager;
-
-    public ParticipantScore() {
-        this.scoreboardManager = CGM.get().getScoreboardManager();
-    }
-
     @EventHandler
     public void onParticipantScore(ParticipantScoreEvent event) {
         Participant participant = event.getParticipant();
@@ -32,7 +25,7 @@ public class ParticipantScore implements Listener {
             int scoreLimit = NumberSetting.SCORE_LIMIT.value();
 
             if (participant.getScore() >= scoreLimit && scoreLimit > 0 && !MatchUtils.isElimination()) {
-                Commons.callEvent(new RoundEndEvent()); // todo removed participant arg
+                Commons.callEvent(new RoundEndEvent());
             }
         } else {
             MatchTeam team = MatchTeam.getTeam(participant.getPlayer());

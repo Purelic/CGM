@@ -44,12 +44,6 @@ public class GameModesCommand implements CustomCommand {
                     return;
                 }
 
-                // TODO look into the chained commands example to allow for two different commands
-                // with different permissions
-//                if (!CommandUtils.hasPermission(player, PermissionType.MAP_DEV, true)) {
-//                    return;
-//                }
-
                 new BukkitRunnable() {
                     @Override
                     public void run() {

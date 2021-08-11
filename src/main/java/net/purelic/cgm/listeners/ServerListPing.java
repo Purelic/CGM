@@ -16,9 +16,6 @@ public class ServerListPing implements Listener {
         ChatColor.RESET + ChatColor.GRAY + " [1.7-1.16] " +
         ChatColor.AQUA + ChatColor.STRIKETHROUGH + "               \n" + ChatColor.RESET;
 
-//    private final String header = ChatColor.WHITE + "" + ChatColor.BOLD +
-//            "PuRelic Network " + ChatColor.RESET + ChatColor.GRAY + "[1.7 - 1.16]\n";
-
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         if (Bukkit.hasWhitelist()) {
@@ -36,8 +33,7 @@ public class ServerListPing implements Listener {
         String motd = this.header + ChatColor.GRAY + " » " + MatchState.getState().toString() + ChatColor.GRAY + " « ";
 
         if (MatchState.isActive() || MatchState.isState(MatchState.ENDED)) {
-            MatchManager matchManager = CGM.get().getMatchManager();
-            motd += matchManager.getCurrentGameMode().getColoredName() + ChatColor.WHITE + " on " + matchManager.getCurrentMap().getColoredName();
+            motd += MatchManager.getCurrentGameMode().getColoredName() + ChatColor.WHITE + " on " + MatchManager.getCurrentMap().getColoredName();
         }
 
         event.setMotd(motd);

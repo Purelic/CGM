@@ -5,6 +5,5 @@ public enum ScoreboardTimer {
     REFILL,
     GRACE,
     BORDER,
-    ;
 
 }

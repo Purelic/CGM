@@ -1,10 +1,10 @@
 package net.purelic.cgm.listeners;
 
 import net.md_5.bungee.api.ChatColor;
-import net.purelic.cgm.CGM;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.managers.MatchManager;
+import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.managers.TabManager;
 import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.league.LeagueModule;
@@ -24,7 +24,7 @@ public class PlayerJoin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        CGM.get().getScoreboardManager().setScoreboard(player);
+        ScoreboardManager.setScoreboard(player);
 
         // specifically flag first joins when adding a a player to obs because
         // we put the player in spectator mode, then hide them from participants,

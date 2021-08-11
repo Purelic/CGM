@@ -25,7 +25,7 @@ public class Waypoint {
     private BukkitRunnable runnable;
     private Location particleBase;
     private Color particleColor;
-    private LunarWaypoint lunarWaypoint;
+    private final LunarWaypoint lunarWaypoint;
 
     public Waypoint(Flag flag, Participant participant) {
         final Player target = participant.getPlayer();

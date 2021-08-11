@@ -115,7 +115,6 @@ public class RoundStart implements Listener {
             return;
         }
 
-        // TODO: make a method in matchutils that sends the object + optional lives remaining title to participant
         if (NumberSetting.LIVES_PER_ROUND.value() > 0) {
             MatchManager.getParticipants().forEach(participant -> {
                 int lives = participant.getLives();

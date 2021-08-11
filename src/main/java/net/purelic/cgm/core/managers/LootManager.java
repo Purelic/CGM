@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class LootManager {
 
-    private static Map<LootType, Map<LootItemLevel, List<LootChestItem>>> items = new HashMap<>();
+    private static final Map<LootType, Map<LootItemLevel, List<LootChestItem>>> ITEMS = new HashMap<>();
 
     public static void setLootItems() {
         List<LootChestItem> swNormalItems = Arrays.asList(
@@ -333,10 +333,10 @@ public class LootManager {
             new LootChestItem(LootItemLevel.LEVEL_12, new ItemCrafter(Material.TNT).name("Instant TNT").amount(4))
         );
 
-        items.put(LootType.SG_NORMAL, getItemMap(sgNormalItems));
-        items.put(LootType.SG_INSANE, getItemMap(sgInsaneItems));
-        items.put(LootType.SW_NORMAL, getItemMap(swNormalItems));
-        items.put(LootType.SW_INSANE, getItemMap(swInsaneItems));
+        ITEMS.put(LootType.SG_NORMAL, getItemMap(sgNormalItems));
+        ITEMS.put(LootType.SG_INSANE, getItemMap(sgInsaneItems));
+        ITEMS.put(LootType.SW_NORMAL, getItemMap(swNormalItems));
+        ITEMS.put(LootType.SW_INSANE, getItemMap(swInsaneItems));
     }
 
     private static Map<LootItemLevel, List<LootChestItem>> getItemMap(List<LootChestItem> items) {
@@ -352,7 +352,7 @@ public class LootManager {
     }
 
     public static List<LootChestItem> getItems(LootType type, LootItemLevel level) {
-        return items.get(type).get(level);
+        return ITEMS.get(type).get(level);
     }
 
 }

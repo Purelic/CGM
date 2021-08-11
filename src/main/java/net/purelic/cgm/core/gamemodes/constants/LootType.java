@@ -7,6 +7,5 @@ public enum LootType {
     SW_NORMAL,
     SW_INSANE,
     CUSTOM,
-    ;
 
 }

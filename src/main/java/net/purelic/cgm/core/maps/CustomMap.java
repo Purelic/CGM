@@ -355,7 +355,7 @@ public class CustomMap {
     }
 
     private boolean hasBeds(CustomGameMode gameMode) {
-        return this.yaml.getBeds().size() > 0; // TODO this needs to be a lot better
+        return this.yaml.getBeds().size() > 0;
     }
 
     private boolean hasChests(CustomGameMode gameMode) {

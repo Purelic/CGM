@@ -22,7 +22,7 @@ public class ColorConverter {
             case DARK_BLUE:
                 return Color.NAVY;
             case DARK_GRAY:
-            case GRAY: // prev silver
+            case GRAY:
                 return Color.GRAY;
             case DARK_GREEN:
                 return Color.GREEN;

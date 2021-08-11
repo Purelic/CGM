@@ -14,7 +14,7 @@ import java.text.DecimalFormat;
 
 public class FallDamageTick extends DamageTick {
 
-    private double distance;
+    private final double distance;
 
     public FallDamageTick(double damage, String name, long timestamp, double distance) {
         super(damage, EntityDamageEvent.DamageCause.FALL, name, timestamp);

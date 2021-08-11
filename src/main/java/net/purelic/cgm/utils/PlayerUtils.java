@@ -176,18 +176,10 @@ public class PlayerUtils {
 
     public static void clearInventory(Player player) {
         clearInventory(player.getInventory());
-        // clearItems(player.getInventory().getArmorContents()); // TODO will this work?
 
         if (player.getItemOnCursor().getType() != Material.AIR) {
             player.setItemOnCursor(null);
         }
-//
-//        for (ItemStack item : player.getInventory().getContents()) {
-//            if (item != null) {
-//                player.getInventory().clear();
-//                break;
-//            }
-//        }
 
         for (ItemStack item : player.getInventory().getArmorContents()) {
             if (item.getType() != Material.AIR) {
@@ -198,7 +190,6 @@ public class PlayerUtils {
 
         if (player.getOpenInventory() != null) {
             clearInventory(player.getOpenInventory().getTopInventory());
-            // player.getOpenInventory().getTopInventory().clear();
         }
     }
 
@@ -214,18 +205,6 @@ public class PlayerUtils {
         ItemStack[] items = new ItemStack[remove.size()];
         remove.toArray(items);
         inventory.removeItem(items);
-    }
-
-    private static void clearItems(ItemStack[] items) {
-        for (ItemStack item : items) {
-            if (item != null && item.getType() != Material.AIR) {
-                item.setType(Material.AIR);
-            }
-        }
-    }
-
-    public static void clearEffectsAll() {
-        Bukkit.getOnlinePlayers().forEach(PlayerUtils::clearEffects);
     }
 
     public static void clearEffects(Player player) {

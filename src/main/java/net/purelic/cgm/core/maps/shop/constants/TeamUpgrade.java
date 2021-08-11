@@ -84,10 +84,10 @@ public enum TeamUpgrade {
                     PlayerUtils.addPermanentEffect(player, PotionEffectType.FAST_DIGGING, 1);
                     break;
                 case FEATHER_FALLING_I:
-                    // applyFeatherFallingUpgrade(player, 1);
+                    applyFeatherFallingUpgrade(player, 1);
                     break;
                 case FEATHER_FALLING_II:
-                    // applyFeatherFallingUpgrade(player, 2);
+                    applyFeatherFallingUpgrade(player, 2);
                     break;
             }
         }

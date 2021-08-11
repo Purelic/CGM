@@ -8,8 +8,6 @@ import java.util.List;
 
 public enum TeamType {
 
-    // TODO use parent team to simplify the arrayutil.addall
-
     SOLO("Solo", 16, MatchTeam.SOLO),
     TEAMS("Teams", 8, MatchTeam.BLUE, MatchTeam.RED),
     MULTI_TEAM("Multi-Team", 4, (MatchTeam[]) ArrayUtils.addAll(TEAMS.teams.toArray(), new MatchTeam[]{MatchTeam.GREEN, MatchTeam.YELLOW})),

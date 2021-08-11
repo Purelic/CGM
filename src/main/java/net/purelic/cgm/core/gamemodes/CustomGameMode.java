@@ -14,8 +14,6 @@ import java.util.UUID;
 public class CustomGameMode {
 
     private final QueryDocumentSnapshot doc;
-    private final Map<String, Object> data; // TODO instead of pulling from doc pull from data...
-    // might need a util that let's me easily pass dot formatted paths
     private final String id;
     private final UUID author;
     private final String name;
@@ -28,7 +26,6 @@ public class CustomGameMode {
 
     public CustomGameMode(QueryDocumentSnapshot doc) {
         this.doc = doc;
-        this.data = doc.getData();
         this.id = doc.getId();
         this.author = UUID.fromString(this.getOrDefault("author", "1935c8bf-3fdc-44d6-b358-85a7206ad8ac"));
         this.name = doc.getString("name");
@@ -82,7 +79,7 @@ public class CustomGameMode {
     }
 
     private Object getSetting(GameSetting setting) {
-        return doc.get("settings." + setting.getSettingType().getKey() + "." + setting.getKey());
+        return this.doc.get("settings." + setting.getSettingType().getKey() + "." + setting.getKey());
     }
 
     public int getNumberSetting(NumberSetting setting) {

@@ -4,6 +4,5 @@ public enum CompassTrackingType {
 
     PLAYER,
     OBJECTIVE,
-    ;
 
 }

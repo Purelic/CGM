@@ -11,8 +11,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 public abstract class DamageTick implements Comparable {
 
     private double damage;
-    private EntityDamageEvent.DamageCause cause;
-    private String name;
+    private final EntityDamageEvent.DamageCause cause;
+    private final String name;
     private long timestamp;
 
     public DamageTick(double damage, EntityDamageEvent.DamageCause cause, String name, long timestamp) {

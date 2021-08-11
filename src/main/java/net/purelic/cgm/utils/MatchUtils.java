@@ -1,7 +1,6 @@
 package net.purelic.cgm.utils;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.CustomGameMode;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
@@ -10,10 +9,7 @@ import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.gamemodes.constants.TeamSize;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
-import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.cgm.core.match.Participant;
-import net.purelic.commons.Commons;
-import net.purelic.commons.utils.ServerUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -21,67 +17,8 @@ import java.util.List;
 
 public class MatchUtils {
 
-    private static final TextComponent DEFAULT_HEADER = new TextComponent(ChatColor.BOLD + "PuRelic Network");
-    private static final TextComponent DEFAULT_FOOTER = new TextComponent(ChatColor.GRAY + "purelic.net");
-    private static int time = 0;
-
-    public static void updateTabAll() {
-        // Bukkit.getOnlinePlayers().forEach(MatchUtils::updateTab);
-    }
-
-    public static void updateTabAll(int seconds) {
-        time = seconds;
-        // Bukkit.getOnlinePlayers().forEach(MatchUtils::updateTab);
-    }
-
-    public static void updateTab(Player player) {
-        player.setPlayerListHeaderFooter(getMatchHeader(), getMatchFooter());
-    }
-
-    public static TextComponent getMatchHeader() {
-        CustomGameMode gameMode = MatchManager.getCurrentGameMode();
-        CustomMap map = MatchManager.getCurrentMap();
-
-        if (!Commons.hasOwner()) {
-            if (map == null || gameMode == null) {
-                return new TextComponent(ChatColor.BOLD + ServerUtils.getName());
-            }
-
-            return new TextComponent(
-                ChatColor.BOLD + ServerUtils.getName() + "\n" +
-                    gameMode.getColoredName() + " on " + map.getColoredName() +
-                    "\n" + MatchUtils.getObjectiveString());
-        } else {
-            if (map == null || gameMode == null)
-                return new TextComponent(ChatColor.BOLD + ServerUtils.getName() + "'s Server");
-
-            return new TextComponent(
-                ChatColor.BOLD + ServerUtils.getName() + "'s Server\n" +
-                    gameMode.getColoredName() + " on " + map.getColoredName());
-            // + "\n" + MatchUtils.getObjectiveString());
-        }
-    }
-
-    public static String getTimeString() {
-        return ChatColor.WHITE + "Time Remaining: " + TimeUtils.getFormattedTime(time);
-    }
-
-    public static String getRoundsString() {
-        return ChatColor.WHITE + "Rounds:" + MatchManager.getRoundsString();
-    }
-
     public static boolean hasRounds() {
         return NumberSetting.ROUNDS.value() > 1;
-    }
-
-    public static TextComponent getMatchFooter() {
-        CustomGameMode gameMode = MatchManager.getCurrentGameMode();
-
-        if (gameMode == null) return DEFAULT_FOOTER;
-
-        return new TextComponent(
-            (NumberSetting.ROUNDS.value() == 1 ? "" : getRoundsString() + "\n") +
-                getTimeString());
     }
 
     public static boolean isElimination() {
@@ -120,12 +57,6 @@ public class MatchUtils {
 
     public static int getAlive(MatchTeam team) {
         return getAlivePlayers(team).size();
-    }
-
-    public static int getMaxPlayers(CustomGameMode gameMode) {
-        int maxPerTeam = getMaxTeamPlayers(gameMode);
-        TeamType teamType = TeamType.valueOf(gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
-        return maxPerTeam * teamType.getTeams().size();
     }
 
     public static int getMaxTeamPlayers() {

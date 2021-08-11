@@ -43,7 +43,6 @@ public class WorldBorderCommand implements CustomCommand {
                 Location location = player.getLocation();
                 int loc = (int) Math.max(Math.abs(location.getX()), Math.abs(location.getZ()));
                 int dist = (int) size / 2 - loc;
-                // int sec = (int) (dist / 0.27D);
 
                 CommandUtils.sendAlertMessage(player, "The border is currently " + ChatColor.AQUA + Math.abs(dist) +
                     ChatColor.RESET + " block" + (Math.abs(dist) == 1 ? "" : "s") + " away");
