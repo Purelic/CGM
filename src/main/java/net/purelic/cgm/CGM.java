@@ -7,6 +7,9 @@ import cloud.commandframework.paper.PaperCommandManager;
 import net.purelic.cgm.commands.communication.GlobalCommand;
 import net.purelic.cgm.commands.controls.*;
 import net.purelic.cgm.commands.info.*;
+import net.purelic.cgm.commands.knockback.KnockbackDebugNormalCommand;
+import net.purelic.cgm.commands.knockback.KnockbackDebugSprintCommand;
+import net.purelic.cgm.commands.knockback.KnockbackSetCommand;
 import net.purelic.cgm.commands.league.RankCommand;
 import net.purelic.cgm.commands.league.ReRollCommand;
 import net.purelic.cgm.commands.league.ReadyCommand;
@@ -201,6 +204,7 @@ public class CGM extends JavaPlugin {
         this.registerListener(new HotbarModule());
         this.registerListener(new InstantKillModule());
         this.registerListener(new JumpPadModule());
+        new KnockbackModule().register();
         this.registerListener(new LootChestRefillModule());
         this.registerListener(new NoHungerModule());
         this.registerListener(new NoSleepingModule());
@@ -300,6 +304,11 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new TimeCommand());
         this.registerCommand(new WorldBorderCommand());
 
+        // Knockback
+        Commons.registerCommand(new KnockbackDebugNormalCommand());
+        Commons.registerCommand(new KnockbackDebugSprintCommand());
+        Commons.registerCommand(new KnockbackSetCommand());
+
         // Match
         this.registerCommand(new JoinCommand());
         this.registerCommand(new LivesCommand());
@@ -321,6 +330,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new ToggleAutoStartCommand());
         this.registerCommand(new ToggleFriendlyFireCommand());
         this.registerCommand(new ToggleGameModeCommand());
+        this.registerCommand(new ToggleKnockbackCommand());
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());
         this.registerCommand(new ToggleVotingCommand(this.votingManager));
