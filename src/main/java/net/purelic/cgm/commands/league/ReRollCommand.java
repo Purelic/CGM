@@ -47,7 +47,7 @@ public class ReRollCommand implements CustomCommand {
                     return;
                 }
 
-                if (TaskUtils.isRunning(StartCountdown.getCountdown()) && StartCountdown.getSeconds() <= 10) {
+                if (TaskUtils.isRunning(StartCountdown.getCountdown()) && StartCountdown.getSeconds() <= 5) {
                     CommandUtils.sendErrorMessage(player, "It's too late to vote for a re-roll!");
                     return;
                 }

@@ -47,8 +47,8 @@ public class ReadyCommand implements CustomCommand {
                     return;
                 }
 
-                if (TaskUtils.isRunning(StartCountdown.getCountdown()) && StartCountdown.getSeconds() <= 10) {
-                    CommandUtils.sendErrorMessage(player, "The start countdown is already below 10 seconds!");
+                if (TaskUtils.isRunning(StartCountdown.getCountdown()) && StartCountdown.getSeconds() <= 5) {
+                    CommandUtils.sendErrorMessage(player, "The start countdown is already below 5 seconds!");
                     return;
                 }
 
@@ -84,8 +84,8 @@ public class ReadyCommand implements CustomCommand {
 
                 if (start) {
                     String prefix = (totalPlaces == 2 ? "Both" : "Most") + (team == MatchTeam.SOLO ? " players " : " teams ");
-                    CommandUtils.broadcastAlertMessage(prefix + "are now ready! Start countdown updated to 10 seconds.");
-                    StartCountdown.setCountdown(10);
+                    CommandUtils.broadcastAlertMessage(prefix + "are now ready! Start countdown updated to 5 seconds.");
+                    StartCountdown.setCountdown(5);
                 }
             });
     }
