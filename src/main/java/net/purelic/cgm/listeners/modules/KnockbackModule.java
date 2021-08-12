@@ -33,11 +33,18 @@ public class KnockbackModule implements Module {
     private double airVertical;
     private double sprintHorizontal;
     private double sprintVertical;
-    private double sprintYawFactor;
+    private double sprintYawFactor; // how much the player's yaw should affect the kb (0 - 1.0)
 
     public KnockbackModule() {
         instance = this;
         this.damaged = new ConcurrentHashMap<>();
+        this.groundHorizontal = 0.42;
+        this.groundVertical = 0.3;
+        this.airHorizontal = 0.42;
+        this.airVertical = 0.3;
+        this.sprintHorizontal = 2;
+        this.sprintVertical = 1.3;
+        this.sprintYawFactor = 0.5;
     }
 
     public double getGroundHorizontal() {

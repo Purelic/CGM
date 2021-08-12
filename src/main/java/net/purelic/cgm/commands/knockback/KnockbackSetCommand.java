@@ -18,13 +18,13 @@ public class KnockbackSetCommand implements CustomCommand {
             .senderType(Player.class)
             .permission(Permission.isMapDev(true))
             .literal("set")
-            .argument(DoubleArgument.of("ground horizontal multiplier"))
-            .argument(DoubleArgument.of("ground vertical multiplier"))
-            .argument(DoubleArgument.of("air horizontal multiplier"))
-            .argument(DoubleArgument.of("air vertical multiplier"))
-            .argument(DoubleArgument.of("sprint horizontal multiplier"))
-            .argument(DoubleArgument.of("sprint vertical multiplier"))
-            .argument(DoubleArgument.of("sprint yaw factor"))
+            .argument(DoubleArgument.<CommandSender>newBuilder("ground horizontal multiplier").withMin(0).withMax(2))
+            .argument(DoubleArgument.<CommandSender>newBuilder("ground vertical multiplier").withMin(0).withMax(2))
+            .argument(DoubleArgument.<CommandSender>newBuilder("air horizontal multiplier").withMin(0).withMax(2))
+            .argument(DoubleArgument.<CommandSender>newBuilder("air vertical multiplier").withMin(0).withMax(2))
+            .argument(DoubleArgument.<CommandSender>newBuilder("sprint horizontal multiplier").withMin(0).withMax(2))
+            .argument(DoubleArgument.<CommandSender>newBuilder("sprint vertical multiplier").withMin(0).withMax(2))
+            .argument(DoubleArgument.<CommandSender>newBuilder("sprint yaw factor").withMin(0).withMax(1))
             .handler(c -> {
                 Player player = (Player) c.getSender();
 
