@@ -8,12 +8,14 @@ import net.purelic.cgm.core.damage.KillAssist;
 import net.purelic.cgm.core.managers.DamageManger;
 import net.purelic.cgm.core.managers.ScoreboardManager;
 import net.purelic.cgm.core.match.constants.ParticipantState;
+import net.purelic.cgm.core.runnables.RoundCountdown;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.CommandUtils;
+import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,7 +59,9 @@ public class MatchQuit implements Listener {
 
         ScoreboardManager.updateSoloBoard();
 
-        if (MatchState.isState(MatchState.STARTED) && CGM.get().getMatchManager().allEliminated()) {
+        if (MatchState.isState(MatchState.STARTED)
+            && !TaskUtils.isRunning(RoundCountdown.getCountdown()) // don't check if cycling between rounds
+            && CGM.get().getMatchManager().allEliminated()) {
             Commons.callEvent(new RoundEndEvent());
         }
     }
