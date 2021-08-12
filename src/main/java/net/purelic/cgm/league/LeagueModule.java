@@ -168,6 +168,11 @@ public class LeagueModule implements DynamicModule {
     }
 
     public void cycleRandom() {
+        ReadyCommand.TEAMS_READY.clear();
+        ReadyCommand.PLAYERS_READY.clear();
+        ReRollCommand.TEAMS_VOTED.clear();
+        ReRollCommand.PLAYERS_VOTED.clear();
+
         Map<CustomMap, List<CustomGameMode>> playlist = CGM.getPlaylist().getPool();
         List<CustomMap> maps = new ArrayList<>(playlist.keySet());
         Collections.shuffle(maps);
@@ -359,6 +364,7 @@ public class LeagueModule implements DynamicModule {
         ReadyCommand.PLAYERS_READY.clear();
         ReRollCommand.TEAMS_VOTED.clear();
         ReRollCommand.PLAYERS_VOTED.clear();
+        ReRollCommand.REROLLED = false;
     }
 
     @Override

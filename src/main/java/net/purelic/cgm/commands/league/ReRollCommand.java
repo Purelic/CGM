@@ -23,6 +23,7 @@ public class ReRollCommand implements CustomCommand {
 
     public static final List<MatchTeam> TEAMS_VOTED = new ArrayList<>();
     public static final List<Player> PLAYERS_VOTED = new ArrayList<>();
+    public static boolean REROLLED = false;
 
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
@@ -44,6 +45,11 @@ public class ReRollCommand implements CustomCommand {
 
                 if (!LeagueModule.get().isPlaying(player)) {
                     CommandUtils.sendErrorMessage(player, "Spectators can't use this command!");
+                    return;
+                }
+
+                if (REROLLED) {
+                    CommandUtils.sendErrorMessage(player, "The match can only be re-rolled once!");
                     return;
                 }
 
@@ -79,6 +85,7 @@ public class ReRollCommand implements CustomCommand {
                 }
 
                 if (reroll) {
+                    REROLLED = true;
                     String prefix = (totalPlaces == 2 ? "Both" : "Most") + (team == MatchTeam.SOLO ? " players " : " teams ");
                     CommandUtils.broadcastAlertMessage(prefix + "voted to re-roll! Cycling to a new match...");
                     LeagueModule.get().cycleRandom();

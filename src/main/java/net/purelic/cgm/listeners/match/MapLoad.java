@@ -4,6 +4,7 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.core.maps.CustomMap;
 import net.purelic.commons.events.MapLoadEvent;
+import net.purelic.commons.utils.ServerUtils;
 import net.purelic.commons.utils.TaskUtils;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,10 @@ public class MapLoad implements Listener {
         map.setNextWorld(world);
 
         // Auto-cycle if they're in the waiting game state
-        if (MatchState.isState(MatchState.WAITING)) TaskUtils.runLater(MatchManager::cycle, 20L);
+        if (MatchState.isState(MatchState.WAITING)
+            || (ServerUtils.isRanked() && !MatchState.isState(MatchState.STARTED))) {
+            TaskUtils.runLater(MatchManager::cycle, 20L);
+        }
     }
 
 }
