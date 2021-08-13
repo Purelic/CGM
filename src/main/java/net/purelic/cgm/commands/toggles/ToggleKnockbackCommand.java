@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class ToggleKnockbackCommand implements CustomCommand {
 
-    public static boolean knockback = false;
+    public static boolean knockback = true;
 
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
