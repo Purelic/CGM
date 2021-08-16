@@ -18,6 +18,7 @@ import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
+import net.purelic.commons.profile.Rank;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
 import org.bukkit.Bukkit;
@@ -90,6 +91,16 @@ public class MatchStart implements Listener {
             .collect(Collectors.toList());
 
         for (Player player : premiumPlayers) {
+            if (MatchTeam.getTeam(player) == MatchTeam.OBS && !SpectateCommand.SPECTATORS.contains(player)) {
+                if (ToggleAutoJoinCommand.autoJoin) player.performCommand("join");
+            }
+        }
+
+        List<Player> goldPlayers = Bukkit.getOnlinePlayers().stream()
+            .filter(player -> Commons.getProfile(player).hasRank(Rank.GOLD))
+            .collect(Collectors.toList());
+
+        for (Player player : goldPlayers) {
             if (MatchTeam.getTeam(player) == MatchTeam.OBS && !SpectateCommand.SPECTATORS.contains(player)) {
                 if (ToggleAutoJoinCommand.autoJoin) player.performCommand("join");
             }
