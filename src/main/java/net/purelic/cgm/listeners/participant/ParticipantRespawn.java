@@ -19,10 +19,7 @@ import net.purelic.cgm.utils.ColorConverter;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SpawnUtils;
 import net.purelic.commons.Commons;
-import net.purelic.commons.utils.ChatUtils;
-import net.purelic.commons.utils.CommandUtils;
-import net.purelic.commons.utils.NickUtils;
-import net.purelic.commons.utils.TaskUtils;
+import net.purelic.commons.utils.*;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -95,7 +92,6 @@ public class ParticipantRespawn implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                // PlayerUtils.showToPlaying(player);
                 PlayerUtils.updateVisibility(player);
                 PlayerUtils.clearEffects(player);
                 PlayerUtils.applyDefaultEffects(player);
@@ -114,6 +110,17 @@ public class ParticipantRespawn implements Listener {
                 }
 
                 player.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20, 200));
+
+                // fix legacy players sometimes still being able to fly after their game mode is updated
+                if (VersionUtils.isLegacy(player)) {
+                    TaskUtils.runLater(() -> {
+                        if (MatchState.isState(MatchState.STARTED)) {
+                            if (!player.getAllowFlight()) {
+                                player.setFlying(false);
+                            }
+                        }
+                    }, 20L);
+                }
             }
         }.runTask(CGM.get());
     }
