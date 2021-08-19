@@ -389,7 +389,8 @@ public class LeagueModule implements DynamicModule {
     @EventHandler (priority = EventPriority.HIGH) // needs to run after the listener in MatchEnd
     public void onMatchTeamEliminate(MatchTeamEliminateEvent event) {
         // automatic elo doesn't apply to multi-round elimination game modes
-        if (!MatchUtils.hasRounds()) return;
+        // or two team matches
+        if (!MatchUtils.hasRounds() || this.getTotalPlaces() == 2) return;
 
         int places = this.getTotalPlaces();
         int place = places - MatchEnd.ELIMINATED_TEAMS.indexOf(event.getTeam());
@@ -415,7 +416,8 @@ public class LeagueModule implements DynamicModule {
     @EventHandler (priority = EventPriority.HIGH) // needs to run after the listener in MatchEnd
     public void onParticipantEliminate(ParticipantEliminateEvent event) {
         // automatic elo doesn't apply to multi-round elimination game modes
-        if (!MatchUtils.hasRounds()) return;
+        // or 2 player solo matches
+        if (!MatchUtils.hasRounds() || this.getTotalPlaces() == 2) return;
 
         UUID uuid = event.getPlayer().getUniqueId();
         int places = this.getTotalPlaces();
