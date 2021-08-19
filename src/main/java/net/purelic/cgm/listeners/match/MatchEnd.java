@@ -33,7 +33,7 @@ import java.util.*;
 public class MatchEnd implements Listener {
 
     public static final List<MatchTeam> ELIMINATED_TEAMS = new ArrayList<>();
-    public static final List<Participant> ELIMINATED_PLAYERS = new ArrayList<>();
+    public static final List<UUID> ELIMINATED_PLAYERS = new ArrayList<>();
 
     @EventHandler
     public void onMatchEnd(MatchEndEvent event) {
@@ -234,9 +234,10 @@ public class MatchEnd implements Listener {
             }
         }
 
+        MatchStatsModule.getCurrent().setPlacements(placements);
+
         ELIMINATED_TEAMS.clear();
         ELIMINATED_PLAYERS.clear();
-        MatchStatsModule.getCurrent().setPlacements(placements);
     }
 
     private MatchPlacement sendPostMatchResults(Participant participant, int place, boolean tied, MatchResult result) {
@@ -268,7 +269,7 @@ public class MatchEnd implements Listener {
 
     @EventHandler
     public void onParticipantEliminate(ParticipantEliminateEvent event) {
-        if (NumberSetting.ROUNDS.value() == 1) ELIMINATED_PLAYERS.add(event.getParticipant());
+        if (NumberSetting.ROUNDS.value() == 1) ELIMINATED_PLAYERS.add(event.getParticipant().getPlayer().getUniqueId());
     }
 
     @EventHandler

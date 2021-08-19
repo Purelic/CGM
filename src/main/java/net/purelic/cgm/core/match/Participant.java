@@ -273,7 +273,7 @@ public class Participant {
     }
 
     public int getEliminatedScore() {
-        int score = MatchEnd.ELIMINATED_PLAYERS.indexOf(this);
+        int score = MatchEnd.ELIMINATED_PLAYERS.indexOf(this.getPlayer().getUniqueId());
         return score == -1 ? MatchEnd.ELIMINATED_PLAYERS.size() : score;
     }
 

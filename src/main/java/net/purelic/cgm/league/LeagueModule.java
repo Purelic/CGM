@@ -14,8 +14,13 @@ import net.purelic.cgm.core.rewards.RewardBuilder;
 import net.purelic.cgm.core.stats.MatchStats;
 import net.purelic.cgm.core.stats.leaderboard.Leaderboard;
 import net.purelic.cgm.events.match.MatchCycleEvent;
+import net.purelic.cgm.events.match.RoundStartEvent;
+import net.purelic.cgm.events.participant.MatchTeamEliminateEvent;
+import net.purelic.cgm.events.participant.ParticipantEliminateEvent;
+import net.purelic.cgm.listeners.match.MatchEnd;
 import net.purelic.cgm.listeners.modules.DynamicModule;
 import net.purelic.cgm.listeners.modules.stats.MatchStatsModule;
+import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.cgm.utils.PlaceUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.profile.Profile;
@@ -27,6 +32,7 @@ import net.purelic.commons.utils.constants.ServerStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import shaded.com.google.api.core.ApiFuture;
 import shaded.com.google.cloud.firestore.DocumentReference;
 import shaded.com.google.cloud.firestore.DocumentSnapshot;
@@ -45,12 +51,14 @@ public class LeagueModule implements DynamicModule {
     private final Map<UUID, LeagueTeam> players;
     private List<Map<String, Object>> rawPlayerData;
     private ListenerRegistration registration;
+    private Map<UUID, Integer> ratings;
 
     public LeagueModule() {
         this.teams = new HashMap<>();
         this.players = new HashMap<>();
         this.rawPlayerData = new ArrayList<>();
         this.registration = null;
+        this.ratings = new HashMap<>();
 
         instance = this;
     }
@@ -241,6 +249,8 @@ public class LeagueModule implements DynamicModule {
     }
 
     public int getRating(UUID uuid, int place) {
+        if (this.ratings.containsKey(uuid)) return this.ratings.get(uuid);
+
         Player player = Bukkit.getPlayer(uuid);
         Profile profile = Commons.getProfile(uuid);
         int rating = profile.getRating();
@@ -336,6 +346,7 @@ public class LeagueModule implements DynamicModule {
             }
         }
 
+        this.ratings.put(uuid, newRating);
         return newRating;
     }
 
@@ -354,6 +365,7 @@ public class LeagueModule implements DynamicModule {
         this.rawPlayerData.clear();
         this.teams.clear();
         this.players.clear();
+        this.ratings.clear();
         ReadyCommand.TEAMS_READY.clear();
         ReadyCommand.PLAYERS_READY.clear();
         ReRollCommand.TEAMS_VOTED.clear();
@@ -372,6 +384,43 @@ public class LeagueModule implements DynamicModule {
             MatchStatsModule.setCurrent(new MatchStats());
             this.loadPlayers();
         }
+    }
+
+    @EventHandler (priority = EventPriority.HIGH) // needs to run after the listener in MatchEnd
+    public void onMatchTeamEliminate(MatchTeamEliminateEvent event) {
+        // automatic elo doesn't apply to multi-round elimination game modes
+        if (!MatchUtils.hasRounds()) return;
+
+        int places = this.getTotalPlaces();
+        int place = places - MatchEnd.ELIMINATED_TEAMS.indexOf(event.getTeam());
+        this.teams.get(event.getTeam()).getPlayers().forEach(player -> {
+            this.getRating(player, place); // automatic elo
+        });
+    }
+
+    @EventHandler
+    public void onRoundStart(RoundStartEvent event) {
+        // add all the offline solo players to the eliminated list
+        if (MatchUtils.isElimination() && EnumSetting.TEAM_SIZE.is(TeamType.SOLO)) {
+            for (UUID player : this.players.keySet()) {
+                if (Bukkit.getPlayer(player) == null
+                    || !Bukkit.getPlayer(player).isOnline()
+                    || MatchManager.getParticipant(Bukkit.getPlayer(player)) == null) {
+                    MatchEnd.ELIMINATED_PLAYERS.add(player);
+                }
+            }
+        }
+    }
+
+    @EventHandler (priority = EventPriority.HIGH) // needs to run after the listener in MatchEnd
+    public void onParticipantEliminate(ParticipantEliminateEvent event) {
+        // automatic elo doesn't apply to multi-round elimination game modes
+        if (!MatchUtils.hasRounds()) return;
+
+        UUID uuid = event.getPlayer().getUniqueId();
+        int places = this.getTotalPlaces();
+        int place = places - MatchEnd.ELIMINATED_PLAYERS.indexOf(uuid);
+        this.getRating(uuid, place); // automatic elo
     }
 
 }
