@@ -41,14 +41,12 @@ public class LeagueModule implements DynamicModule {
 
     private static LeagueModule instance;
 
-    private final Leaderboard leaderboard;
     private final Map<MatchTeam, LeagueTeam> teams;
     private final Map<UUID, LeagueTeam> players;
     private List<Map<String, Object>> rawPlayerData;
     private ListenerRegistration registration;
 
     public LeagueModule() {
-        this.leaderboard = this.loadLeaderboard();
         this.teams = new HashMap<>();
         this.players = new HashMap<>();
         this.rawPlayerData = new ArrayList<>();
@@ -75,10 +73,6 @@ public class LeagueModule implements DynamicModule {
 
     public Set<UUID> getPlayers() {
         return this.players.keySet();
-    }
-
-    public Leaderboard getLeaderboard() {
-        return this.leaderboard;
     }
 
     public void loadListenerRegistration() {
@@ -191,7 +185,7 @@ public class LeagueModule implements DynamicModule {
         }
     }
 
-    public Leaderboard loadLeaderboard() {
+    public Leaderboard getLeaderboard() {
         String id = ServerUtils.getRankedSeason() + "__" + ServerUtils.getPlaylistId();
 
         DocumentReference docRef = DatabaseUtils.getFirestore().collection("leaderboards").document(id);
