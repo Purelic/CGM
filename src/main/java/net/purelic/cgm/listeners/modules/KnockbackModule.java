@@ -3,7 +3,6 @@ package net.purelic.cgm.listeners.modules;
 import io.netty.channel.*;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityVelocity;
 import net.purelic.cgm.commands.toggles.ToggleKnockbackCommand;
-import net.purelic.cgm.events.match.MatchJoinEvent;
 import net.purelic.cgm.events.match.MatchQuitEvent;
 import net.purelic.cgm.events.match.RoundEndEvent;
 import net.purelic.cgm.utils.EntityUtils;
@@ -14,6 +13,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
 
@@ -210,7 +210,7 @@ public class KnockbackModule implements Module {
     }
 
     @EventHandler
-    public void onMatchJoin(MatchJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         this.injectPlayer(event.getPlayer());
     }
 
@@ -241,7 +241,6 @@ public class KnockbackModule implements Module {
     @EventHandler
     public void onMatchQuit(MatchQuitEvent event){
         Player player = event.getPlayer();
-        this.removePlayer(player);
         this.damaged.remove(player.getUniqueId());
     }
 
