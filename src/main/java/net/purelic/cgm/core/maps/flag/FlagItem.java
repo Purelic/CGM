@@ -1,8 +1,8 @@
 package net.purelic.cgm.core.maps.flag;
 
-import net.purelic.cgm.core.maps.flag.constants.FlagPattern;
 import net.purelic.cgm.core.maps.flag.constants.FlagState;
 import net.purelic.cgm.utils.ColorConverter;
+import net.purelic.commons.profile.preferences.FlagPattern;
 import net.purelic.commons.utils.ItemCrafter;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -27,7 +27,7 @@ public class FlagItem {
         ItemStack item = new ItemStack(Material.BANNER);
         BannerMeta meta = (BannerMeta) item.getItemMeta();
         meta.setBaseColor(this.baseColor);
-        meta.setPatterns(this.pattern.getPatterns());
+        if (this.pattern != FlagPattern.BLANK) meta.setPatterns(this.pattern.getPatterns());
         item.setItemMeta(meta);
 
         ItemCrafter itemCrafter = new ItemCrafter(item);
