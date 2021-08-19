@@ -81,7 +81,7 @@ public class ExplosionModule implements Listener {
             } else if (this.explosion instanceof TNTPrimed) {
                 event.setDamage(event.getDamage() * 0.2);
                 Vector impulse = player.getLocation().subtract(this.explosion.getLocation()).toVector().normalize();
-                float power = 1.5F;
+                float power = 1.25F;
                 impulse.setY(0.75 + Math.abs(impulse.getY()));
                 impulse.setX(impulse.getX() * 2);
                 impulse.setZ(impulse.getZ() * 2);
