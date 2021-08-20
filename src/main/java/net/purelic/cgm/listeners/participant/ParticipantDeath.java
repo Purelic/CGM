@@ -29,6 +29,7 @@ import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.*;
 import net.purelic.commons.Commons;
+import net.purelic.commons.profile.preferences.DeathEffect;
 import net.purelic.commons.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -111,6 +112,7 @@ public class ParticipantDeath implements Listener {
 
         // Updating player visibility needs to come before the death animation
         // and clearing the player's inventory needs to come after
+        DeathEffect.get(player).play(player);
         PacketUtils.playDeathAnimation(player);
 
         // Set player properties
