@@ -67,7 +67,8 @@ public class JumpPadModule implements Listener {
                     Player player = participant.getPlayer();
 
                     if (jumpers.contains(player) && EntityUtils.isOnGround(player)) {
-                        jumpers.remove(player);
+                        // delay removal in-case they just landed and haven't taken fall damage yet
+                        TaskUtils.runLaterAsync(() -> jumpers.remove(player), 4L);
                     }
 
                     checkForJumpPad(participant);
