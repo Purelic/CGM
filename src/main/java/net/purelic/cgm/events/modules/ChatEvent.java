@@ -4,8 +4,6 @@ import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamSize;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
-import net.purelic.commons.Commons;
-import net.purelic.commons.profile.preferences.ChatChannel;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -25,8 +23,7 @@ public class ChatEvent extends Event {
                 || !MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING, MatchState.STARTED)
                 || EnumSetting.TEAM_TYPE.is(TeamType.SOLO)
                 || EnumSetting.TEAM_SIZE.is(TeamSize.SINGLES)
-                || (message.startsWith("!") && message.length() > 1)
-                || Commons.getProfile(player).getChatChannel() == ChatChannel.GLOBAL;
+                || (message.startsWith("!") && message.length() > 1);
         this.message = this.global && message.startsWith("!") ? message.replaceFirst("!", "") : message;
     }
 
