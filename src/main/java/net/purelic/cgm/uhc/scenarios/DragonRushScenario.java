@@ -4,6 +4,7 @@ import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
 import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
+import net.purelic.cgm.core.match.Participant;
 import net.purelic.cgm.core.rewards.Medal;
 import net.purelic.cgm.core.rewards.RewardBuilder;
 import net.purelic.cgm.events.match.MatchStartEvent;
@@ -91,6 +92,8 @@ public class DragonRushScenario implements Module {
             || event.getEntity().getKiller() == null) return;
 
         Player killer = event.getEntity().getKiller();
+        Participant participant = MatchManager.getParticipant(killer);
+        participant.addScore(1, true);
 
         new RewardBuilder(killer, 1, "Dragon Kill", "Killed the Ender Dragon")
             .addMedal(Medal.DRAGON_TAMER)
