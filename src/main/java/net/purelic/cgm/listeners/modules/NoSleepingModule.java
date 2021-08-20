@@ -1,5 +1,7 @@
 package net.purelic.cgm.listeners.modules;
 
+import net.purelic.cgm.core.gamemodes.EnumSetting;
+import net.purelic.cgm.core.gamemodes.constants.GameType;
 import net.purelic.cgm.core.managers.MatchManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,7 +28,7 @@ public class NoSleepingModule implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.BED_BLOCK) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.BED_BLOCK && EnumSetting.GAME_TYPE.is(GameType.UHC)) {
             BED_SPAWNS.put(event.getPlayer().getUniqueId(), event.getClickedBlock().getLocation());
             event.getPlayer().sendMessage("Respawn point set.");
         }
