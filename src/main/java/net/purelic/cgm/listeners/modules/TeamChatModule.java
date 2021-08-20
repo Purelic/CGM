@@ -29,7 +29,7 @@ public class TeamChatModule implements Listener {
             ComponentBuilder prefix = new ComponentBuilder("")
                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(team.getName() + " Team Chat").color(team.getColor()).create()))
                 .append("[").color(ChatColor.DARK_GRAY)
-                .append(team.getName()).color(team.getColor())
+                .append(team.getName() + " Team Chat").color(team.getColor())
                 .append("]").color(ChatColor.DARK_GRAY)
                 .append(" ").reset();
 
