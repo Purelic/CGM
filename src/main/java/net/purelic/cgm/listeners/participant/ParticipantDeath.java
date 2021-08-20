@@ -298,11 +298,33 @@ public class ParticipantDeath implements Listener {
 
         for (Player online : Bukkit.getOnlinePlayers()) {
             if (online == player) {
-                online.sendMessage(whiteMessage.replaceFirst(player.getName(), "You").replaceFirst(" was ", " were "));
+                String message = whiteMessage.replaceFirst(player.getName(), "You").replaceFirst(" was ", " were ");
+
+                if (killer != null && NickUtils.isNicked(killer) && NickUtils.canSeeRealName(killer, player)) {
+                    message = message.replaceFirst(killer.getName(), "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + NickUtils.getRealName(killer) + " " + NickUtils.getDisplayName(killer));
+                }
+
+                online.sendMessage(message);
             } else if (online == killer) {
-                online.sendMessage(whiteMessage.replaceFirst(killer.getName(), "You"));
+                String message = whiteMessage.replaceFirst(killer.getName(), "You");
+
+                if (NickUtils.isNicked(player) && NickUtils.canSeeRealName(player, killer)) {
+                    message = message.replaceFirst(player.getName(), "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + NickUtils.getRealName(player) + " " + NickUtils.getDisplayName(player));
+                }
+
+                online.sendMessage(message);
             } else {
-                online.sendMessage(grayMessage);
+                String message = grayMessage;
+
+                if (killer != null && NickUtils.isNicked(killer) && NickUtils.canSeeRealName(killer, player)) {
+                    message = message.replaceFirst(killer.getName(), "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + NickUtils.getRealName(killer) + " " + NickUtils.getDisplayName(killer));
+                }
+
+                if (NickUtils.isNicked(player) && NickUtils.canSeeRealName(player, killer)) {
+                    message = message.replaceFirst(player.getName(), "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + NickUtils.getRealName(player) + " " + NickUtils.getDisplayName(player));
+                }
+
+                online.sendMessage(message);
             }
         }
     }
