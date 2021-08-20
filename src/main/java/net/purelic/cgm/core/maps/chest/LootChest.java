@@ -20,16 +20,16 @@ public class LootChest {
     private Inventory inventory;
 
     public LootChest(String coordsString, LootChestTier tier) {
-        int[] coords = this.getCoords(coordsString.split(","));
+        double[] coords = this.getCoords(coordsString.split(","));
         this.location = new Location(null, coords[0], coords[1], coords[2]);
         this.tier = tier;
     }
 
-    private int[] getCoords(String[] args) {
-        int[] coords = new int[3];
+    private double[] getCoords(String[] args) {
+        double[] coords = new double[4];
 
         for (int i = 0; i < args.length; i++) {
-            coords[i] = Integer.parseInt(args[i]);
+            coords[i] = Double.parseDouble(args[i]);
         }
 
         return coords;
