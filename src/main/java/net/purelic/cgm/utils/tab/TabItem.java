@@ -88,7 +88,7 @@ public class TabItem {
             return new ArrayList<>();
         } else {
             // Show a crossed out name to staff if player is nicked
-            String listName = player != null && Commons.getProfile(viewer).isMod() && NickUtils.isNicked(player) ?
+            String listName = player != null && NickUtils.canSeeRealName(player, viewer) && NickUtils.isNicked(player) ?
                 this.strikeName(player) : name;
 
             if (listName.equals(this.value)) return new ArrayList<>();

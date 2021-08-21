@@ -1,6 +1,7 @@
 package net.purelic.cgm.utils.tab;
 
 import net.purelic.cgm.core.constants.MatchTeam;
+import net.purelic.commons.utils.NickUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -36,7 +37,7 @@ public class TabBox {
     }
 
     public void updatePlayer(TabList tabList, Player player) {
-        tabList.setPlayerSlot(this.players.get(player), player.getPlayerListName(), player);
+        tabList.setPlayerSlot(this.players.get(player), NickUtils.getListName(player), player);
     }
 
     private void updatePlayers(TabList tabList, List<Player> players) {
