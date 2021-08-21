@@ -316,11 +316,11 @@ public class ParticipantDeath implements Listener {
             } else {
                 String message = grayMessage;
 
-                if (killer != null && NickUtils.isNicked(killer) && NickUtils.canSeeRealName(killer, player)) {
+                if (killer != null && NickUtils.isNicked(killer) && NickUtils.canSeeRealName(killer, online)) {
                     message = message.replaceFirst(killer.getName(), "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + NickUtils.getRealName(killer) + " " + NickUtils.getDisplayName(killer));
                 }
 
-                if (NickUtils.isNicked(player) && NickUtils.canSeeRealName(player, killer)) {
+                if (NickUtils.isNicked(player) && NickUtils.canSeeRealName(player, online)) {
                     message = message.replaceFirst(player.getName(), "" + ChatColor.GRAY + ChatColor.STRIKETHROUGH + NickUtils.getRealName(player) + " " + NickUtils.getDisplayName(player));
                 }
 
