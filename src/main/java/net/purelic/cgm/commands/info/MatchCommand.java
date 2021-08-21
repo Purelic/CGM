@@ -13,6 +13,8 @@ import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.utils.ChatUtils;
 import net.purelic.commons.utils.CommandUtils;
 import net.purelic.commons.utils.Fetcher;
+import net.purelic.commons.utils.NickUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,10 +38,36 @@ public class MatchCommand implements CustomCommand {
                     boolean regen = ToggleSetting.PLAYER_NATURAL_REGEN.isEnabled();
 
                     List<UUID> authorIds = map.getYaml().getAuthors();
-                    String authors = Fetcher.getBasicName(authorIds.get(0));
+                    UUID firstAuthor = authorIds.get(0);
+
+                    String authors;
+
+                    if (Bukkit.getPlayer(firstAuthor) != null) {
+                        Player author = Bukkit.getPlayer(firstAuthor);
+
+                        if (author.isOnline() && NickUtils.isNicked(author)) {
+                            authors = ChatColor.DARK_AQUA + NickUtils.getRealName(author);
+                        } else {
+                            authors = Fetcher.getBasicName(firstAuthor);
+                        }
+                    } else {
+                        authors = Fetcher.getBasicName(firstAuthor);
+                    }
 
                     if (authorIds.size() == 2) {
-                        authors += " and " + Fetcher.getBasicName(authorIds.get(1));
+                        UUID secondAuthor = authorIds.get(0);
+
+                        if (Bukkit.getPlayer(secondAuthor) != null) {
+                            Player author = Bukkit.getPlayer(secondAuthor);
+
+                            if (author.isOnline() && NickUtils.isNicked(author)) {
+                                authors += " and " + ChatColor.DARK_AQUA + NickUtils.getRealName(author);
+                            } else {
+                                authors += " and " + Fetcher.getBasicName(secondAuthor);
+                            }
+                        } else {
+                            authors += " and " + Fetcher.getBasicName(secondAuthor);
+                        }
                     } else if (authorIds.size() > 2) {
                         authors += " and " + authorIds.size() + " others";
                     }
