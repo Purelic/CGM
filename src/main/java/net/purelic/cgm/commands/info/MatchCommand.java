@@ -46,7 +46,7 @@ public class MatchCommand implements CustomCommand {
                         Player author = Bukkit.getPlayer(firstAuthor);
 
                         if (author.isOnline() && NickUtils.isNicked(author)) {
-                            authors = ChatColor.DARK_AQUA + NickUtils.getRealName(author);
+                            authors = ChatColor.DARK_AQUA + NickUtils.getRealName(author) + ChatColor.RESET;
                         } else {
                             authors = Fetcher.getBasicName(firstAuthor);
                         }
@@ -55,7 +55,7 @@ public class MatchCommand implements CustomCommand {
                     }
 
                     if (authorIds.size() == 2) {
-                        UUID secondAuthor = authorIds.get(0);
+                        UUID secondAuthor = authorIds.get(1);
 
                         if (Bukkit.getPlayer(secondAuthor) != null) {
                             Player author = Bukkit.getPlayer(secondAuthor);
