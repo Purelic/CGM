@@ -15,6 +15,7 @@ import net.purelic.cgm.utils.TimeUtils;
 import net.purelic.cgm.utils.tab.TabList;
 import net.purelic.commons.Commons;
 import net.purelic.commons.utils.Fetcher;
+import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.ServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -151,7 +152,8 @@ public class TabManager {
         Player player = Bukkit.getPlayer(uuid);
 
         if (player != null && player.isOnline()) {
-            return Fetcher.getBasicName(uuid);
+            if (NickUtils.isNicked(player)) return ChatColor.DARK_AQUA + NickUtils.getRealName(player) + ChatColor.RESET;
+            else return Fetcher.getBasicName(uuid);
         } else {
             return ChatColor.DARK_AQUA + Fetcher.getNameOf(uuid) + ChatColor.RESET;
         }
