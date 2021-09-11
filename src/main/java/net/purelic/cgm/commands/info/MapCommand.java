@@ -124,9 +124,17 @@ public class MapCommand implements CustomCommand {
     }
 
     private TextComponent getFancyAuthorComponent(String name) {
-        Player author = Bukkit.getPlayer(name);
-        if (author != null) return Fetcher.getFancyName(author);
-        else return new TextComponent(ChatColor.DARK_AQUA + name);
+        if (Bukkit.getPlayer(name) != null) {
+            Player author = Bukkit.getPlayer(name);
+
+            if (author.isOnline() && NickUtils.isNicked(author)) {
+                return new TextComponent(ChatColor.DARK_AQUA + NickUtils.getRealName(author) + ChatColor.RESET);
+            } else {
+                return Fetcher.getFancyName(author);
+            }
+        } else {
+            return new TextComponent(ChatColor.DARK_AQUA + name + ChatColor.RESET);
+        }
     }
 
     private String getAuthorComponent(String name) {
