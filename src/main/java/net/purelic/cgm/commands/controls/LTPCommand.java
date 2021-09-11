@@ -6,15 +6,14 @@ import net.purelic.cgm.CGM;
 import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
-import net.purelic.commons.utils.CommandUtils;
-import net.purelic.commons.utils.DiscordWebhook;
-import net.purelic.commons.utils.ServerUtils;
+import net.purelic.commons.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class LTPCommand implements CustomCommand {
 
@@ -56,6 +55,14 @@ public class LTPCommand implements CustomCommand {
     }
 
     private void sendDiscordNotification(Player sender) {
+        String uuid;
+
+        try {
+            uuid = NickUtils.isNicked(sender) ? Fetcher.getMinecraftUser(NickUtils.getNick(sender)).getId().toString() : sender.getUniqueId().toString();
+        } catch (IOException e) {
+            uuid = sender.getUniqueId().toString();
+        }
+
         DiscordWebhook webhook = new DiscordWebhook(this.webhook, "Purelic");
         webhook.setContent("<@&830673260952944660>");
         webhook.addEmbed(new DiscordWebhook.EmbedObject()
@@ -63,7 +70,7 @@ public class LTPCommand implements CustomCommand {
             .setDescription(sender.getName() + " is looking to play " + CGM.getPlaylist().getName() + "!")
             .addField("Server", "/server " + ServerUtils.getName(), false)
             .addField("Players Online", "" + Bukkit.getOnlinePlayers().size(), false)
-            .setAuthor(sender.getName(), "https://purelic.net/players/" + sender.getName(), "https://crafatar.com/renders/head/" + sender.getUniqueId().toString() + "?size=128&overlay")
+            .setAuthor(sender.getName(), "https://purelic.net/players/" + sender.getName(), "https://crafatar.com/renders/head/" + uuid + "?size=128&overlay")
         );
         webhook.execute();
     }
