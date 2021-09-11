@@ -17,8 +17,8 @@ public class MatchCycle implements Listener {
         }
 
         if (ToggleSetting.ATTACK_DEFENSE.isEnabled()) {
-            MatchTeam.BLUE.setName("Attackers");
-            MatchTeam.RED.setName("Defenders");
+            MatchTeam.BLUE.setName("Defenders");
+            MatchTeam.RED.setName("Attackers");
         }
     }
 
