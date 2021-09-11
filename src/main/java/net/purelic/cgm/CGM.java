@@ -241,6 +241,7 @@ public class CGM extends JavaPlugin {
 
         // Dynamic Modules
         new DynamicModuleModule().register();
+        DynamicModuleModule.add(new CraftingRepairModule());
         DynamicModuleModule.add(new UHCModule());
         DynamicModuleModule.add(new GracePeriodModule());
         DynamicModuleModule.add(new CompassTrackingModule());
