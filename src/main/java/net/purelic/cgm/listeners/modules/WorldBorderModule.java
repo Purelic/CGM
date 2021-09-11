@@ -37,6 +37,8 @@ public class WorldBorderModule implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onRoundStart(RoundStartEvent event) {
         this.resetWorldBorder();
+        TaskUtils.cancelIfRunning(this.borderRunnable);
+        TaskUtils.cancelIfRunning(this.updaterRunnable);
 
         WorldBorder border = MatchManager.getCurrentMap().getWorld().getWorldBorder();
         if (NumberSetting.WB_SHRINK_SPEED.value() > 0) this.shrinkBorder(border);
