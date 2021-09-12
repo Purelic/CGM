@@ -16,6 +16,7 @@ import net.purelic.commons.profile.Preference;
 import net.purelic.commons.profile.Profile;
 import net.purelic.commons.profile.preferences.ArmorColor;
 import net.purelic.commons.utils.ItemCrafter;
+import net.purelic.commons.utils.NickUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -94,6 +95,8 @@ public class MatchKit implements Kit {
     }
 
     private ArmorColor getRGB(Player player, ArmorColor fallback) {
+        if (NickUtils.isNicked(player)) return fallback;
+
         TeamType teamType = TeamType.valueOf(this.gameMode.getEnumSetting(EnumSetting.TEAM_TYPE));
 
         if (teamType == TeamType.SOLO) {

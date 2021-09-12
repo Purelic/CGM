@@ -5,6 +5,7 @@ import net.purelic.cgm.core.constants.JoinState;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.events.match.SpectatorJoinEvent;
 import net.purelic.cgm.kit.ControlsKit;
+import net.purelic.cgm.kit.CustomArmorKit;
 import net.purelic.cgm.kit.SpectatorKit;
 import net.purelic.cgm.utils.PlayerUtils;
 import net.purelic.cgm.utils.SpawnUtils;
@@ -20,10 +21,12 @@ public class SpectatorJoin implements Listener {
 
     private final ControlsKit controlsKit;
     private final SpectatorKit spectatorKit;
+    private final CustomArmorKit customArmorKit;
 
     public SpectatorJoin() {
         this.controlsKit = new ControlsKit();
         this.spectatorKit = new SpectatorKit();
+        this.customArmorKit = new CustomArmorKit();
     }
 
     @EventHandler
@@ -48,6 +51,8 @@ public class SpectatorJoin implements Listener {
 
         if (!ServerUtils.isRanked()
             && (CommandUtils.isOp(player) || Commons.getProfile(player).isMapDev())) this.controlsKit.apply(player);
+
+        this.customArmorKit.apply(player);
 
         CGM.get().getMatchManager().removeParticipant(player);
         SpawnUtils.teleportObsSpawn(player);
