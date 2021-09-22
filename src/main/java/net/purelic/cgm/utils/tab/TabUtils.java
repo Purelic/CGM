@@ -133,6 +133,15 @@ public class TabUtils {
                     case SQUADS:
                         return totalTeams / 2;
                 }
+            case FIVES:
+                switch (teamType) {
+                    case SOLO:
+                    case TEAMS:
+                        return totalTeams;
+                    case MULTI_TEAM:
+                    case SQUADS:
+                        return totalTeams / 2;
+                }
             case MINI:
                 switch (teamType) {
                     case SOLO:

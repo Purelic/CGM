@@ -5,6 +5,7 @@ public enum TeamSize {
     SINGLES,
     DOUBLES,
     TRIOS,
+    FIVES,
     MINI,
     NORMAL,
     BIG,
@@ -18,6 +19,8 @@ public enum TeamSize {
             return 2;
         } else if (teamSize == TeamSize.TRIOS) {
             return 3;
+        } else if (teamSize == TeamSize.FIVES) {
+            return 5;
         } else if (teamSize == TeamSize.MINI) {
             return teamType.getSize() / 2;
         } else if (teamSize == TeamSize.BIG) {
