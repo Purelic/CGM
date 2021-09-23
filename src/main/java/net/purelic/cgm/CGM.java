@@ -290,7 +290,6 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new PregenCommand());
         this.registerCommand(new RematchCommand());
         this.registerCommand(new SetNextCommand());
-        // this.registerCommand(new ShutdownCommand());
         this.registerCommand(new StartCommand());
 
         // Info
