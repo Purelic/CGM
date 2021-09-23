@@ -3,8 +3,6 @@ package net.purelic.cgm.commands.match;
 import cloud.commandframework.Command;
 import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.bukkit.BukkitCommandManager;
-import net.purelic.cgm.commands.toggles.ToggleJoinLockCommand;
-import net.purelic.cgm.core.constants.JoinState;
 import net.purelic.cgm.core.constants.MatchState;
 import net.purelic.cgm.core.constants.MatchTeam;
 import net.purelic.cgm.core.gamemodes.EnumSetting;
@@ -15,45 +13,44 @@ import net.purelic.cgm.core.gamemodes.constants.TeamType;
 import net.purelic.cgm.core.managers.MatchManager;
 import net.purelic.cgm.events.match.MatchJoinEvent;
 import net.purelic.cgm.events.match.MatchQuitEvent;
-import net.purelic.cgm.league.LeagueModule;
 import net.purelic.cgm.listeners.modules.GracePeriodModule;
 import net.purelic.cgm.utils.BedUtils;
 import net.purelic.cgm.utils.MatchUtils;
 import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
+import net.purelic.commons.commands.parsers.PlayerArgument;
 import net.purelic.commons.utils.CommandUtils;
+import net.purelic.commons.utils.NickUtils;
 import net.purelic.commons.utils.ServerUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
-public class JoinCommand implements CustomCommand {
+public class ForceCommand implements CustomCommand {
 
     @Override
     public Command.Builder<CommandSender> getCommandBuilder(BukkitCommandManager<CommandSender> mgr) {
-        return mgr.commandBuilder("join", "play")
+        return mgr.commandBuilder("force")
             .senderType(Player.class)
+            .permission(Permission.isMapDev(true))
+            .argument(PlayerArgument.of("player"))
             .argument(StringArgument.optional("team", StringArgument.StringMode.GREEDY))
             .handler(c -> {
-                Player player = (Player) c.getSender();
+                Player sender = (Player) c.getSender();
+                Player p = c.get("player");
                 Optional<String> teamArg = c.getOptional("team");
 
                 // Don't allow players to join when there's no active match
                 if (!MatchState.isActive()) {
-                    CommandUtils.sendErrorMessage(player, "You cannot join the match right now!");
-                    return;
-                }
-
-                if (ToggleJoinLockCommand.joinlock && !CommandUtils.isOp(player)) {
-                    CommandUtils.sendErrorMessage(player, "Joining is currently disabled! You must be OP or forced to a team by an OP player.");
+                    CommandUtils.sendErrorMessage(sender, "The match cannot be joined right now!");
                     return;
                 }
 
                 // Don't allow players to join ranked matches if they aren't participating
-                if (ServerUtils.isRanked() && !LeagueModule.get().isPlaying(player)) {
-                    CommandUtils.sendErrorMessage(player, "You can only spectate this match!");
+                if (ServerUtils.isRanked()) {
+                    CommandUtils.sendErrorMessage(sender, "You can't force join players in ranked matches!");
                     return;
                 }
 
@@ -63,66 +60,54 @@ public class JoinCommand implements CustomCommand {
                     && MatchManager.getRound() == NumberSetting.ROUNDS.value() // last round
                     && !EnumSetting.GAME_TYPE.is(GameType.BED_WARS)
                     && !GracePeriodModule.isActive()) {
-                    CommandUtils.sendErrorMessage(player, "It's too late to join this elimination match!");
-                    return;
-                }
-
-                // Disallow joining when not a donor and auto-joining is on/join state is locked
-                if (JoinState.isState(JoinState.LOCKED) && !Commons.getProfile(player).isDonator()) {
-                    CommandUtils.sendAlertMessage(player, "You will automatically join when the match starts");
+                    CommandUtils.sendErrorMessage(sender, "It's too late to force a player to join this elimination match!");
                     return;
                 }
 
                 // Start logic for picking the team to join
-                MatchTeam currentTeam = MatchTeam.getTeam(player);
+                MatchTeam currentTeam = MatchTeam.getTeam(p);
                 MatchTeam teamToJoin = null;
 
                 // Player provides the team they want to join
                 if (teamArg.isPresent()) {
                     String teamStr = teamArg.get();
 
-                    if (!ServerUtils.isPrivate()
-                        && !ServerUtils.isRanked()
-                        && Permission.notPremium(c, "Only premium players can pick their teams!")) {
-                        return;
-                    }
-
                     // Attempt to get the team if they specified one
                     teamToJoin = MatchTeam.getTeamFromString(teamStr);
 
                     if (teamToJoin == null) {
                         // Could not find the team they specified
-                        CommandUtils.sendNotFoundMessage(player, "team", teamStr);
+                        CommandUtils.sendNotFoundMessage(sender, "team", teamStr);
                         return;
                     }
 
                     if (teamToJoin == MatchTeam.OBS) {
                         if (currentTeam == MatchTeam.OBS) {
-                            CommandUtils.sendErrorMessage(player, "You're already spectating!");
+                            CommandUtils.sendErrorMessage(sender, "That player is already spectating!");
                         } else {
-                            Commons.callEvent(new MatchQuitEvent(player));
+                            Commons.callEvent(new MatchQuitEvent(p));
                         }
 
                         return;
                     }
 
                     if (currentTeam != MatchTeam.OBS) {
-                        CommandUtils.sendErrorMessage(player, "You've already joined a team! Use /quit to leave");
+                        CommandUtils.sendErrorMessage(sender, "They're already on a team! Please force them to Spectators first.");
                         return;
                     }
                 }
 
                 TeamType teamType = EnumSetting.TEAM_TYPE.get();
-                MatchTeam allowedTeam = MatchTeam.getAllowedTeam(player);
+                MatchTeam allowedTeam = MatchTeam.getAllowedTeam(p);
 
                 if (teamToJoin != null) {
                     if (!teamType.getTeams().contains(teamToJoin)) {
-                        CommandUtils.sendErrorMessage(player, teamToJoin.getName() + " is not a valid team for this game mode!");
+                        CommandUtils.sendErrorMessage(sender, teamToJoin.getName() + " is not a valid team for this game mode!");
                         return;
                     }
                 } else {
                     if (currentTeam != MatchTeam.OBS) {
-                        CommandUtils.sendErrorMessage(player, "You're already playing! Use /quit to leave");
+                        CommandUtils.sendErrorMessage(sender, "They're already on a team! Please force them to Spectators first.");
                         return;
                     } else {
                         if (!ToggleSetting.TEAM_SWITCHING.isEnabled() && !MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) {
@@ -130,46 +115,31 @@ public class JoinCommand implements CustomCommand {
                         }
 
                         if (teamToJoin == null) { // team switching either enabled or they haven't been assigned a team yet
-                            teamToJoin = MatchTeam.getSmallestTeam(teamType, false);
+                            teamToJoin = MatchTeam.getSmallestTeam(teamType, true);
                         }
                     }
                 }
 
-                if (teamToJoin == null) {
-                    CommandUtils.sendErrorMessage(player, "All teams are currently full!");
-                    return;
-                }
-
                 if (teamToJoin == currentTeam) {
-                    CommandUtils.sendErrorMessage(player, "You've already joined this team!");
+                    CommandUtils.sendErrorMessage(sender, "They've already joined that team!");
                     return;
                 }
 
                 if (!ToggleSetting.TEAM_SWITCHING.isEnabled() && !MatchState.isState(MatchState.PRE_GAME, MatchState.STARTING)) {
                     if (allowedTeam != null && teamToJoin != allowedTeam) {
-                        CommandUtils.sendErrorMessage(player, "This game mode doesn't allow switching teams. You can only join " + allowedTeam.getColoredName());
-                        return;
-                    }
-                }
-
-                if (ToggleSetting.TEAM_SWITCHING.isEnabled() || allowedTeam == null) {
-                    if (!JoinState.isState(JoinState.PARTY_PRIORITY) && teamToJoin.isStacked(teamType, currentTeam) && !ServerUtils.isRanked()) {
-                        CommandUtils.sendErrorMessage(player, "You cannot stack this team!");
+                        CommandUtils.sendErrorMessage(sender, "This game mode doesn't allow switching teams. You can only force join them to " + allowedTeam.getColoredName());
                         return;
                     }
                 }
 
                 if (EnumSetting.GAME_TYPE.is(GameType.BED_WARS) && BedUtils.isBedDestroyed(teamToJoin)) {
-                    CommandUtils.sendErrorMessage(player, "You can't join this team right now - their bed has been destroyed!");
+                    CommandUtils.sendErrorMessage(sender, "They can't join this team right now - their bed has been destroyed!");
                     return;
                 }
 
-                if (teamToJoin.isFull()) {
-                    CommandUtils.sendErrorMessage(player, "This team is currently full!");
-                    return;
-                }
-
-                Commons.callEvent(new MatchJoinEvent(player, teamToJoin, false, allowedTeam == null));
+                CommandUtils.sendSuccessMessage(sender, "You forced " + NickUtils.getNick(p) + " to join " + teamToJoin.getName() + "!");
+                CommandUtils.sendAlertMessage(p, NickUtils.getNick(sender) + " forced you to join " + teamToJoin.getColoredName());
+                Commons.callEvent(new MatchJoinEvent(p, teamToJoin, true, allowedTeam == null));
             });
     }
 

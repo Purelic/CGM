@@ -311,6 +311,7 @@ public class CGM extends JavaPlugin {
         Commons.registerCommand(new KnockbackSetCommand());
 
         // Match
+        this.registerCommand(new ForceCommand());
         this.registerCommand(new JoinCommand());
         this.registerCommand(new LivesCommand());
         this.registerCommand(new QuitCommand());
@@ -331,6 +332,7 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new ToggleAutoStartCommand());
         this.registerCommand(new ToggleFriendlyFireCommand());
         this.registerCommand(new ToggleGameModeCommand());
+        this.registerCommand(new ToggleJoinLockCommand());
         this.registerCommand(new ToggleKnockbackCommand());
         this.registerCommand(new TogglesCommand());
         this.registerCommand(new ToggleSpectatorsCommand());
