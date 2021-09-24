@@ -66,13 +66,15 @@ public class MatchCountdown extends BukkitRunnable {
             || (EnumSetting.GAME_TYPE.is(GameType.HEAD_HUNTER) && ToggleSetting.HEAD_COLLECTION_HILLS.isEnabled())
             || (EnumSetting.GAME_TYPE.is(GameType.DEATHMATCH) && ToggleSetting.DEATHMATCH_SCOREBOXES.isEnabled())) {
             if (NumberSetting.HILL_MOVE_INTERVAL.value() > 0) {
-                HillUtils.getHills().stream().filter(Hill::isActive).forEach(hill -> hill.getWaypoint().setName(hill.getTitle()));
+                HillUtils.getHills().stream()
+                    .filter(Hill::isActive)
+                    .filter(Hill::hasWaypoint)
+                    .forEach(hill -> hill.getWaypoint().setName(hill.getTitle()));
 
                 if (elapsed % NumberSetting.HILL_MOVE_INTERVAL.value() == 0) {
                     this.moveHill();
                 }
             }
-
 
             if (this.currentHill != null) {
                 this.currentHill.updateScoreboard();
@@ -140,7 +142,9 @@ public class MatchCountdown extends BukkitRunnable {
             FlagUtils.scoreCarrierPoints();
 
             if (NumberSetting.FLAG_COLLECTION_INTERVAL.value() > 0) {
-                HillUtils.getHills().forEach(hill -> hill.getWaypoint().setName(hill.getTitle()));
+                HillUtils.getHills()
+                    .stream().filter(Hill::hasWaypoint)
+                    .forEach(hill -> hill.getWaypoint().setName(hill.getTitle()));
 
                 if (elapsed % NumberSetting.FLAG_COLLECTION_INTERVAL.value() == 0 && elapsed > 0) {
                     FlagUtils.collectFlags();

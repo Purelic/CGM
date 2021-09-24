@@ -170,6 +170,10 @@ public class Hill extends Objective<HillModifiers> implements Listener {
         return this.waypoint;
     }
 
+    public boolean hasWaypoint() {
+        return this.waypoint != null;
+    }
+
     public void setWorld(World world, int scoreboardRow, boolean active) {
         super.setWorld(world);
         this.scoreboardRow = scoreboardRow;
