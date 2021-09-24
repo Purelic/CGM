@@ -32,6 +32,8 @@ import java.util.Random;
 
 public class MatchCountdown extends BukkitRunnable {
 
+    private static Random RANDOM = new Random();
+
     private static MatchCountdown countdown;
     private static int seconds;
     private static int elapsed;
@@ -181,7 +183,7 @@ public class MatchCountdown extends BukkitRunnable {
             Object[] activeHills = hills.stream().filter(Hill::isActive).toArray();
 
             if (activeHills.length == 0) {
-                int index = ToggleSetting.RANDOM_HILLS.isEnabled() ? new Random().nextInt(hills.size()) : 0;
+                int index = ToggleSetting.RANDOM_HILLS.isEnabled() ? RANDOM.nextInt(hills.size()) : 0;
                 this.currentHill = hills.get(index);
                 Bukkit.broadcastMessage(" ⦿ The hill has spawned at " + this.currentHill.getName() + "!");
             } else {
@@ -197,7 +199,7 @@ public class MatchCountdown extends BukkitRunnable {
                 int prev = index;
 
                 while (index == prev) { // pick random hill location that's not equal to the current one
-                    index = new Random().nextInt(hills.size());
+                    index = RANDOM.nextInt(hills.size());
                 }
             } else {
                 index += 1; // next hill
