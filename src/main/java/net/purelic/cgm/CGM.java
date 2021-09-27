@@ -7,6 +7,7 @@ import cloud.commandframework.paper.PaperCommandManager;
 import net.purelic.cgm.commands.communication.GlobalCommand;
 import net.purelic.cgm.commands.controls.*;
 import net.purelic.cgm.commands.discord.LTPCommand;
+import net.purelic.cgm.commands.discord.RumbleCommand;
 import net.purelic.cgm.commands.info.*;
 import net.purelic.cgm.commands.knockback.KnockbackDebugNormalCommand;
 import net.purelic.cgm.commands.knockback.KnockbackDebugSprintCommand;
@@ -288,11 +289,14 @@ public class CGM extends JavaPlugin {
         this.registerCommand(new DownloadGameModeCommand());
         this.registerCommand(new DownloadMapCommand());
         this.registerCommand(new EndCommand());
-        this.registerCommand(new LTPCommand(this.getConfig()));
         this.registerCommand(new PregenCommand());
         this.registerCommand(new RematchCommand());
         this.registerCommand(new SetNextCommand());
         this.registerCommand(new StartCommand());
+
+        // Discord
+        this.registerCommand(new LTPCommand(this.getConfig()));
+        this.registerCommand(new RumbleCommand(this.getConfig()));
 
         // Info
         this.registerCommand(new GameModeCommand());
