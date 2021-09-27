@@ -6,6 +6,7 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
 import net.purelic.cgm.commands.communication.GlobalCommand;
 import net.purelic.cgm.commands.controls.*;
+import net.purelic.cgm.commands.discord.LTPCommand;
 import net.purelic.cgm.commands.info.*;
 import net.purelic.cgm.commands.knockback.KnockbackDebugNormalCommand;
 import net.purelic.cgm.commands.knockback.KnockbackDebugSprintCommand;

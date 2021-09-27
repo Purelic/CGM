@@ -1,4 +1,4 @@
-package net.purelic.cgm.commands.controls;
+package net.purelic.cgm.commands.discord;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
