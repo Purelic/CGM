@@ -210,6 +210,7 @@ public class CGM extends JavaPlugin {
         this.registerListener(new NoSleepingModule());
         this.registerListener(new RegenerationModule());
         this.registerListener(new RespawnModule());
+        new RodDurabilityModule().register();
         this.registerListener(new SpawnerModule());
         this.registerListener(new TeamChatModule());
         this.registerListener(new WeatherModule());
