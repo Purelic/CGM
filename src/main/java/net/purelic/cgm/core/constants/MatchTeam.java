@@ -96,7 +96,7 @@ public enum MatchTeam {
     }
 
     public void reset() {
-        this.name = this.defaultName;
+        // this.name = this.defaultName;
         this.color = this.defaultColor;
         this.score = 0;
         this.roundsWon = 0;
