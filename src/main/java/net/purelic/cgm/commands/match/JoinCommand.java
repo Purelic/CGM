@@ -46,8 +46,8 @@ public class JoinCommand implements CustomCommand {
                     return;
                 }
 
-                if (ToggleJoinLockCommand.joinlock && !CommandUtils.isOp(player)) {
-                    CommandUtils.sendErrorMessage(player, "Joining is currently disabled! You must be OP or forced to a team by an OP player.");
+                if (ToggleJoinLockCommand.joinlock && !(CommandUtils.isOp(player) || Commons.getProfile(player).isStaff())) {
+                    CommandUtils.sendErrorMessage(player, "Joining is currently disabled! An OP player must /force you to a team.");
                     return;
                 }
 

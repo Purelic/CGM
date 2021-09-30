@@ -2,6 +2,9 @@ package net.purelic.cgm.commands.discord;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.bukkit.BukkitCommandManager;
+import net.purelic.cgm.commands.toggles.ToggleAutoJoinCommand;
+import net.purelic.cgm.commands.toggles.ToggleAutoStartCommand;
+import net.purelic.cgm.commands.toggles.ToggleJoinLockCommand;
 import net.purelic.commons.Commons;
 import net.purelic.commons.commands.parsers.CustomCommand;
 import net.purelic.commons.commands.parsers.Permission;
@@ -48,6 +51,10 @@ public class RumbleCommand implements CustomCommand {
                 this.sendDiscordNotification(player);
                 Commons.sendSpringMessage(player, "StartRumble", ServerUtils.getId());
                 CommandUtils.sendSuccessMessage(player, "You alerted the \"Rumblers\" role in Discord! (#alerts)");
+
+                ToggleJoinLockCommand.joinlock = true;
+                ToggleAutoJoinCommand.autoJoin = false;
+                ToggleAutoStartCommand.autostart = false;
 
                 if (Bukkit.hasWhitelist()) {
                     ServerUtils.setWhitelisted(false);
